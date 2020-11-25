@@ -6,7 +6,6 @@ import androidx.core.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.view.View;
 
-import com.badoualy.stepperindicator.StepperIndicator;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
