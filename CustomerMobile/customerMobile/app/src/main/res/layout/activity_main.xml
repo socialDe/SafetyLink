@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <com.owl93.dpb.CircularProgressView
+        android:id="@+id/circularProgressView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        app:drawTrack="true"
+        app:trackWidth="30dp"
+        app:trackColor="#000000"
+        app:trackAlpha="25"
+        android:padding="10dp"
+        app:progress="95"
+        app:strokeWidth="20dp"
+        app:textEnabled="true"
+        app:textSize="32sp"
+        app:gradientStartColor="@color/blue"
+        app:gradientCenterColor="@color/purple"
+        app:gradientEndColor="@color/teal"
+        app:strokeGradientStyle="candy_cane"
+        app:strokeGradientSize="stroke_only" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="clickbt"
+        android:text="circle progress" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="clickbt"
+        android:text="Sucess Toast" />
+
+    <com.skydoves.progressview.ProgressView
+        android:id="@+id/progressView"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        app:progressView_colorBackground="@color/white"
+        app:progressView_colorProgress="@color/skyBlue"
+        app:progressView_progress="0"
+        app:progressView_min="0"
+        app:progressView_max="100"
+        app:progressView_progressFromPrevious="true"
+        app:progressView_autoAnimate="true"
+        app:progressView_radius="12dp"
+        app:progressView_padding="1dp"
+        app:progressView_labelColorInner="@color/white"
+        app:progressView_labelColorOuter="@color/black"
+        app:progressView_labelSize="13sp"
+        app:progressView_labelSpace="10dp"
+        app:progressView_labelTypeface="bold"
+    />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="clickbt"
+        android:text="progress" />
+
+</LinearLayout>
