@@ -35,7 +35,7 @@ public class AdminBIZ implements Biz<String, AdminVO> {
 	public void modify(AdminVO v) throws Exception {
 		int result = 0;
 		result = dao.update(v);
-		if(result ==0) {
+		if(result == 0) {
 			throw new Exception();
 		}	
 	}

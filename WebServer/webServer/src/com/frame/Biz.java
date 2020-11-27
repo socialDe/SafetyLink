@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface Biz<K, V> {
-	@Transactional //Æ®·¢Á§¼Ç Ã³¸® @TransactionalÀ» »ç¿ëÇÑ´Ù -  ½ÇÇàÀÌ ÀÌ»óÇÏ¸é ·Ñ¹éÇÑ´Ù
+	@Transactional //íŠ¸ë™ì ì…˜ ì²˜ë¦¬ @Transactionalì„ ì‚¬ìš©í•œë‹¤ -  ì‹¤í–‰ì´ ì´ìƒí•˜ë©´ ë¡¤ë°±í•œë‹¤
 	public void register(V v) throws Exception;
 	@Transactional
 	public void remove(K k) throws Exception;
