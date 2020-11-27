@@ -3,6 +3,7 @@ package com.example.customermobile;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -51,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         }else if(v.getId() == R.id.button3){
             Random r = new Random();
             progressView.setProgress(r.nextInt(100));
+        }else if(v.getId() == R.id.button4){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
         }
     }
 }
