@@ -1,10 +1,17 @@
 package com.example.customermobile;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
@@ -18,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
 
     CircularProgressView circularProgressView;
     ProgressView progressView;
+    EditText etx_id;
+    EditText etx_pwd;
+    Button loginButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
         circularProgressView = findViewById(R.id.circularProgressView);
         circularProgressView.setProgress(0);
         circularProgressView.setMaxValue(100);
+
+        //id, pwd for test
+        etx_id = findViewById(R.id.etx_id);
+        etx_pwd = findViewById(R.id.etx_pwd);
+        loginButton = findViewById(R.id.loginButton);
 
         progressView = findViewById(R.id.progressView);
         progressView.setOnProgressChangeListener(new OnProgressChangeListener() {
@@ -52,5 +68,8 @@ public class MainActivity extends AppCompatActivity {
             Random r = new Random();
             progressView.setProgress(r.nextInt(100));
         }
-    }
+    } // end clickbt
+
+
+
 }

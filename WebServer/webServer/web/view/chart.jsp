@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
@@ -7,18 +9,18 @@
     <title>Target Material Design Bootstrap Admin Template</title>
 	
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" href="assets/materialize/css/materialize.min.css" media="screen,projection" />
+	<link rel="stylesheet" href="view/assets/materialize/css/materialize.min.css" media="screen,projection" />
     <!-- Bootstrap Styles-->
-    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="view/assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FontAwesome Styles-->
-    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="view/assets/css/font-awesome.css" rel="stylesheet" />
     <!-- Morris Chart Styles-->
-    <link href="assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <link href="view/assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
     <!-- Custom Styles-->
-    <link href="assets/css/custom-styles.css" rel="stylesheet" />
+    <link href="view/assets/css/custom-styles.css" rel="stylesheet" />
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
-    <link rel="stylesheet" href="assets/js/Lightweight-Chart/cssCharts.css"> 
+    <link rel="stylesheet" href="view/assets/js/Lightweight-Chart/cssCharts.css"> 
 </head>
 <body>
     <div id="wrapper">
@@ -32,7 +34,7 @@
                 </button>
                 <a class="navbar-brand waves-effect waves-dark" href="index.html"><i class="large material-icons">track_changes</i> <strong>target</strong></a>
 				
-		<div id="sideNav" href=""><i class="material-icons dp48">toc</i></div>
+		<div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
             </div>
 
             <ul class="nav navbar-top-links navbar-right"> 
@@ -226,7 +228,7 @@
                         <a href="ui-elements.html" class="waves-effect waves-dark"><i class="fa fa-desktop"></i> UI Elements</a>
                     </li>
 					<li>
-                        <a href="chart.html" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a>
+                        <a href="chart.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a>
                     </li>
                     <li>
                         <a href="tab-panel.html" class="waves-effect waves-dark"><i class="fa fa-qrcode"></i> Tabs & Panels</a>
@@ -236,7 +238,7 @@
                         <a href="table.html" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a>
                     </li>
                     <li>
-                        <a href="form.html" class="active-menu waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>
+                        <a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>
                     </li>
 
 
@@ -276,198 +278,74 @@
 
         </nav>
         <!-- /. NAV SIDE  -->
-        <div id="page-wrapper" >
+        <div id="page-wrapper">
 		  <div class="header"> 
                         <h1 class="page-header">
-                             Form Inputs Page
+                             Charts 
                         </h1>
 						<ol class="breadcrumb">
 					  <li><a href="#">Home</a></li>
-					  <li><a href="#">Forms</a></li>
+					  <li><a href="#">Charts</a></li>
 					  <li class="active">Data</li>
 					</ol> 
 									
 		</div>
-		
             <div id="page-inner"> 
-			 <div class="row">
-			 <div class="col-lg-12">
-			 <div class="card">
-                        <div class="card-action">
-                            Basic Form Elements
-                        </div>
-                        <div class="card-content">
-    <form class="col s12">
-      <div class="row">
-        <div class="input-field col s6">
-          <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-          <label for="first_name">First Name</label>
-        </div>
-        <div class="input-field col s6">
-          <input id="last_name" type="text" class="validate">
-          <label for="last_name">Last Name</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input disabled value="I am not editable" id="disabled" type="text" class="validate">
-          <label for="disabled">Disabled</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="password" type="password" class="validate">
-          <label for="password">Password</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="email" type="email" class="validate">
-          <label for="email">Email</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12">
-          This is an inline input field:
-          <div class="input-field inline">
-            <input id="email" type="email" class="validate">
-            <label for="email" data-error="wrong" data-success="right">Email</label>
-          </div>
-        </div>
-      </div>
-    </form>
-	<div class="clearBoth"></div>
-  </div>
-    </div>
- </div>	
-	 </div>		
-              <div class="row">
-                <div class="col-lg-6">
+             
+                <div class="row"> 
+                    
+                      
+                               <div class="col-md-6 col-sm-12 col-xs-12">                     
                     <div class="card">
                         <div class="card-action">
-                            Basic Form Elements
+                            Bar Chart
                         </div>
                         <div class="card-content">
-                         	<form class="col s12">
-								  <div class="row">
-									<div class="input-field col s6">
-									  <i class="material-icons prefix">account_circle</i>
-									  <input id="icon_prefix" type="text" class="validate">
-									  <label for="icon_prefix">First Name</label>
-									</div>
-									<div class="input-field col s6">
-									  <i class="material-icons prefix">phone</i>
-									  <input id="icon_telephone" type="tel" class="validate">
-									  <label for="icon_telephone">Telephone</label>
-									</div>
-								  </div>
-								</form>
-								
-								<form class="col s12">
-								  <div class="row">
-									<div class="input-field col s12">
-									  <input id="email" type="email" class="validate">
-									  <label for="email" data-error="wrong" data-success="right">Email</label>
-									</div>
-								  </div>
-								</form>
-								
-								  <form class="col s12">
-							  <div class="row">
-								<div class="input-field col s12">
-								  <textarea id="textarea1" class="materialize-textarea"></textarea>
-								  <label for="textarea1">Textarea</label>
-								</div>
-							  </div>
-							</form>
-							  </form>
- 
-   <!-- Switch -->
-  <div class="switch">
-    <label>
-      Off
-      <input type="checkbox">
-      <span class="lever"></span>
-      On
-    </label>
-  </div>
-
-  <!-- Disabled Switch -->
-  <div class="switch">
-    <label>
-      Off
-      <input disabled type="checkbox">
-      <span class="lever"></span>
-      On
-    </label>
-  </div>
-							<div class="clearBoth"></div>
-							</div>
-							</div>
-							</div>
-							 <div class="col-lg-6">
+                            <div id="morris-bar-chart"></div>
+                        </div>
+                    </div>            
+                </div>
+                      <div class="col-md-6 col-sm-12 col-xs-12">                     
                     <div class="card">
                         <div class="card-action">
-                            Basic Form Elements
+                            Area Chart
                         </div>
                         <div class="card-content">
-						
-								  <form action="#">
-    <p>
-      <input name="group1" type="radio" id="test1" />
-      <label for="test1">Red</label>
-    </p>
-    <p>
-      <input name="group1" type="radio" id="test2" />
-      <label for="test2">Yellow</label>
-    </p>
-    <p>
-      <input class="with-gap" name="group1" type="radio" id="test3"  />
-      <label for="test3">Green</label>
-    </p>
-      <p>
-        <input name="group1" type="radio" id="test4" disabled="disabled" />
-        <label for="test4">Brown</label>
-    </p>
-  </form>
-         <form action="#">
-    <p>
-      <input type="checkbox" id="test5" />
-      <label for="test5">Red</label>
-    </p>
-    <p>
-      <input type="checkbox" id="test6" checked="checked" />
-      <label for="test6">Yellow</label>
-    </p>
-    <p>
-      <input type="checkbox" class="filled-in" id="filled-in-box" checked="checked" />
-      <label for="filled-in-box">Filled in</label>
-    </p>
-    <p>
-      <input type="checkbox" id="indeterminate-checkbox" />
-      <label for="indeterminate-checkbox">Indeterminate Style</label>
-    </p>
-    <p>
-      <input type="checkbox" id="test7" checked="checked" disabled="disabled" />
-      <label for="test7">Green</label>
-    </p>
-      <p>
-        <input type="checkbox" id="test8" disabled="disabled" />
-        <label for="test8">Brown</label>
-    </p>
-
-        
-                                </div>
-                               
-                            </div>
-                            <!-- /.row (nested) -->
+                            <div id="morris-area-chart"></div>
                         </div>
-                        <!-- /.panel-body -->
-                    </div> 
-                <!-- /.col-lg-12 --> 
-			<footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
+                    </div>            
+                </div> 
+                
+           </div>
+                 <!-- /. ROW  -->
+                <div class="row">                     
+                      
+                               <div class="col-md-6 col-sm-12 col-xs-12">                     
+                    <div class="card">
+                        <div class="card-action">
+                            Line Chart
+                        </div>
+                        <div class="card-content">
+                            <div id="morris-line-chart"></div>
+                        </div>
+                    </div>            
+                </div>
+                      <div class="col-md-6 col-sm-12 col-xs-12">                     
+                    <div class="card">
+                        <div class="card-action">
+                            Donut Chart
+                        </div>
+                        <div class="card-content">                            
+							<div id="morris-donut-chart"></div>
+                        </div>
+                    </div>            
+                </div> 
+                
+           </div>
+                 <!-- /. ROW  -->
+				 <footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
 </p></footer>
-			</div>
+				</div>
              <!-- /. PAGE INNER  -->
             </div>
          <!-- /. PAGE WRAPPER  -->
@@ -475,27 +353,27 @@
      <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
     <!-- jQuery Js -->
-    <script src="assets/js/jquery-1.10.2.js"></script>
+    <script src="view/assets/js/jquery-1.10.2.js"></script>
 	
 	<!-- Bootstrap Js -->
-    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="view/assets/js/bootstrap.min.js"></script>
 	
-	<script src="assets/materialize/js/materialize.min.js"></script>
+	<script src="view/assets/materialize/js/materialize.min.js"></script>
 	
     <!-- Metis Menu Js -->
-    <script src="assets/js/jquery.metisMenu.js"></script>
+    <script src="view/assets/js/jquery.metisMenu.js"></script>
     <!-- Morris Chart Js -->
-    <script src="assets/js/morris/raphael-2.1.0.min.js"></script>
-    <script src="assets/js/morris/morris.js"></script>
+    <script src="view/assets/js/morris/raphael-2.1.0.min.js"></script>
+    <script src="view/assets/js/morris/morris.js"></script>
 	
 	
-	<script src="assets/js/easypiechart.js"></script>
-	<script src="assets/js/easypiechart-data.js"></script>
+	<script src="view/assets/js/easypiechart.js"></script>
+	<script src="view/assets/js/easypiechart-data.js"></script>
 	
-	 <script src="assets/js/Lightweight-Chart/jquery.chart.js"></script>
+	 <script src="view/assets/js/Lightweight-Chart/jquery.chart.js"></script>
 	
     <!-- Custom Js -->
-    <script src="assets/js/custom-scripts.js"></script> 
+    <script src="view/assets/js/custom-scripts.js"></script> 
  
 
 </body>
