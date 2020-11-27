@@ -1,5 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -7,6 +5,90 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Target Material Design Bootstrap Admin Template</title>
+    
+    <style>
+.highcharts-figure, .highcharts-data-table table {
+  min-width: 360px; 
+  max-width: 800px;
+  margin: 1em auto;
+}
+
+.highcharts-data-table table {
+	font-family: Verdana, sans-serif;
+	border-collapse: collapse;
+	border: 1px solid #EBEBEB;
+	margin: 10px auto;
+	text-align: center;
+	width: 100%;
+	max-width: 500px;
+}
+.highcharts-data-table caption {
+  padding: 1em 0;
+  font-size: 1.2em;
+  color: #555;
+}
+.highcharts-data-table th {
+	font-weight: 600;
+  padding: 0.5em;
+}
+.highcharts-data-table td, .highcharts-data-table th, .highcharts-data-table caption {
+  padding: 0.5em;
+}
+.highcharts-data-table thead tr, .highcharts-data-table tr:nth-child(even) {
+  background: #f8f8f8;
+}
+.highcharts-data-table tr:hover {
+  background: #f1f7ff;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(document).ready(function (){
+	displayChart();
+});
+	
+	
+	function displayChart(){
+		$('#gra1').highcharts({
+			  chart: {
+			    type: 'line'
+			  },
+			  title: {
+			    text: 'Monthly Average Temperature'
+			  },
+			  subtitle: {
+			    text: 'Source: WorldClimate.com'
+			  },
+			  xAxis: {
+			    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			  },
+			  yAxis: {
+			    title: {
+			      text: 'Temperature (°C)'
+			    }
+			  },
+			  plotOptions: {
+			    line: {
+			      dataLabels: {
+			        enabled: true
+			      },
+			      enableMouseTracking: false
+			    }
+			  },
+			  series: [{
+			    name: 'Tokyo',
+			    data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+			  }, {
+			    name: 'London',
+			    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			  }, {
+			    name: 'Seoul',
+			    data: [3.3, 2.2, 5.7, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			  }]
+			});
+	}
+</script>
 	
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link rel="stylesheet" href="view/assets/materialize/css/materialize.min.css" media="screen,projection" />
@@ -228,7 +310,7 @@
                         <a href="ui-elements.html" class="waves-effect waves-dark"><i class="fa fa-desktop"></i> UI Elements</a>
                     </li>
 					<li>
-                        <a href="chart.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a>
+                        <a href="chart.html" class="active-menu waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a>
                     </li>
                     <li>
                         <a href="tab-panel.html" class="waves-effect waves-dark"><i class="fa fa-qrcode"></i> Tabs & Panels</a>
@@ -292,51 +374,35 @@
 		</div>
             <div id="page-inner"> 
              
-                <div class="row"> 
-                    
-                      
-                               <div class="col-md-6 col-sm-12 col-xs-12">                     
+           <div class="row"> 
+                  <div class="col-md-6 col-sm-12 col-xs-12">                     
                     <div class="card">
                         <div class="card-action">
-                            Bar Chart
+                            Chart Filter
                         </div>
                         <div class="card-content">
-                            <div id="morris-bar-chart"></div>
+                            <div id="chart-filter"></div>
                         </div>
                     </div>            
                 </div>
                       <div class="col-md-6 col-sm-12 col-xs-12">                     
                     <div class="card">
                         <div class="card-action">
-                            Area Chart
+                            Chart
                         </div>
                         <div class="card-content">
-                            <div id="morris-area-chart"></div>
-                        </div>
-                    </div>            
-                </div> 
-                
-           </div>
-                 <!-- /. ROW  -->
-                <div class="row">                     
-                      
-                               <div class="col-md-6 col-sm-12 col-xs-12">                     
-                    <div class="card">
-                        <div class="card-action">
-                            Line Chart
-                        </div>
-                        <div class="card-content">
-                            <div id="morris-line-chart"></div>
-                        </div>
-                    </div>            
-                </div>
-                      <div class="col-md-6 col-sm-12 col-xs-12">                     
-                    <div class="card">
-                        <div class="card-action">
-                            Donut Chart
-                        </div>
-                        <div class="card-content">                            
-							<div id="morris-donut-chart"></div>
+                            <script src="https://code.highcharts.com/highcharts.js"></script>
+							<script src="https://code.highcharts.com/modules/exporting.js"></script>
+							<script src="https://code.highcharts.com/modules/export-data.js"></script>
+							<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+							
+							<figure class="highcharts-figure">
+							  <div id="gra1"></div>
+							  <p class="highcharts-description">
+							    This chart shows how data labels can be added to the data series. This
+							    can increase readability and comprehension for small datasets.
+							  </p>
+							</figure>
                         </div>
                     </div>            
                 </div> 
@@ -353,24 +419,16 @@
      <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
     <!-- jQuery Js -->
+    <!-- 
     <script src="view/assets/js/jquery-1.10.2.js"></script>
+     -->
 	
 	<!-- Bootstrap Js -->
     <script src="view/assets/js/bootstrap.min.js"></script>
 	
 	<script src="view/assets/materialize/js/materialize.min.js"></script>
 	
-    <!-- Metis Menu Js -->
-    <script src="view/assets/js/jquery.metisMenu.js"></script>
-    <!-- Morris Chart Js -->
-    <script src="view/assets/js/morris/raphael-2.1.0.min.js"></script>
-    <script src="view/assets/js/morris/morris.js"></script>
-	
-	
-	<script src="view/assets/js/easypiechart.js"></script>
-	<script src="view/assets/js/easypiechart-data.js"></script>
-	
-	 <script src="view/assets/js/Lightweight-Chart/jquery.chart.js"></script>
+
 	
     <!-- Custom Js -->
     <script src="view/assets/js/custom-scripts.js"></script> 
@@ -379,3 +437,4 @@
 </body>
 
 </html>
+

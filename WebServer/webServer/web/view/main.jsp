@@ -228,7 +228,7 @@
                     </li>
                     
                     <li>
-                        <a href="table.html" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a>
+                        <a href="test.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a>
                     </li>
                     <li>
                         <a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>

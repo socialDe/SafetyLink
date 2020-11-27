@@ -19,5 +19,19 @@ public class ViewController {
             mv.setViewName("chart");  
             return mv;
     }
+    // Highchart 테스트용입니다.
+    @RequestMapping("/test.mc")
+    public ModelAndView test() {
+            ModelAndView mv = new ModelAndView();
+            mv.setViewName("test");  
+            return mv;
+    }
 
+    // Highchart 테스트용입니다.
+    @RequestMapping("/test2.mc")
+    public ModelAndView test2() {
+            ModelAndView mv = new ModelAndView();
+            mv.setViewName("test2");  
+            return mv;
+    }
 }
