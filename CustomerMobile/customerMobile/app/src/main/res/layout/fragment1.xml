@@ -296,35 +296,34 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             app:cardCornerRadius="10dp">
 
             <ImageButton
                 android:id="@+id/imageButton_startingOn"
-                android:layout_width="160dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="17dp"
-                android:background="@drawable/startingonn" />
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/startingon"
+                android:scaleType="fitXY" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_starting"
+            android:id="@+id/cardView_startingOff"
             android:layout_width="190dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             app:cardCornerRadius="10dp">
 
             <ImageButton
                 android:id="@+id/imageButton_startingOff"
-                android:layout_width="160dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="18dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/startingofff" />
+                android:background="@drawable/startingoff"
+                android:scaleType="fitXY" />
 
         </androidx.cardview.widget.CardView>
     </LinearLayout>
@@ -336,41 +335,43 @@
         android:orientation="horizontal">
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_door"
+            android:id="@+id/cardView_doorOn"
             android:layout_width="190dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="10dp">
 
             <ImageButton
                 android:id="@+id/imageButton_doorOn"
-                android:layout_width="165dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="13dp"
-                android:layout_marginTop="3dp"
-                android:background="@drawable/dooropenimg" />
+                android:background="@drawable/dooropenimg"
+                android:scaleType="fitXY"
+                android:scaleY="1.1" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cardView_door"
+            android:id="@+id/cardView_doorOff"
             android:layout_width="190dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="10dp"
             app:cardCornerRadius="10dp">
 
             <ImageButton
                 android:id="@+id/imageButton_doorOff"
-                android:layout_width="165dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="3dp"
-                android:background="@drawable/doorcloseimg" />
+                android:background="@drawable/doorcloseimg"
+                android:scaleType="fitXY"
+                android:scaleY="1.1" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 
@@ -430,14 +431,14 @@
                 android:id="@+id/textView_targetTemper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="100dp"
-                android:text="5"
+                android:layout_marginEnd="96dp"
+                android:text="26"
                 android:textColor="#000000"
                 android:textSize="30sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.6" />
+                app:layout_constraintVertical_bias="0.575" />
 
             <TextView
                 android:id="@+id/textView_C2"
@@ -455,7 +456,7 @@
                 android:id="@+id/textView_C3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="73dp"
+                android:layout_marginEnd="65dp"
                 android:text="℃"
                 android:textColor="#000000"
                 android:textSize="30sp"
@@ -477,7 +478,8 @@
                     android:id="@+id/imageButton_downTemper"
                     android:layout_width="35dp"
                     android:layout_height="45dp"
-                    android:background="@drawable/temperdown" />
+                    android:background="@drawable/temperdown"
+                    android:onClick="clickImageButton_downTemper" />
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
@@ -494,7 +496,8 @@
                     android:layout_width="35dp"
                     android:layout_height="45dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/temperup" />
+                    android:background="@drawable/temperup"
+                    android:onClick="clickImageButton_upTemper" />
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
