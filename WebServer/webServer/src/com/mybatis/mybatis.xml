@@ -4,11 +4,14 @@ PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<typeAliases>
-		<typeAlias type="com.vo.ShopVO" alias="shop"/>
+		<typeAlias type="com.vo.AdminVO" alias="admin"/>
+		<typeAlias type="com.vo.CarVO" alias="car"/>
+		<typeAlias type="com.vo.CarSensorVO" alias="carsensor"/>
+		<typeAlias type="com.vo.UsersVO" alias="users"/>
 	</typeAliases>
 	
 	<mappers>
-		<mapper resource="com/mybatis/shopmapper.xml"/>
+		<mapper resource="com/mybatis/adminmapper.xml"/>
 	</mappers>
 </configuration>
 
