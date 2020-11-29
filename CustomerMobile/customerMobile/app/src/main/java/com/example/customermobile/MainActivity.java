@@ -15,6 +15,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.customermobile.df.DataFrame;
+import com.example.customermobile.vo.CarSensorVO;
+import com.example.customermobile.vo.CarVO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -42,6 +45,7 @@ import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +57,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import www.sanju.motiontoast.MotionToast;
@@ -62,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView toolbar_title;
     Fragment fragment1, fragment2, fragment3;
+
+    CarVO car;
+    CarSensorVO carsensor;
+    ArrayList carInfoList;
 
     NotificationManager manager;
 
@@ -90,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // tcpip 설정
-        port = 5555;
+        port = 5558;
         address = "192.168.0.103";
         id = "MobileJH";
 
@@ -161,10 +173,32 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
         lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
+        carInfoList = new ArrayList<>();
+        getCarData();
+
     }// end onCreat
 
 
+    private void getCarData() {
+        // URL 설정.
+        String url = "http://192.168.0.103/webServer/cardata.jsp";
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        HttpAsync httpAsync = new HttpAsync();
+        httpAsync.execute(url);
+    }
+
     class HttpAsync extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setTitle("Get Data ...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -175,10 +209,69 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            //tx_log.append(s);
+            progressDialog.dismiss();
+            JSONArray ja = null;
+            try {
+                ja = new JSONArray(s);
+                for(int i=0; i<ja.length(); i++){
+                    JSONObject jo = ja.getJSONObject(i);
+
+                    int carid = jo.getInt("carid");
+                    String userid = jo.getString("userid");
+                    String carnum = jo.getString("carnum");
+                    String carname = jo.getString("carname");
+                    String cartype = jo.getString("cartype");
+                    String carmodel = jo.getString("carmodel");
+                    int caryear = jo.getInt("caryear");
+                    String carimg = jo.getString("carimg");
+                    String caroiltype = jo.getString("caroiltype");
+                    String tablettoken = jo.getString("tablettoken");
+
+                    int heartbeat = jo.getInt("heartbeat");
+                    String pirfront = jo.getString("pirfront");
+                    String pirrear = jo.getString("pirrear");
+                    int freight = jo.getInt("freight");
+                    int fuel = jo.getInt("fuel");
+                    int fuelmax = 50;
+                    int temper = jo.getInt("temper");
+                    String starting = jo.getString("starting");
+                    String moving = jo.getString("moving");
+
+                    Date movingstarttime = new Date();
+
+//                    //날자 문자열에서 날자형식으로 변환
+//                    String movingstarttimeString = jo.getString("movingstarttime");
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                    try {
+//                        Date movingstarttime = sdf.parse(movingstarttimeString);
+//                    }
+//                    catch(ParseException e){
+//                        e.printStackTrace();
+//                    }
+
+                    String aircon = jo.getString("aircon");
+                    String crash = jo.getString("crash");
+                    String door = jo.getString("door");
+                    double lat = jo.getDouble("lat");
+                    double lng = jo.getDouble("lng");
+
+
+
+
+                    car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
+                    carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
+                    //carInfoList.add();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+//            ItemAdapter itemAdapter = new ItemAdapter();
+//            listView.setAdapter(itemAdapter);
         }
 
     }
+
 
 
     Runnable con = new Runnable() {
@@ -214,7 +307,11 @@ public class MainActivity extends AppCompatActivity {
         sender = new Sender(socket);
         new Receiver(socket).start();
         //sendMsg();
+
+
     }
+
+
 
 
     // 뒤로가기 눌렀을 때 q를 보내 tcp/ip 통신 종료
