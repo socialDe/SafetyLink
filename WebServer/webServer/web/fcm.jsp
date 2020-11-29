@@ -1,6 +1,6 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,8 +18,31 @@
     <link href="assets/css/custom-styles.css" rel="stylesheet" />
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
-    <link rel="stylesheet" href="assets/js/Lightweight-Chart/cssCharts.css"> 
+    <link rel="stylesheet" href="assets/js/Lightweight-Chart/cssCharts.css">
+    
+    <!-- Image Preview Start // jquery 이 버전이 있어야 사진 미리보기 가능 -->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript">
+        $(function() {
+            $("#mf").on('change', function(){
+                readURL(this);
+            });
+        });
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                    $('#fcmImage').attr('src', e.target.result);
+                }
+              reader.readAsDataURL(input.files[0]);
+            }
+        }
+	<!-- Image Preview End -->
+    </script>
+    
 </head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-default top-navbar" role="navigation">
@@ -236,13 +259,12 @@
                         <a href="table.html" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a>
                     </li>
                     <li>
-                        <a href="form.html" class="active-menu waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>
+                        <a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>
                     </li>
-                    
-				<!-- FCM 보내는 페이지로 이동 -->
+
                     <li>
-                        <a href="fcm.mc" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Fcm </a>
-                    </li>  
+                        <a href="fcm.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-edit"></i> Fcm </a>
+                    </li>
 
 
                     <li>
@@ -280,229 +302,87 @@
             </div>
 
         </nav>
-        <!-- /. NAV SIDE  -->
-        <div id="page-wrapper" >
-		  <div class="header"> 
-                        <h1 class="page-header">
-                             Form Inputs Page
-                        </h1>
-						<ol class="breadcrumb">
-					  <li><a href="#">Home</a></li>
-					  <li><a href="#">Forms</a></li>
-					  <li class="active">Data</li>
-					</ol> 
-									
-		</div>
-		
-            <div id="page-inner"> 
-			 <div class="row">
-			 <div class="col-lg-12">
-			 <div class="card">
-                        <div class="card-action">
-                            Basic Form Elements
-                        </div>
-                        <div class="card-content">
-    <form class="col s12">
-      <div class="row">
-        <div class="input-field col s6">
-          <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-          <label for="first_name">First Name</label>
-        </div>
-        <div class="input-field col s6">
-          <input id="last_name" type="text" class="validate">
-          <label for="last_name">Last Name</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input disabled value="I am not editable" id="disabled" type="text" class="validate">
-          <label for="disabled">Disabled</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="password" type="password" class="validate">
-          <label for="password">Password</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12">
-          <input id="email" type="email" class="validate">
-          <label for="email">Email</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12">
-          This is an inline input field:
-          <div class="input-field inline">
-            <input id="email" type="email" class="validate">
-            <label for="email" data-error="wrong" data-success="right">Email</label>
-          </div>
-        </div>
-      </div>
-    </form>
-	<div class="clearBoth"></div>
-  </div>
-    </div>
- </div>	
-	 </div>		
-              <div class="row">
-                <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-action">
-                            Basic Form Elements
-                        </div>
-                        <div class="card-content">
-                         	<form class="col s12">
-								  <div class="row">
-									<div class="input-field col s6">
-									  <i class="material-icons prefix">account_circle</i>
-									  <input id="icon_prefix" type="text" class="validate">
-									  <label for="icon_prefix">First Name</label>
-									</div>
-									<div class="input-field col s6">
-									  <i class="material-icons prefix">phone</i>
-									  <input id="icon_telephone" type="tel" class="validate">
-									  <label for="icon_telephone">Telephone</label>
-									</div>
-								  </div>
-								</form>
-								
-								<form class="col s12">
-								  <div class="row">
-									<div class="input-field col s12">
-									  <input id="email" type="email" class="validate">
-									  <label for="email" data-error="wrong" data-success="right">Email</label>
-									</div>
-								  </div>
-								</form>
-								
-								  <form class="col s12">
-							  <div class="row">
-								<div class="input-field col s12">
-								  <textarea id="textarea1" class="materialize-textarea"></textarea>
-								  <label for="textarea1">Textarea</label>
-								</div>
-							  </div>
-							</form>
-							  </form>
- 
-   <!-- Switch -->
-  <div class="switch">
-    <label>
-      Off
-      <input type="checkbox">
-      <span class="lever"></span>
-      On
-    </label>
-  </div>
-
-  <!-- Disabled Switch -->
-  <div class="switch">
-    <label>
-      Off
-      <input disabled type="checkbox">
-      <span class="lever"></span>
-      On
-    </label>
-  </div>
-							<div class="clearBoth"></div>
-							</div>
-							</div>
-							</div>
-							 <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-action">
-                            Basic Form Elements
-                        </div>
-                        <div class="card-content">
-						
-								  <form action="#">
-    <p>
-      <input name="group1" type="radio" id="test1" />
-      <label for="test1">Red</label>
-    </p>
-    <p>
-      <input name="group1" type="radio" id="test2" />
-      <label for="test2">Yellow</label>
-    </p>
-    <p>
-      <input class="with-gap" name="group1" type="radio" id="test3"  />
-      <label for="test3">Green</label>
-    </p>
-      <p>
-        <input name="group1" type="radio" id="test4" disabled="disabled" />
-        <label for="test4">Brown</label>
-    </p>
-  </form>
-         <form action="#">
-    <p>
-      <input type="checkbox" id="test5" />
-      <label for="test5">Red</label>
-    </p>
-    <p>
-      <input type="checkbox" id="test6" checked="checked" />
-      <label for="test6">Yellow</label>
-    </p>
-    <p>
-      <input type="checkbox" class="filled-in" id="filled-in-box" checked="checked" />
-      <label for="filled-in-box">Filled in</label>
-    </p>
-    <p>
-      <input type="checkbox" id="indeterminate-checkbox" />
-      <label for="indeterminate-checkbox">Indeterminate Style</label>
-    </p>
-    <p>
-      <input type="checkbox" id="test7" checked="checked" disabled="disabled" />
-      <label for="test7">Green</label>
-    </p>
-      <p>
-        <input type="checkbox" id="test8" disabled="disabled" />
-        <label for="test8">Brown</label>
-    </p>
-
+        <!-- /. NAV SIDE 끝 -->
         
-                                </div>
-                               
-                            </div>
-                            <!-- /.row (nested) -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div> 
-                <!-- /.col-lg-12 --> 
-			<footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
-</p></footer>
-			</div>
+        <!-- FCM Page Start -->
+   <div id="page-wrapper" >
+	<div class="header"> 
+     <h1 class="page-header">
+      Form Inputs Page
+     </h1>
+		<ol class="breadcrumb">
+			<li><a href="#">Home</a></li>
+			<li><a href="#">Forms</a></li>
+			<li class="active">Data</li>
+		</ol> 							
+	</div>
+		
+    <div id="page-inner"> 
+		<div class="row">
+			<div class="col-lg-12">
+			 	<div class="card">
+                    <div class="card-action text-center" style="font-size:40px;'">
+						FCM 전송
+                    </div>
+                    <div class="card-content">
+    					<form class="col s12" action="fcmsendall.mc" method="post" role="form" enctype="multipart/form-data">
+      						<div class="row">
+        						<div class="input-field col s12">
+         							<input placeholder="" id="title" type="text" class="validate" name="title">
+          								<label for="first_name">Title</label>
+        						</div>
+      						</div>
+      						<div class="row">
+								<div class="input-field col s12">
+									<textarea id="contents" class="materialize-textarea" name="contents"></textarea>
+										<label for="textarea1">Textarea</label>
+								</div>
+	  						</div>
+	  						<div>
+	  							<div class="input-field col s12">
+	  								<input type="file" name="mf" id="mf"> <!-- 파일 첨부하는 버튼, 보안상의 이유로 value를 넣을 수 없다.. -->
+	  							</div>
+	  							<div class="input-field col s12">
+	  								<img src="view/img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
+	  							</div>
+	  						</div>
+	                  		<div class="input-field col s10"></div>
+	                 		<div class="input-field col s1">
+                 					<input type="submit" value="전송" class="waves-effect waves-light btn-primary btn-large">
+	                 		</div>
+    					</form>
+    <!-- FCM Page End -->
+    
+						<div class="clearBoth">
+						</div>
+  					</div>
+    			</div>
+ 			</div>	
+		</div>		
+		 <footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
+			</p></footer>
+	</div>
              <!-- /. PAGE INNER  -->
-            </div>
+ </div>
          <!-- /. PAGE WRAPPER  -->
-        </div>
+         </div>
      <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
     <!-- jQuery Js -->
     <script src="assets/js/jquery-1.10.2.js"></script>
-	
 	<!-- Bootstrap Js -->
     <script src="assets/js/bootstrap.min.js"></script>
-	
 	<script src="assets/materialize/js/materialize.min.js"></script>
-	
     <!-- Metis Menu Js -->
     <script src="assets/js/jquery.metisMenu.js"></script>
     <!-- Morris Chart Js -->
     <script src="assets/js/morris/raphael-2.1.0.min.js"></script>
     <script src="assets/js/morris/morris.js"></script>
-	
-	
 	<script src="assets/js/easypiechart.js"></script>
 	<script src="assets/js/easypiechart-data.js"></script>
-	
 	 <script src="assets/js/Lightweight-Chart/jquery.chart.js"></script>
-	
     <!-- Custom Js -->
     <script src="assets/js/custom-scripts.js"></script> 
- 
 
 </body>
-
 </html>

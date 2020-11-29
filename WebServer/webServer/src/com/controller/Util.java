@@ -4,9 +4,9 @@ import java.io.FileOutputStream;
 import org.springframework.web.multipart.MultipartFile;
 
 public class Util {
-	// ¹Þ¾Æ¿Â µ¥ÀÌÅÍ¸¦ ¼­¹ö¿¡ ÀÌ¹ÌÁö¸¦ ¿Ã¸°´Ù.
+	// ï¿½Þ¾Æ¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¸ï¿½ï¿½ï¿½.
 	public static void saveFile(MultipartFile mf) {
-		String dir = "C:\\spring\\RRS2\\web\\img\\";
+		String dir = "C:\\SafetyLink\\WebServer\\webServer\\web\\view\\img\\";
 		byte [] data;
 		String imgname = mf.getOriginalFilename();
 		try {
@@ -20,9 +20,9 @@ public class Util {
 		}
 		
 	}
-	//comment¿ë »çÁø
+	//commentï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	public static void saveCommentFile(MultipartFile mf) {
-		String dir = "C:\\spring\\RRS2\\web\\img\\comment\\";
+		String dir = "C:\\SafetyLink\\WebServer\\webserver\\web\\view\\img\\comment\\";
 		byte [] data;
 		String imgname = mf.getOriginalFilename();
 		try {

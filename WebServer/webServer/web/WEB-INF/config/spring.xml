@@ -30,7 +30,7 @@
 	<!-- ViewResolver -->
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/view/" />
+		<!-- <property name="prefix" value="/view/" /> -->
 		<property name="suffix" value=".jsp" />
 		<property name="order" value="0" />
 	</bean>
@@ -63,42 +63,42 @@
 	
 	
 	<!-- 1. Database Setting -->
-	<bean id="dataSource"
+ 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"			
-			value="oracle.jdbc.driver.OracleDriver" />    <!-- Oracle -->
-			<!-- value="org.mariadb.jdbc.Driver" />          -->  <!-- MariaDB -->
+			value="oracle.jdbc.driver.OracleDriver" />  <!--   Oracle
+			value="org.mariadb.jdbc.Driver" />           MariaDB -->
 		<property name="url"		
-		 	value="jdbc:oracle:thin:@127.0.0.1:1521:xe" />     <!-- Oracle  -->
-		 	<!-- value="jdbc:mariadb://192.168.111.111:3306/shopdb" />  -->  <!-- MariaDB -->
-		<property name="username" value="DB2" />
-		<property name="password" value="DB2" />
+		 	value="jdbc:oracle:thin:@192.168.25.35:1521:xe" />    <!--  Oracle 
+		 	value="jdbc:mariadb://192.168.111.111:3306/shopdb" />   MariaDB -->
+		<property name="username" value="userdb" />
+		<property name="password" value="111111" />
 	</bean>
 
 	<!-- 2. Transaction Setting -->
-	<bean id="txManager"
+ 	<bean id="txManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
-	</bean>
+	</bean> 
 
 	<!-- 3. MyBatis Setting -->
-	<bean id="sqlSessionFactory"
+ 	<bean id="sqlSessionFactory"
 		class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="configLocation"
 			value="classpath:com/mybatis/mybatis.xml" />
 	</bean>
-
+ 
 	<!-- 4. Spring Mybatis Connect -->
-	<bean id="sqlSessionTemplate"
+ 	<bean id="sqlSessionTemplate"
 		class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg ref="sqlSessionFactory" />
 	</bean>
-
+ 
 	<!-- 5. Mapper Setting -->
-	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+ 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="basePackage" value="com.dao" />
-	</bean>
+	</bean> 
 
 
 </beans>
