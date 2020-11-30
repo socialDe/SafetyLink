@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -51,6 +52,7 @@ public class Fragment1 extends Fragment {
     ImageButton imageButton_carLeft, imageButton_carRight, imageButton_startingOn, imageButton_startingOff;
     ImageButton imageButton_doorOn, imageButton_doorOff, imageButton_downTemper, imageButton_upTemper;
 
+    MyAsynch myAsynch;
 
     @Nullable
     @Override
@@ -134,7 +136,11 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 int targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-                textView_targetTemper.setText(String.valueOf(targetTemper+1));
+                if(targetTemper+1 > 30){
+                    Toast.makeText(getActivity(),"30도 이하로 설정해주세요!",Toast.LENGTH_SHORT).show();
+                }else{
+                    textView_targetTemper.setText(String.valueOf(targetTemper+1));
+                }
             }
         }) ;
 
@@ -142,15 +148,56 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 int targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-                textView_targetTemper.setText(String.valueOf(targetTemper-1));
+                if(targetTemper-1 < 18){
+                    Toast.makeText(getActivity(),"18도 이상으로 설정해주세요!",Toast.LENGTH_SHORT).show();
+                }else{
+                    textView_targetTemper.setText(String.valueOf(targetTemper-1));
+                }
             }
         }) ;
 
+        //setCarData();
 
         return viewGroup;
     } // end onCreate
 
 
+    // 차 정보를 세팅하는 함수
+    public void setCarData(String carname, String carmodel, String carnum){
+
+        textView_carName.setText(carname);
+        textView_carModel.setText(carmodel);
+        textView_carNum.setText(carnum);
+
+//        ((MainActivity)getActivity()).getCarData();
+//        textView_carName.setText(((MainActivity)getActivity()).getCar().getCarname());
+//        textView_carModel.setText(((MainActivity)getActivity()).getCar().getCarmodel());
+//        textView_carNum.setText(((MainActivity)getActivity()).getCar().getCarnum());
+
+//        myAsynch = new MyAsynch();
+//        myAsynch.execute();
+
+        Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum);
+
+    }
+
+
+
+    class MyAsynch extends AsyncTask<Void,Void,Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ((MainActivity)getActivity()).getCarData();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            textView_carName.setText(((MainActivity)getActivity()).getCar().getCarname());
+            textView_carModel.setText(((MainActivity)getActivity()).getCar().getCarmodel());
+            textView_carNum.setText(((MainActivity)getActivity()).getCar().getCarnum());
+        }
+    }
 
 
 

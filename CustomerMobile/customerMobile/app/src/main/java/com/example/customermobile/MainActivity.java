@@ -9,6 +9,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Notification;
@@ -29,6 +31,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -69,11 +72,26 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     TextView toolbar_title;
-    Fragment fragment1, fragment2, fragment3;
+
+    public CarVO getCar() {
+        return car;
+    }
+
+    public void setCar(CarVO car) {
+        this.car = car;
+    }
+
+
+    Fragment1 fragment1;
+    Fragment2 fragment2;
+    Fragment3 fragment3;
+
+    FragmentManager fragmentManager;
+
+    FrameLayout container;
 
     CarVO car;
     CarSensorVO carsensor;
-    ArrayList carInfoList;
 
     NotificationManager manager;
 
@@ -148,11 +166,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         // 프래그먼트 화면 설정
         fragment1 = new Fragment1();
         fragment2 = new Fragment2();
         fragment3 = new Fragment3();
-        getSupportFragmentManager().beginTransaction().add(R.id.container, fragment1).commit();
+
+        // 시작 프래그먼트 지정
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment1).commit();
 
 
         // FCM사용 (앱이 중단되어 있을 때 기본적으로 title,body값으로 푸시!!)
@@ -173,16 +194,14 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
         lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
-        carInfoList = new ArrayList<>();
         getCarData();
 
     }// end onCreat
 
 
-    private void getCarData() {
+    public void getCarData() {
         // URL 설정.
-        String url = "http://192.168.0.103/webServer/cardata.jsp";
-
+        String url = "http://192.168.0.103/webServer/cardata.mc?carid=1";
         // AsyncTask를 통해 HttpURLConnection 수행.
         HttpAsync httpAsync = new HttpAsync();
         httpAsync.execute(url);
@@ -204,12 +223,15 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             String url = strings[0];
             String result = HttpConnect.getString(url); //result는 JSON
+            Log.d("[TAG]", result);
             return result;
         }
 
         @Override
         protected void onPostExecute(String s) {
+            Log.d("[TAG]", "0");
             progressDialog.dismiss();
+            Log.d("[TAG]", "test"+s);
             JSONArray ja = null;
             try {
                 ja = new JSONArray(s);
@@ -227,47 +249,46 @@ public class MainActivity extends AppCompatActivity {
                     String caroiltype = jo.getString("caroiltype");
                     String tablettoken = jo.getString("tablettoken");
 
-                    int heartbeat = jo.getInt("heartbeat");
-                    String pirfront = jo.getString("pirfront");
-                    String pirrear = jo.getString("pirrear");
-                    int freight = jo.getInt("freight");
-                    int fuel = jo.getInt("fuel");
-                    int fuelmax = 50;
-                    int temper = jo.getInt("temper");
-                    String starting = jo.getString("starting");
-                    String moving = jo.getString("moving");
-
-                    Date movingstarttime = new Date();
-
-//                    //날자 문자열에서 날자형식으로 변환
-//                    String movingstarttimeString = jo.getString("movingstarttime");
-//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                    try {
-//                        Date movingstarttime = sdf.parse(movingstarttimeString);
-//                    }
-//                    catch(ParseException e){
-//                        e.printStackTrace();
-//                    }
-
-                    String aircon = jo.getString("aircon");
-                    String crash = jo.getString("crash");
-                    String door = jo.getString("door");
-                    double lat = jo.getDouble("lat");
-                    double lng = jo.getDouble("lng");
-
-
+//                    int heartbeat = jo.getInt("heartbeat");
+//                    String pirfront = jo.getString("pirfront");
+//                    String pirrear = jo.getString("pirrear");
+//                    int freight = jo.getInt("freight");
+//                    int fuel = jo.getInt("fuel");
+//                    int fuelmax = 50;
+//                    int temper = jo.getInt("temper");
+//                    String starting = jo.getString("starting");
+//                    String moving = jo.getString("moving");
+//
+//                    Date movingstarttime = new Date();
+//
+////                    //날자 문자열에서 날자형식으로 변환
+////                    String movingstarttimeString = jo.getString("movingstarttime");
+////                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+////                    try {
+////                        Date movingstarttime = sdf.parse(movingstarttimeString);
+////                    }
+////                    catch(ParseException e){
+////                        e.printStackTrace();
+////                    }
+//
+//                    String aircon = jo.getString("aircon");
+//                    String crash = jo.getString("crash");
+//                    String door = jo.getString("door");
+//                    double lat = jo.getDouble("lat");
+//                    double lng = jo.getDouble("lng");
 
 
                     car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
-                    carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
-                    //carInfoList.add();
+                    //carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
+
+                    fragment1.setCarData(car.getCarname(),car.getCarmodel(),car.getCarnum());
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-//            ItemAdapter itemAdapter = new ItemAdapter();
-//            listView.setAdapter(itemAdapter);
+
         }
 
     }
@@ -539,6 +560,7 @@ public class MainActivity extends AppCompatActivity {
 
         switch (position) {
             case 1:
+                getCarData();
                 fragment = fragment1;
                 toolbar_title.setText("Home");
                 break;

@@ -12,7 +12,9 @@ PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
 	
 	<mappers>
 		<mapper resource="com/mybatis/adminmapper.xml"/>
-		<mapper resource="com/mybatis/carmapper.xml"/>
+        <mapper resource="com/mybatis/carmapper.xml"/>
+        <mapper resource="com/mybatis/carsensormapper.xml"/>
+        <mapper resource="com/mybatis/usersmapper.xml"/>
 	</mappers>
 </configuration>
 
