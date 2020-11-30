@@ -17,7 +17,7 @@ public class FcmController {
 	
 	@RequestMapping("/fcm.mc")
 	public ModelAndView fcm(ModelAndView mv) {
-		mv.setViewName("fcm");
+		mv.setViewName("view/fcm");
 		return mv;
 	}
 	
@@ -92,7 +92,7 @@ public class FcmController {
 			System.out.println("phone Send End...");
 			
 			// 눌렀을 때 다시 fcm 페이지를 보여주도록
-			return "redirect:fcm.mc";
+			return "redirect:view/fcm.mc";
 	}
 		
 	}
