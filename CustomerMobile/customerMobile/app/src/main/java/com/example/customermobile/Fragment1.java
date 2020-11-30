@@ -52,7 +52,6 @@ public class Fragment1 extends Fragment {
     ImageButton imageButton_carLeft, imageButton_carRight, imageButton_startingOn, imageButton_startingOff;
     ImageButton imageButton_doorOn, imageButton_doorOff, imageButton_downTemper, imageButton_upTemper;
 
-    MyAsynch myAsynch;
 
     @Nullable
     @Override
@@ -104,6 +103,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_startingOn.setImageResource(R.drawable.startingon1);
                 imageButton_startingOff.setImageResource(R.drawable.startingoff);
+                ((MainActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -112,6 +112,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_startingOff.setImageResource(R.drawable.startingoff1);
                 imageButton_startingOn.setImageResource(R.drawable.startingon);
+                ((MainActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -120,6 +121,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
                 imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
+                ((MainActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -128,6 +130,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
                 imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
+                ((MainActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -141,6 +144,7 @@ public class Fragment1 extends Fragment {
                 }else{
                     textView_targetTemper.setText(String.valueOf(targetTemper+1));
                 }
+                ((MainActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -153,6 +157,7 @@ public class Fragment1 extends Fragment {
                 }else{
                     textView_targetTemper.setText(String.valueOf(targetTemper-1));
                 }
+                ((MainActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -169,35 +174,38 @@ public class Fragment1 extends Fragment {
         textView_carModel.setText(carmodel);
         textView_carNum.setText(carnum);
 
-//        ((MainActivity)getActivity()).getCarData();
-//        textView_carName.setText(((MainActivity)getActivity()).getCar().getCarname());
-//        textView_carModel.setText(((MainActivity)getActivity()).getCar().getCarmodel());
-//        textView_carNum.setText(((MainActivity)getActivity()).getCar().getCarnum());
-
-//        myAsynch = new MyAsynch();
-//        myAsynch.execute();
-
         Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum);
 
     }
 
+    // 차센서 정보를 세팅하는 함수
+    public void setCarSensorData(int fuel, String starting, String door, int temper){
 
-
-    class MyAsynch extends AsyncTask<Void,Void,Void> {
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            ((MainActivity)getActivity()).getCarData();
-            return null;
+        textView_fuel.setText(fuel);
+        textView_possibleDistance.setText(fuel*12);
+        if(starting.equals('o')){
+            imageButton_startingOn.setImageResource(R.drawable.startingon1);
+            imageButton_startingOff.setImageResource(R.drawable.startingoff);
+        }else{
+            imageButton_startingOff.setImageResource(R.drawable.startingoff1);
+            imageButton_startingOn.setImageResource(R.drawable.startingon);
         }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            textView_carName.setText(((MainActivity)getActivity()).getCar().getCarname());
-            textView_carModel.setText(((MainActivity)getActivity()).getCar().getCarmodel());
-            textView_carNum.setText(((MainActivity)getActivity()).getCar().getCarnum());
+        if(door.equals('o')){
+            imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
+            imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
+        }else{
+            imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
+            imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
         }
+        textView_temper.setText(temper);
+
+
+        Log.d("[TAG]", "setCarSensorData OK"+" "+fuel+" "+starting+" "+door+" "+temper);
+
     }
+
+
+
 
 
 

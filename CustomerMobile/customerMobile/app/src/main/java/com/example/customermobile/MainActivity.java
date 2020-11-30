@@ -195,19 +195,47 @@ public class MainActivity extends AppCompatActivity {
         lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
         getCarData();
+        getCarSensorData();
 
     }// end onCreat
 
 
     public void getCarData() {
         // URL 설정.
-        String url = "http://192.168.0.103/webServer/cardata.mc?carid=1";
+        String carUrl = "http://192.168.0.103/webServer/cardata.mc?carid=1";
+        //String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?carid=1";
+
         // AsyncTask를 통해 HttpURLConnection 수행.
-        HttpAsync httpAsync = new HttpAsync();
-        httpAsync.execute(url);
+        CarAsync carAsync = new CarAsync();
+        carAsync.execute(carUrl);
+
+        //CarSensorAsync carSensorAsync = new CarSensorAsync();
+       // carSensorAsync.execute(carSensorUrl);
     }
 
-    class HttpAsync extends AsyncTask<String, Void, String> {
+    public void getCarSensorData() {
+        // URL 설정.
+        //String carUrl = "http://192.168.0.103/webServer/cardata.mc?carid=1";
+        String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?carid=1";
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+       // CarAsync carAsync = new CarAsync();
+        //carAsync.execute(carUrl);
+
+        CarSensorAsync carSensorAsync = new CarSensorAsync();
+        carSensorAsync.execute(carSensorUrl);
+    }
+
+    public void vibrate(int sec,int power){
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); // 진동 없애려면 삭제
+        if (Build.VERSION.SDK_INT >= 26) { //버전 체크를 해줘야 작동하도록 한다
+            vibrator.vibrate(VibrationEffect.createOneShot(sec, power));
+        } else {
+            vibrator.vibrate(sec);
+        }
+    }
+
+    class CarAsync extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
 
@@ -229,12 +257,12 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("[TAG]", "0");
             progressDialog.dismiss();
-            Log.d("[TAG]", "test"+s);
             JSONArray ja = null;
             try {
+                Log.d("[TAG]","0");
                 ja = new JSONArray(s);
+                Log.d("[TAG]","00");
                 for(int i=0; i<ja.length(); i++){
                     JSONObject jo = ja.getJSONObject(i);
 
@@ -249,40 +277,89 @@ public class MainActivity extends AppCompatActivity {
                     String caroiltype = jo.getString("caroiltype");
                     String tablettoken = jo.getString("tablettoken");
 
-//                    int heartbeat = jo.getInt("heartbeat");
-//                    String pirfront = jo.getString("pirfront");
-//                    String pirrear = jo.getString("pirrear");
-//                    int freight = jo.getInt("freight");
-//                    int fuel = jo.getInt("fuel");
-//                    int fuelmax = 50;
-//                    int temper = jo.getInt("temper");
-//                    String starting = jo.getString("starting");
-//                    String moving = jo.getString("moving");
-//
-//                    Date movingstarttime = new Date();
-//
-////                    //날자 문자열에서 날자형식으로 변환
-////                    String movingstarttimeString = jo.getString("movingstarttime");
-////                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-////                    try {
-////                        Date movingstarttime = sdf.parse(movingstarttimeString);
-////                    }
-////                    catch(ParseException e){
-////                        e.printStackTrace();
-////                    }
-//
-//                    String aircon = jo.getString("aircon");
-//                    String crash = jo.getString("crash");
-//                    String door = jo.getString("door");
-//                    double lat = jo.getDouble("lat");
-//                    double lng = jo.getDouble("lng");
-
-
                     car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
-                    //carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
 
                     fragment1.setCarData(car.getCarname(),car.getCarmodel(),car.getCarnum());
 
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+    }
+
+
+    class CarSensorAsync extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setTitle("Get Data ...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String url = strings[0];
+            String result = HttpConnect.getString(url); //result는 JSON
+            Log.d("[TAG]", result);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialog.dismiss();
+            JSONArray ja = null;
+            try {
+                Log.d("[TAG]","s:"+s);
+                ja = new JSONArray(s);
+                Log.d("[TAG]","1");
+                for(int i=0; i<ja.length(); i++){
+                    JSONObject jo = ja.getJSONObject(i);
+
+                    int carid = jo.getInt("carid");
+                    int heartbeat = jo.getInt("heartbeat");
+                    String pirfront = jo.getString("pirfront");
+                    String pirrear = jo.getString("pirrear");
+                    int freight = jo.getInt("freight");
+                    int fuel = jo.getInt("fuel");
+                    int fuelmax = 50;
+                    int temper = jo.getInt("temper");
+                    String starting = jo.getString("starting");
+                    String moving = jo.getString("moving");
+
+                    //Date movingstarttime = new Date();
+
+                    //날자 문자열에서 날자형식으로 변환
+                    Date movingstarttime = null;
+
+//                    String movingstarttimeString = jo.getString("movingstarttime");
+//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                    try {
+//                        movingstarttime = sdf.parse(movingstarttimeString);
+//                    }
+//                    catch(ParseException e){
+//                        e.printStackTrace();
+//                    }
+
+                    String aircon = jo.getString("aircon");
+                    String crash = jo.getString("crash");
+                    String door = jo.getString("door");
+                    double lat = jo.getDouble("lat");
+                    double lng = jo.getDouble("lng");
+
+
+                    carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
+
+                    fragment1.setCarSensorData(carsensor.getFuel(),carsensor.getStarting(),carsensor.getDoor(),carsensor.getTemper());
+
+                    Log.d("[TAG]","TEST:"+carsensor.getFuel()+" "+carsensor.getStarting()+" "+carsensor.getDoor()+" "+carsensor.getTemper());
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -394,12 +471,7 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                } // 추가로 제어할 것이 있으면 이곳에 else if 추가
 
-                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); // 진동 없애려면 삭제
-                if (Build.VERSION.SDK_INT >= 26) { //버전 체크를 해줘야 작동하도록 한다
-                    vibrator.vibrate(VibrationEffect.createOneShot(1000, 10));
-                } else {
-                    vibrator.vibrate(1000);
-                }
+                vibrate(500,5);
 
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

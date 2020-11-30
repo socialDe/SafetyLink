@@ -6,6 +6,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 
 import com.frame.Biz;
+import com.vo.CarSensorVO;
 import com.vo.CarVO;
 
 public class App3 {
@@ -17,7 +18,8 @@ public class App3 {
 		System.out.println("Spring Started .......");
 		// IoC
 		
-		Biz<Integer, CarVO> biz = (Biz)factory.getBean("cbiz");
+		Biz<Integer, CarVO> cbiz = (Biz)factory.getBean("cbiz");
+		Biz<Integer, CarSensorVO> sbiz = (Biz)factory.getBean("sbiz");
 		
 //		ShopVO s = new ShopVO("����", 10000,"pants.jpg");
 //		try {
@@ -28,12 +30,24 @@ public class App3 {
 //		}
 		
 		
-		ArrayList<CarVO> list;
+		ArrayList<CarVO> clist;
 		
 		try {
-			list = biz.get();
-			for(CarVO sv:list) {
-				System.out.println(sv);
+			clist = cbiz.get();
+			for(CarVO c:clist) {
+				System.out.println(c);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		ArrayList<CarSensorVO> slist;
+		
+		try {
+			slist = sbiz.get();
+			for(CarSensorVO s:slist) {
+				System.out.println(s);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -5,23 +5,23 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 <mapper namespace="com.dao.CarSensorDAO">
 	
 	<insert id="insert" parameterType="carsensor">
-		INSERT INTO ADMIN VALUES (#{adminid},#{adminpwd},#{adminname},#{adminphone},#{adminstate})
+		INSERT INTO CARSENSOR VALUES (#{carid},#{heartbeat},#{pirfront},#{pirrear},#{freight},#{fuel},#{fuelmax},#{temper},#{starting},#{moving},#{movingstarttime},#{aircon},#{crash},#{door},#{lat},#{lng})
 	</insert>
 	
 	<update id="update" parameterType="carsensor">
-		UPDATE ADMIN SET ADMINPWD=#{adminpwd}, ADMINNAME=#{adminname}, ADMINPHONE=#{adminphone}, ADMINSTATE=#{adminstate} WHERE ADMINID=#{adminid}
+		UPDATE CARSENSOR SET HEARTBEAR=#{heartbeat},PIRFRONT=#{pirfront},PIRREAR=#{pirrear},FREIGHT=#{freight},FUEL=#{fuel},TEMPER=#{temper},STARTING=#{starting},MOVING=#{moving},AIRCON=#{aircon},CRASH=#{crash},DOOR=#{door},LAT=#{lat},LNG=#{lng} WHERE CARID=#{carid}
 	</update>
 	
 	<delete id="delete" parameterType="Integer">
-		DELETE FROM ADMIN WHERE ADMINID=#{k}
+		DELETE FROM CARSENSOR WHERE CARID=#{k}
 	</delete>
 	
 	<select id="select" parameterType="Integer" resultType="carsensor">
-		SELECT * FROM ADMIN WHERE ADMINID=#{k}
+		SELECT * FROM CARSENSOR WHERE CARID=#{k}
 	</select>
 	
 	<select id="selectall" resultType="carsensor">
-		SELECT * FROM ADMIN 
+		SELECT * FROM CARSENSOR 
 	</select>
 	
 	
