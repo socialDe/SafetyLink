@@ -181,8 +181,9 @@ public class Fragment1 extends Fragment {
     // 차센서 정보를 세팅하는 함수
     public void setCarSensorData(int fuel, String starting, String door, int temper){
 
-        textView_fuel.setText(fuel);
-        textView_possibleDistance.setText(fuel*12);
+        textView_fuel.setText(String.valueOf(fuel));
+        textView_possibleDistance.setText(String.valueOf(fuel*12));
+        Log.d("[TAG]","Here:"+fuel+" "+starting+" "+door+" "+temper);
         if(starting.equals('o')){
             imageButton_startingOn.setImageResource(R.drawable.startingon1);
             imageButton_startingOff.setImageResource(R.drawable.startingoff);
@@ -197,7 +198,7 @@ public class Fragment1 extends Fragment {
             imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
             imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
         }
-        textView_temper.setText(temper);
+        textView_temper.setText(String.valueOf(temper));
 
 
         Log.d("[TAG]", "setCarSensorData OK"+" "+fuel+" "+starting+" "+door+" "+temper);

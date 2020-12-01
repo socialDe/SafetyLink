@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -97,7 +98,11 @@ public class CarController {
 		data.put("temper", dbcarsensor.getTemper());
 		data.put("starting", dbcarsensor.getStarting());
 		data.put("moving", dbcarsensor.getMoving());
-		data.put("movingstarttime", dbcarsensor.getMovingstarttime());
+		
+		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+		String movingstarttime = format.format(dbcarsensor.getMovingstarttime());
+		data.put("movingstarttime", movingstarttime);
+		
 		data.put("aircon", dbcarsensor.getAircon());
 		data.put("crash", dbcarsensor.getCrash());
 		data.put("door", dbcarsensor.getDoor());

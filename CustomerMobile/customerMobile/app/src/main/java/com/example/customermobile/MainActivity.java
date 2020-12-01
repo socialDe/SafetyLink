@@ -202,26 +202,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.0.103/webServer/cardata.mc?carid=1";
-        //String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?carid=1";
+        String carUrl = "http://192.168.0.37/webServer/cardata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
         carAsync.execute(carUrl);
-
-        //CarSensorAsync carSensorAsync = new CarSensorAsync();
-       // carSensorAsync.execute(carSensorUrl);
     }
 
     public void getCarSensorData() {
-        // URL 설정.
-        //String carUrl = "http://192.168.0.103/webServer/cardata.mc?carid=1";
-        String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?carid=1";
+        // URL 설정
+        String carSensorUrl = "http://192.168.0.37/webServer/carsensordata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
-       // CarAsync carAsync = new CarAsync();
-        //carAsync.execute(carUrl);
-
         CarSensorAsync carSensorAsync = new CarSensorAsync();
         carSensorAsync.execute(carSensorUrl);
     }
@@ -241,10 +233,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setTitle("Get Data ...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(MainActivity.this);
+//            progressDialog.setTitle("Get Data ...");
+//            progressDialog.setCancelable(false);
+//            progressDialog.show();
         }
 
         @Override
@@ -257,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            progressDialog.dismiss();
+//            progressDialog.dismiss();
             JSONArray ja = null;
             try {
                 Log.d("[TAG]","0");
@@ -308,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... strings) {
             String url = strings[0];
             String result = HttpConnect.getString(url); //result는 JSON
-            Log.d("[TAG]", result);
             return result;
         }
 
@@ -357,9 +348,11 @@ public class MainActivity extends AppCompatActivity {
 
                     carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
 
+                    Log.d("[TAG]","TEST:"+carsensor.getFuel()+" "+carsensor.getStarting()+" "+carsensor.getDoor()+" "+carsensor.getTemper());
+
                     fragment1.setCarSensorData(carsensor.getFuel(),carsensor.getStarting(),carsensor.getDoor(),carsensor.getTemper());
 
-                    Log.d("[TAG]","TEST:"+carsensor.getFuel()+" "+carsensor.getStarting()+" "+carsensor.getDoor()+" "+carsensor.getTemper());
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
