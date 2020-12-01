@@ -18,22 +18,39 @@ public class App3 {
 		System.out.println("Spring Started .......");
 		// IoC
 		
-		Biz<Integer, CarVO> cbiz = (Biz)factory.getBean("cbiz");
-		Biz<Integer, CarSensorVO> sbiz = (Biz)factory.getBean("sbiz");
+		Biz<Integer,String,CarVO> cbiz = (Biz)factory.getBean("cbiz");
+		Biz<Integer,String,CarSensorVO> sbiz = (Biz)factory.getBean("sbiz");
 		
-//		ShopVO s = new ShopVO("����", 10000,"pants.jpg");
+
+		
+		
+//		ArrayList<CarVO> clist;
+//		
 //		try {
-//			biz.register(s);
-//			System.out.println("OK");
+//			clist = cbiz.get();
+//			for(CarVO c:clist) {
+//				System.out.println(c);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		ArrayList<CarSensorVO> slist;
+//		
+//		try {
+//			slist = sbiz.get();
+//			for(CarSensorVO s:slist) {
+//				System.out.println(s);
+//			}
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
 		
-		
 		ArrayList<CarVO> clist;
 		
 		try {
-			clist = cbiz.get();
+			clist = cbiz.getcarsfromuser("id01");
 			for(CarVO c:clist) {
 				System.out.println(c);
 			}
@@ -45,7 +62,7 @@ public class App3 {
 		ArrayList<CarSensorVO> slist;
 		
 		try {
-			slist = sbiz.get();
+			slist = sbiz.getcarsfromuser("id01");
 			for(CarSensorVO s:slist) {
 				System.out.println(s);
 			}

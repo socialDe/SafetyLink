@@ -11,10 +11,10 @@ import com.frame.Dao;
 import com.vo.UsersVO;
 
 @Service("ubiz")
-public class UsersBIZ implements Biz<String, UsersVO> {
+public class UsersBIZ implements Biz<String,Integer,UsersVO> {
 
 	@Resource(name="udao")
-	Dao<String, UsersVO> dao;
+	Dao<String,Integer,UsersVO> dao;
 	
 	@Override
 	public void register(UsersVO v) throws Exception {
@@ -47,6 +47,13 @@ public class UsersBIZ implements Biz<String, UsersVO> {
 	@Override
 	public ArrayList<UsersVO> get() throws Exception {
 		return dao.selectall();
+	}
+
+	// 안씀
+	@Override
+	public ArrayList<UsersVO> getcarsfromuser(Integer k2) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

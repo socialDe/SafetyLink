@@ -2,6 +2,7 @@ package com.controller;
 
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,41 +22,38 @@ import com.vo.CarVO;
 public class CarController {
 	
 	@Resource(name="cbiz")
-	Biz<Integer, CarVO> cbiz;
+	Biz<Integer,String,CarVO> cbiz;
 	@Resource(name="sbiz")
-	Biz<Integer, CarSensorVO> sbiz;
+	Biz<Integer,String,CarSensorVO> sbiz;
 	
 	// 차량 데이터
 	@RequestMapping("/cardata.mc")
 	@ResponseBody
 	public void cardata(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
-		String carid = request.getParameter("carid");
+		String userid = request.getParameter("userid");
 		
-		CarVO dbcar = null;
+		ArrayList<CarVO> dbcarlist = new ArrayList<>();
 		
-		try {
-			dbcar = cbiz.get(Integer.parseInt(carid));
-		} catch (Exception e) {
-			System.out.println("get cardata 실패");
-			e.printStackTrace();
-		}
+		dbcarlist = cbiz.getcarsfromuser(userid);
 		
 		JSONArray ja = new JSONArray();
 
 		
-		JSONObject data = new JSONObject();
-		data.put("carid", dbcar.getCarid());
-		data.put("userid", dbcar.getUserid());
-		data.put("carnum", dbcar.getCarnum());
-		data.put("carname", dbcar.getCarname());
-		data.put("cartype", dbcar.getCartype());
-		data.put("carmodel", dbcar.getCarmodel());
-		data.put("caryear", dbcar.getCaryear());
-		data.put("carimg", dbcar.getCarimg());
-		data.put("caroiltype", dbcar.getCaroiltype());
-		data.put("tablettoken", dbcar.getTablettoken());
-		ja.add(data);
+		for (CarVO dbcar : dbcarlist) {
+			JSONObject data = new JSONObject();
+			data.put("carid", dbcar.getCarid());
+			data.put("userid", dbcar.getUserid());
+			data.put("carnum", dbcar.getCarnum());
+			data.put("carname", dbcar.getCarname());
+			data.put("cartype", dbcar.getCartype());
+			data.put("carmodel", dbcar.getCarmodel());
+			data.put("caryear", dbcar.getCaryear());
+			data.put("carimg", dbcar.getCarimg());
+			data.put("caroiltype", dbcar.getCaroiltype());
+			data.put("tablettoken", dbcar.getTablettoken());
+			ja.add(data);
+		}
 		
 		
 
@@ -73,43 +71,38 @@ public class CarController {
 	@ResponseBody
 	public void carsensordata(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
-		String carid = request.getParameter("carid");
+		String userid = request.getParameter("userid");
 		
-		CarSensorVO dbcarsensor = null;
+		ArrayList<CarSensorVO> dbcarSensorlist = new ArrayList<>();
 		
-		try {
-			dbcarsensor = sbiz.get(Integer.parseInt(carid));
-		} catch (Exception e) {
-			System.out.println("get carsensordata 실패");
-			e.printStackTrace();
-		}
+		dbcarSensorlist = sbiz.getcarsfromuser(userid);
 		
 		JSONArray ja = new JSONArray();
 
-		
-		JSONObject data = new JSONObject();
-		data.put("carid", dbcarsensor.getCarid());
-		data.put("heartbeat", dbcarsensor.getHeartbeat());
-		data.put("pirfront", dbcarsensor.getPirfront());
-		data.put("pirrear", dbcarsensor.getPirrear());
-		data.put("freight", dbcarsensor.getFreight());
-		data.put("fuel", dbcarsensor.getFuel());
-		data.put("fuelmax", dbcarsensor.getFuelmax());
-		data.put("temper", dbcarsensor.getTemper());
-		data.put("starting", dbcarsensor.getStarting());
-		data.put("moving", dbcarsensor.getMoving());
-		
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-		String movingstarttime = format.format(dbcarsensor.getMovingstarttime());
-		data.put("movingstarttime", movingstarttime);
-		
-		data.put("aircon", dbcarsensor.getAircon());
-		data.put("crash", dbcarsensor.getCrash());
-		data.put("door", dbcarsensor.getDoor());
-		data.put("lat", dbcarsensor.getLat());
-		data.put("lng", dbcarsensor.getLng());
-		ja.add(data);
-		
+		for (CarSensorVO dbcarSensor : dbcarSensorlist) {
+			JSONObject data = new JSONObject();
+			data.put("carid", dbcarSensor.getCarid());
+			data.put("heartbeat", dbcarSensor.getHeartbeat());
+			data.put("pirfront", dbcarSensor.getPirfront());
+			data.put("pirrear", dbcarSensor.getPirrear());
+			data.put("freight", dbcarSensor.getFreight());
+			data.put("fuel", dbcarSensor.getFuel());
+			data.put("fuelmax", dbcarSensor.getFuelmax());
+			data.put("temper", dbcarSensor.getTemper());
+			data.put("starting", dbcarSensor.getStarting());
+			data.put("moving", dbcarSensor.getMoving());
+			
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+			String movingstarttime = format.format(dbcarSensor.getMovingstarttime());
+			data.put("movingstarttime", movingstarttime);
+			
+			data.put("aircon", dbcarSensor.getAircon());
+			data.put("crash", dbcarSensor.getCrash());
+			data.put("door", dbcarSensor.getDoor());
+			data.put("lat", dbcarSensor.getLat());
+			data.put("lng", dbcarSensor.getLng());
+			ja.add(data);
+		}
 		
 
 		res.setCharacterEncoding("UTF-8");

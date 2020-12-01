@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.0.37/webServer/cardata.mc?carid=1";
+        String carUrl = "http://192.168.0.37/webServer/cardata.mc?userid=id01";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarSensorData() {
         // URL 설정
-        String carSensorUrl = "http://192.168.0.37/webServer/carsensordata.mc?carid=1";
+        String carSensorUrl = "http://192.168.0.37/webServer/carsensordata.mc?userid=id01";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarSensorAsync carSensorAsync = new CarSensorAsync();
@@ -250,11 +250,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
 //            progressDialog.dismiss();
+
+            ArrayList<CarVO> carlist = null;
             JSONArray ja = null;
             try {
-                Log.d("[TAG]","0");
                 ja = new JSONArray(s);
-                Log.d("[TAG]","00");
+                carlist = new ArrayList<>();
+
                 for(int i=0; i<ja.length(); i++){
                     JSONObject jo = ja.getJSONObject(i);
 
@@ -271,13 +273,14 @@ public class MainActivity extends AppCompatActivity {
 
                     car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
 
-                    fragment1.setCarData(car.getCarname(),car.getCarmodel(),car.getCarnum());
+                    carlist.add(car);
 
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+            fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum());
 
         }
 
