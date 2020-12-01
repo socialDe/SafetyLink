@@ -2,71 +2,27 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.dao.UsersDao">
-<!-- 1.이 맵퍼를 사용할 인터페이스 위치를 설정해준다 
-     2.인서트 딜리트 업데이트는 나한테 주는 값은 없다.근데 인서트 실행 후 
-     그 값에 대한 정보를 알고싶을 때 selectkey사용한다.
-     인서트하면 그 함수들을 void했는데 값을 입력 후 public int 함수로 실행 한후
-     값을 넣은 후 다시 나한테 보여주도록 하는 기능 
-     비즈에서 인서트 한후 그 키값을 가져와서 다시 인서트 할 수 있다.
-     주문이 일어나면 주문원장이 인서트 되고 그 원장의 키값을 통해 다시 값을 인서트 할 수 있다.
--->	
-
-	
+<mapper namespace="com.dao.UsersDAO">
 	
 	<insert id="insert" parameterType="users">
-		INSERT INTO MENU VALUES (M_SEQ.NEXTVAL,#{name},#{price},#{stock},#{img1},#{img2},#{img3},#{category},SYSDATE)	
+		INSERT INTO USERS VALUES (#{userid},#{userpwd},#{username},#{userphone},#{userbirth},#{usersex},SYSDATE,'f','car','o','o',#{mobiletoken})
 	</insert>
 	
-	<update id="update" parameterType="users"> 
-		UPDATE MENU SET NAME=#{name},PRICE=#{price},STOCK=#{stock},IMG1=#{img1},IMG2=#{img2},IMG3=#{img3},CATEGORY=#{category},SYSDATE WHERE MENU_CODE=#{menu_code} </update>
+	<update id="update" parameterType="users">
+		UPDATE USERS SET USERPWD=#{userpwd}, USERPHONE=#{userphone}, USERBIRTH=#{userbirth}, USERSEX=#{usersex}, USERSTATE=#{userstate}, USERSUBJECT=#{usersubject}, BABYPUSHCHECK=#{babypushcheck}, ACCPUSHCHECK=#{accpushcheck} WHERE USERID=#{userid}
+	</update>
 	
-	<delete id="delete" parameterType="Integer">
-		DELETE FROM MENU WHERE MENU_CODE=#{k}
+	<delete id="delete" parameterType="String">
+		DELETE FROM USERS WHERE USERID=#{k}
 	</delete>
 	
-	<select id="select" parameterType="Integer" 
-	resultType="users">
-		SELECT * FROM MENU WHERE MENU_CODE=#{k}	
+	<select id="select" parameterType="String" resultType="users">
+		SELECT * FROM USERS WHERE USERID=#{k}
 	</select>
 	
 	<select id="selectall" resultType="users">
-		SELECT * FROM MENU 
+		SELECT * FROM USER
 	</select>
 	
-	<!--  <update id="setcnt" parameterType="Integer">
-		UPDATE CONTENTS SET CNT=CNT+1 WHERE ID=#{k}
-	</update>
 	
-	<select id="search" parameterType="java.util.HashMap"
-		resultType="contents">
-		<![CDATA[
-		SELECT*FROM CONTENTS WHERE
-		CNT >= #{start} 
-		AND CNT<=#{end}
-		]]>
-	</select>
-	-->
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
