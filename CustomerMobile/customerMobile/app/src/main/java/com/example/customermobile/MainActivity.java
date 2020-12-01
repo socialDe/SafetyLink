@@ -73,31 +73,26 @@ public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView toolbar_title;
 
-    public CarVO getCar() {
-        return car;
-    }
-
-    public void setCar(CarVO car) {
-        this.car = car;
-    }
-
-
     Fragment1 fragment1;
     Fragment2 fragment2;
     Fragment3 fragment3;
 
-    FragmentManager fragmentManager;
-
-    FrameLayout container;
+//    FragmentManager fragmentManager;
+//    FrameLayout container;
 
     CarVO car;
     CarSensorVO carsensor;
+
+    int carlistnum = 0;
+
+    ArrayList<CarVO> carlist = null;
+    ArrayList<CarSensorVO> carsensorlist = null;
 
     NotificationManager manager;
 
     //  네이게이션 드로우어어
     private DrawerLayout mDrawerLayout;
-    private Context context = this;
+//    private Context context = this;
 
     // TCP/IP 통신
     int port;
@@ -202,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.0.37/webServer/cardata.mc?userid=id01";
+        String carUrl = "http://192.168.0.103/webServer/cardata.mc?userid=id01";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -211,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarSensorData() {
         // URL 설정
-        String carSensorUrl = "http://192.168.0.37/webServer/carsensordata.mc?userid=id01";
+        String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?userid=id01";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarSensorAsync carSensorAsync = new CarSensorAsync();
@@ -251,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
 //            progressDialog.dismiss();
 
-            ArrayList<CarVO> carlist = null;
             JSONArray ja = null;
             try {
                 ja = new JSONArray(s);
@@ -280,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum());
+            fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum(),carlist.get(0).getCarimg());
 
         }
 
@@ -311,9 +305,8 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.dismiss();
             JSONArray ja = null;
             try {
-                Log.d("[TAG]","s:"+s);
                 ja = new JSONArray(s);
-                Log.d("[TAG]","1");
+                carsensorlist = new ArrayList<>();
                 for(int i=0; i<ja.length(); i++){
                     JSONObject jo = ja.getJSONObject(i);
 
@@ -351,9 +344,9 @@ public class MainActivity extends AppCompatActivity {
 
                     carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
 
-                    Log.d("[TAG]","TEST:"+carsensor.getFuel()+" "+carsensor.getStarting()+" "+carsensor.getDoor()+" "+carsensor.getTemper());
+                    carsensorlist.add(carsensor);
 
-                    fragment1.setCarSensorData(carsensor.getMoving(),carsensor.getFuel(),carsensor.getStarting(),carsensor.getDoor(),carsensor.getTemper());
+                    fragment1.setCarSensorData(carsensorlist.get(0).getMoving(),carsensorlist.get(0).getFuel(),carsensorlist.get(0).getStarting(),carsensorlist.get(0).getDoor(),carsensorlist.get(0).getTemper());
 
 
                 }
@@ -366,6 +359,38 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    public void clickcarleft(){
+        int maxnum = carlist.size()-1;
+
+        if(carlistnum - 1 >= 0){
+            carlistnum = carlistnum - 1;
+            fragment1.setCarData(carlist.get(carlistnum).getCarname(),carlist.get(carlistnum).getCarmodel(),carlist.get(carlistnum).getCarnum(),carlist.get(carlistnum).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(),carsensorlist.get(carlistnum).getFuel(),carsensorlist.get(carlistnum).getStarting(),carsensorlist.get(carlistnum).getDoor(),carsensorlist.get(carlistnum).getTemper());
+        }else{
+            carlistnum = maxnum;
+            fragment1.setCarData(carlist.get(maxnum).getCarname(),carlist.get(maxnum).getCarmodel(),carlist.get(maxnum).getCarnum(),carlist.get(maxnum).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(),carsensorlist.get(maxnum).getFuel(),carsensorlist.get(maxnum).getStarting(),carsensorlist.get(maxnum).getDoor(),carsensorlist.get(maxnum).getTemper());
+        }
+
+
+    };
+
+    public void clickcarright(){
+        int maxnum = carlist.size()-1;
+
+        if(carlistnum + 1 <= maxnum){
+            carlistnum = carlistnum + 1;
+            fragment1.setCarData(carlist.get(carlistnum).getCarname(),carlist.get(carlistnum).getCarmodel(),carlist.get(carlistnum).getCarnum(),carlist.get(carlistnum).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(),carsensorlist.get(carlistnum).getFuel(),carsensorlist.get(carlistnum).getStarting(),carsensorlist.get(carlistnum).getDoor(),carsensorlist.get(carlistnum).getTemper());
+        }else{
+            carlistnum = 0;
+            fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum(),carlist.get(0).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(0).getMoving(),carsensorlist.get(0).getFuel(),carsensorlist.get(0).getStarting(),carsensorlist.get(0).getDoor(),carsensorlist.get(0).getTemper());
+        }
+
+
+    };
 
 
     Runnable con = new Runnable() {

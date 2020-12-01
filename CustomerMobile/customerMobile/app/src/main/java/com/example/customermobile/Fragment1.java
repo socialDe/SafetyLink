@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -30,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.customermobile.vo.CarVO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -42,6 +45,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 
 public class Fragment1 extends Fragment {
@@ -89,14 +93,14 @@ public class Fragment1 extends Fragment {
         imageButton_carLeft.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+               ((MainActivity)getActivity()).clickcarleft();
             }
         }) ;
 
         imageButton_carRight.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+                ((MainActivity)getActivity()).clickcarright();
             }
         }) ;
 
@@ -170,20 +174,30 @@ public class Fragment1 extends Fragment {
 
 
     // 차 정보를 세팅하는 함수
-    public void setCarData(String carname, String carmodel, String carnum){
+    public void setCarData(String carname, String carmodel, String carnum, String carimg){
 
         textView_carName.setText(carname);
         textView_carModel.setText(carmodel);
         textView_carNum.setText(carnum);
 
-        Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum);
+        int[] imglist = {R.drawable.car1,R.drawable.car2};
+
+
+        if(carimg.equals("car1.jpg")){
+            imageView_car.setImageResource(imglist[0]);
+        }else if(carimg.equals("car2.jpg")){
+            imageView_car.setImageResource(imglist[1]);
+        }
+
+
+        Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum+" "+carimg);
 
     }
 
     // 차센서 정보를 세팅하는 함수
     public void setCarSensorData(String moving, int fuel, String starting, String door, int temper){
 
-        if(moving.equals('o')){
+        if(moving.equals("o")){
             textView_moving.setText("주행중");
             textView_moving.setTextColor(Color.GREEN);
         }else{
@@ -193,14 +207,14 @@ public class Fragment1 extends Fragment {
         textView_fuel.setText(String.valueOf(fuel));
         textView_possibleDistance.setText(String.valueOf(fuel*12));
         Log.d("[TAG]","Here:"+fuel+" "+starting+" "+door+" "+temper);
-        if(starting.equals('o')){
+        if(starting.equals("o")){
             imageButton_startingOn.setImageResource(R.drawable.startingon1);
             imageButton_startingOff.setImageResource(R.drawable.startingoff);
         }else{
             imageButton_startingOff.setImageResource(R.drawable.startingoff1);
             imageButton_startingOn.setImageResource(R.drawable.startingon);
         }
-        if(door.equals('o')){
+        if(door.equals("o")){
             imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
             imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
         }else{

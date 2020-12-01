@@ -28,7 +28,7 @@
                 android:layout_width="240dp"
                 android:layout_height="80dp"
                 android:layout_marginTop="14dp"
-                android:background="@drawable/carimg1"
+                android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
