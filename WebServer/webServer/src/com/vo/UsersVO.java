@@ -19,16 +19,16 @@ public class UsersVO {
 	public UsersVO() {
 		super();
 	}
+	
+	public UsersVO(String userid, String userpwd) {
+		super();
+		this.userid = userid;
+		this.userpwd = userpwd;
+	}
 
 	public UsersVO(String userid, String username, String userphone) {
 		super();
 		this.userid = userid;
-		this.username = username;
-		this.userphone = userphone;
-	}
-
-	public UsersVO(String username, String userphone) {
-		super();
 		this.username = username;
 		this.userphone = userphone;
 	}
@@ -53,6 +53,36 @@ public class UsersVO {
 		this.userbirth = userbirth;
 		this.usersex = usersex;
 		this.userregdate = userregdate;
+	}
+	
+	
+
+	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex,
+			String mobiletoken) {
+		super();
+		this.userid = userid;
+		this.userpwd = userpwd;
+		this.username = username;
+		this.userphone = userphone;
+		this.userbirth = userbirth;
+		this.usersex = usersex;
+		this.mobiletoken = mobiletoken;
+	}
+
+	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex,
+				   Date userregdate, String userstate, String usersubject, String babypushcheck, String accpushcheck, String mobiletoken) {
+		this.userid = userid;
+		this.userpwd = userpwd;
+		this.username = username;
+		this.userphone = userphone;
+		this.userbirth = userbirth;
+		this.usersex = usersex;
+		this.userregdate = userregdate;
+		this.userstate = userstate;
+		this.usersubject = usersubject;
+		this.babypushcheck = babypushcheck;
+		this.accpushcheck = accpushcheck;
+		this.mobiletoken = mobiletoken;
 	}
 
 	public String getUserid() {
