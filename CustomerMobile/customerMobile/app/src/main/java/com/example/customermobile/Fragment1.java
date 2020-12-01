@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ public class Fragment1 extends Fragment {
 
     TextView textView_carName, textView_carModel, textView_carNum, textView_weatherTemper;
     TextView textView_todayDate, textView_address, textView_weather, textView_possibleDistance;
-    TextView textView_fuel, textView_temper, textView_targetTemper;
+    TextView textView_fuel, textView_temper, textView_targetTemper, textView_moving;
     ImageView imageView_car, imageView_weather;
     ImageButton imageButton_carLeft, imageButton_carRight, imageButton_startingOn, imageButton_startingOff;
     ImageButton imageButton_doorOn, imageButton_doorOff, imageButton_downTemper, imageButton_upTemper;
@@ -70,6 +71,7 @@ public class Fragment1 extends Fragment {
         textView_fuel = viewGroup.findViewById(R.id.textView_fuel);
         textView_temper = viewGroup.findViewById(R.id.textView_temper);
         textView_targetTemper = viewGroup.findViewById(R.id.textView_targetTemper);
+        textView_moving = viewGroup.findViewById(R.id.textView_moving);
         imageView_car = viewGroup.findViewById(R.id.imageView_car);
         imageView_weather = viewGroup.findViewById(R.id.imageView_weather);
         imageButton_carLeft = viewGroup.findViewById(R.id.imageButton_carLeft);
@@ -179,8 +181,15 @@ public class Fragment1 extends Fragment {
     }
 
     // 차센서 정보를 세팅하는 함수
-    public void setCarSensorData(int fuel, String starting, String door, int temper){
+    public void setCarSensorData(String moving, int fuel, String starting, String door, int temper){
 
+        if(moving.equals('o')){
+            textView_moving.setText("주행중");
+            textView_moving.setTextColor(Color.GREEN);
+        }else{
+            textView_moving.setText("정차");
+            textView_moving.setTextColor(Color.RED);
+        }
         textView_fuel.setText(String.valueOf(fuel));
         textView_possibleDistance.setText(String.valueOf(fuel*12));
         Log.d("[TAG]","Here:"+fuel+" "+starting+" "+door+" "+temper);

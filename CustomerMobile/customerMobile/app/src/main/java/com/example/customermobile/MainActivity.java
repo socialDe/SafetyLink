@@ -350,7 +350,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d("[TAG]","TEST:"+carsensor.getFuel()+" "+carsensor.getStarting()+" "+carsensor.getDoor()+" "+carsensor.getTemper());
 
-                    fragment1.setCarSensorData(carsensor.getFuel(),carsensor.getStarting(),carsensor.getDoor(),carsensor.getTemper());
+                    fragment1.setCarSensorData(carsensor.getMoving(),carsensor.getFuel(),carsensor.getStarting(),carsensor.getDoor(),carsensor.getTemper());
 
 
                 }
