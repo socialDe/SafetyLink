@@ -19,13 +19,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.customermobile.R;
 import com.example.customermobile.network.HttpConnect;
-import com.vo.UsersVO;
 
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -51,18 +48,18 @@ public class RegisterActivity extends AppCompatActivity {
 
         idcheck = false;
 
-        edit_id = findViewById(R.id.editText_registerid);
-        edit_pwd = findViewById(R.id.editText_registerpwd);
-        edit_pwdcon = findViewById(R.id.editText_pwdcon);
-        edit_name = findViewById(R.id.editText_name);
-        edit_phone1 = findViewById(R.id.editText_phone1);
-        edit_phone2 = findViewById(R.id.editText_phone2);
-        edit_phone3 = findViewById(R.id.editText_phone3);
-        edit_birth = findViewById(R.id.editText_birth);
-        radioGroup_sex = findViewById(R.id.radioGroup_sex);
+        edit_id = findViewById(R.id.editText_registerId);
+        edit_pwd = findViewById(R.id.editText_registerPwd);
+        edit_pwdcon = findViewById(R.id.editText_registerPwdCon);
+        edit_name = findViewById(R.id.editText_registerName);
+        edit_phone1 = findViewById(R.id.editText_registerPhone1);
+        edit_phone2 = findViewById(R.id.editText_registerPhone2);
+        edit_phone3 = findViewById(R.id.editText_registerPhone3);
+        edit_birth = findViewById(R.id.editText_registerBirth);
+        radioGroup_sex = findViewById(R.id.radioGroup_registerSex);
 
 
-        textView_pwdcheck = findViewById(R.id.textView_pwdcheck);
+        textView_pwdcheck = findViewById(R.id.textView_registerPwdCheck);
         edit_pwdcon.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -91,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
         InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-        if(v.getId() == R.id.button_registerok) {
+        if(v.getId() == R.id.button_registerOk) {
             // 아이디 중복 확인을 하였을 경우에만 회원가입 가능
             if(idcheck) {
                 int id = radioGroup_sex.getCheckedRadioButtonId();
@@ -140,7 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Button button_idcheck = findViewById(R.id.button_idcheck);
+                        Button button_idcheck = findViewById(R.id.button_registerIdCheck);
                         button_idcheck.setFocusableInTouchMode(true);
                         button_idcheck.requestFocus();
                     }
@@ -148,10 +145,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                 builder.show();
             }
-        }else if (v.getId() == R.id.button_registercancel){
+        }else if (v.getId() == R.id.button_registerCancel){
             // 회원가입 취소
             finish();
-        }else if (v.getId() == R.id.button_idcheck){
+        }else if (v.getId() == R.id.button_registerIdCheck){
             // 아이디 중복 확인
             String uid = edit_id.getText().toString();
 
@@ -159,7 +156,7 @@ public class RegisterActivity extends AppCompatActivity {
             url += "?id=" + uid;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
-        }else if (v.getId() == R.id.button_birth){
+        }else if (v.getId() == R.id.button_registerBirth){
             //현재 날짜 출력
             Calendar cal = new GregorianCalendar();
             int mYear = cal.get(Calendar.YEAR);

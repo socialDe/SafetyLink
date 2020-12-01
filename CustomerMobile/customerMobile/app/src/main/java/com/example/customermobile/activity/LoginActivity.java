@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.customermobile.R;
 import com.example.customermobile.network.HttpConnect;
@@ -43,8 +42,8 @@ public class LoginActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.hide();
 
-        editText_loginid = findViewById(R.id.editText_loginid);
-        editText_loginpwd = findViewById(R.id.editText_loginpwd);
+        editText_loginid = findViewById(R.id.editText_loginId);
+        editText_loginpwd = findViewById(R.id.editText_loginPwd);
         checkBox_loginauto = findViewById(R.id.checkBox_loginAuto);
 
         sp = getSharedPreferences("autoLogin", MODE_PRIVATE);

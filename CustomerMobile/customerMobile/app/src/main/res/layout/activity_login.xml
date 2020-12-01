@@ -38,7 +38,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView_logo">
 
             <EditText
-                android:id="@+id/editText_loginid"
+                android:id="@+id/editText_loginId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -47,7 +47,7 @@
                 android:inputType="textPersonName" />
 
             <EditText
-                android:id="@+id/editText_loginpwd"
+                android:id="@+id/editText_loginPwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"

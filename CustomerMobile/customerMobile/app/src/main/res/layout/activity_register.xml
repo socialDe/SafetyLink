@@ -54,7 +54,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText_registerid"
+                    android:id="@+id/editText_registerId"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -63,7 +63,7 @@
                     android:inputType="textPersonName" />
 
                 <Button
-                    android:id="@+id/button_idcheck"
+                    android:id="@+id/button_registerIdCheck"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
@@ -87,7 +87,7 @@
                 android:text="비밀번호" />
 
             <EditText
-                android:id="@+id/editText_registerpwd"
+                android:id="@+id/editText_registerPwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -109,7 +109,7 @@
                 android:text="비밀번호 확인" />
 
             <EditText
-                android:id="@+id/editText_pwdcon"
+                android:id="@+id/editText_registerPwdCon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -131,7 +131,7 @@
                 android:layout_weight="3" />
 
             <TextView
-                android:id="@+id/textView_pwdcheck"
+                android:id="@+id/textView_registerPwdCheck"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -151,7 +151,7 @@
                 android:text="이름" />
 
             <EditText
-                android:id="@+id/editText_name"
+                android:id="@+id/editText_registerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -174,21 +174,21 @@
                 android:text="성별" />
 
             <RadioGroup
-                android:id="@+id/radioGroup_sex"
+                android:id="@+id/radioGroup_registerSex"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radioButton_man"
+                    android:id="@+id/radioButton_registerMan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="32dp"
                     android:text="남" />
 
                 <RadioButton
-                    android:id="@+id/radioButton_women"
+                    android:id="@+id/radioButton_registerWomen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="여" />
@@ -216,7 +216,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText_phone1"
+                    android:id="@+id/editText_registerPhone1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
@@ -236,7 +236,7 @@
                     android:textSize="24sp" />
 
                 <EditText
-                    android:id="@+id/editText_phone2"
+                    android:id="@+id/editText_registerPhone2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
@@ -255,7 +255,7 @@
                     android:textSize="24sp" />
 
                 <EditText
-                    android:id="@+id/editText_phone3"
+                    android:id="@+id/editText_registerPhone3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="3"
@@ -286,7 +286,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText_birth"
+                    android:id="@+id/editText_registerBirth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -295,7 +295,7 @@
                     android:inputType="date" />
 
                 <Button
-                    android:id="@+id/button_birth"
+                    android:id="@+id/button_registerBirth"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="16dp"
@@ -319,7 +319,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
         <Button
-            android:id="@+id/button_registerok"
+            android:id="@+id/button_registerOk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
@@ -328,7 +328,7 @@
             android:text="확인" />
 
         <Button
-            android:id="@+id/button_registercancel"
+            android:id="@+id/button_registerCancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
