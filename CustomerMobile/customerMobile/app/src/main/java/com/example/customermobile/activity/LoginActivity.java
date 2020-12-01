@@ -64,12 +64,6 @@ public class LoginActivity extends AppCompatActivity {
             String id = editText_loginid.getText().toString();
             String pwd = editText_loginpwd.getText().toString();
             login(id, pwd);
-
-            // tcp/ip connect
-//            new Thread(con).start();
-
-            // tcp/ip 서버로 유저 정보 전송
-//            tcpipConnect.login(user);
         }else if(v.getId() == R.id.button_loginNaver){
 
         }else if(v.getId() == R.id.button_loginFacebook){
@@ -87,18 +81,6 @@ public class LoginActivity extends AppCompatActivity {
 
         }
      }
-
-
-//    Runnable con = new Runnable() {
-//        @Override
-//        public void run() {
-//            try {
-//                tcpipConnect.connect();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    };
 
     public void login(String id, String pwd){
         String url = "http://192.168.0.112/webServer/userloginimpl.mc";
