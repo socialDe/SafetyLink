@@ -3,6 +3,7 @@
 PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
         <typeAliases>
                 <typeAlias type="com.vo.AdminVO" alias="admin"/>
                 <typeAlias type="com.vo.UsersVO" alias="users"/>
@@ -19,4 +20,5 @@ PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
         </mappers>
         
         
+
 </configuration>

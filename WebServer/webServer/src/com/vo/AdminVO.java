@@ -11,6 +11,12 @@ public class AdminVO {
 	public AdminVO() {
 		super();
 	}
+	
+	public AdminVO(String adminid, String adminpwd) {
+		super();
+		this.adminid = adminid;
+		this.adminpwd = adminpwd;
+	}
 
 	public AdminVO(String adminid, String adminpwd, String adminname, String adminphone) {
 		super();

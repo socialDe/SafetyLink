@@ -25,6 +25,7 @@
                 <property name="password" value="db" />
     </bean>
 
+
 	<!-- 2. Transaction Setting -->
  	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
  		<property name="dataSource" ref="dataSource"/>
