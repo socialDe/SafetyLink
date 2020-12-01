@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
 
     ActionBar actionBar;
     EditText editText_loginid, editText_loginpwd;
+    CheckBox checkBox_loginauto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +45,16 @@ public class LoginActivity extends AppCompatActivity {
 
         editText_loginid = findViewById(R.id.editText_loginid);
         editText_loginpwd = findViewById(R.id.editText_loginpwd);
+        checkBox_loginauto = findViewById(R.id.checkBox_loginAuto);
 
-        sp = getSharedPreferences("login", MODE_PRIVATE);
+        sp = getSharedPreferences("autoLogin", MODE_PRIVATE);
+
+        String userid = sp.getString("userid", "");
+        String userpwd = sp.getString("userpwd", "");
+
+        if(userid != null && userid != "" && userpwd != null && userpwd != ""){
+            login(userid, userpwd);
+        }
     }
 
     public void clickbt(View v){
@@ -53,11 +63,8 @@ public class LoginActivity extends AppCompatActivity {
 
             String id = editText_loginid.getText().toString();
             String pwd = editText_loginpwd.getText().toString();
-            Log.d("[Log]", id + pwd);
-            String url = "http://192.168.0.112/webServer/userloginimpl.mc";
-            url += "?id="+id+"&pwd="+pwd;
-            httpAsyncTask = new HttpAsyncTask();
-            httpAsyncTask.execute(url);
+            login(id, pwd);
+
             // tcp/ip connect
 //            new Thread(con).start();
 
@@ -93,6 +100,12 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 //    };
 
+    public void login(String id, String pwd){
+        String url = "http://192.168.0.112/webServer/userloginimpl.mc";
+        url += "?id="+id+"&pwd="+pwd;
+        httpAsyncTask = new HttpAsyncTask();
+        httpAsyncTask.execute(url);
+    }
 
     /*
     HTTP 통신 Code
@@ -105,14 +118,13 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPreExecute() {
             Log.d("[Log]", "preExecute");
             progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setTitle("Login ...");
+            progressDialog.setTitle("Login");
             progressDialog.setCancelable(false);
             progressDialog.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            Log.d("[Log]", "doInBackground");
 //            userData = new UsersVO();
 //            userData.setUserid(urls[1]);
 //            userData.setUserpwd(urls[2]);
@@ -120,9 +132,7 @@ public class LoginActivity extends AppCompatActivity {
 //            return POST(urls[0], userData);
 
             String url = strings[0].toString();
-            Log.d("[Log]", "url: " + url);
             String result = HttpConnect.getString(url);
-            Log.d("[Log]", "result: " + result);
             return result;
         }
 
@@ -134,8 +144,6 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
-            Log.d("[Log]", "S: ");
-            Log.d("[Log]", s);
             String result = s.trim();
 
             if (result.equals("fail")) {
@@ -150,9 +158,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 dailog.show();
-            } else if(result.equals(1)){
-                Toast.makeText(LoginActivity.this, "success", Toast.LENGTH_SHORT).show();
-            }else {
+            } else {
+                // LOGIN SUCCESS
                 JSONObject jo = null;
                 try {
                     // JSONObject 값 가져오기
@@ -177,16 +184,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     // user 객체 생성
                     user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
-                    Toast.makeText(LoginActivity.this, username + "님 환영합니다", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-                // LOGIN COMPLETE
-                SharedPreferences.Editor edit = sp.edit();
-                edit.putString("user", user.getUserid());
-                edit.commit();
+                // 자동 로그인
+                if(checkBox_loginauto.isChecked()) {
+                    SharedPreferences.Editor edit = sp.edit();
+                    edit.putString("userid", user.getUserid());
+                    edit.putString("userpwd", user.getUserpwd());
+                    edit.commit();
+                }
 
+                // LOGIN COMPLETE
+                // 액티비티 기록 없이 메인 화면으로 전환
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.putExtra("user", user);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

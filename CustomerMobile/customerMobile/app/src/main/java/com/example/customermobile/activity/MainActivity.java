@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.customermobile.R;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
+import com.vo.UsersVO;
 
 import java.util.Random;
 
@@ -28,6 +30,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sp = getSharedPreferences("autoLogin", MODE_PRIVATE);
+        Intent intent = getIntent();
+        UsersVO user = (UsersVO) intent.getSerializableExtra("user");
+        Toast.makeText(MainActivity.this, user.getUsername() + "님 환영합니다", Toast.LENGTH_SHORT).show();
 
         circularProgressView = findViewById(R.id.circularProgressView);
         circularProgressView.setProgress(0);
@@ -57,7 +63,14 @@ public class MainActivity extends AppCompatActivity {
             Random r = new Random();
             progressView.setProgress(r.nextInt(100));
         }else if(v.getId() == R.id.button4){
+            // 자동 로그인 정보 삭제
+            SharedPreferences.Editor editor = sp.edit();
+            editor.clear();
+            editor.commit();
+
+            // 액티비티 기록 없이 로그인 화면으로 전환
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
     }
