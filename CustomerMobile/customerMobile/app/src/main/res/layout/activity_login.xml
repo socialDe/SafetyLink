@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".activity.LoginActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/imageView_logo"
             android:layout_width="100dp"
             android:layout_height="50dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -35,10 +35,10 @@
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView4">
+            app:layout_constraintTop_toBottomOf="@+id/imageView_logo">
 
             <EditText
-                android:id="@+id/editText_id"
+                android:id="@+id/editText_loginid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -47,7 +47,7 @@
                 android:inputType="textPersonName" />
 
             <EditText
-                android:id="@+id/editText_pwd"
+                android:id="@+id/editText_loginpwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -66,11 +66,40 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/checkBox_loginAuto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="자동 로그인" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+            <Button
+                android:id="@+id/button_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_weight="1"
+                android:onClick="clickbt"
+                android:text="로그인" />
+
+            <Button
+                android:id="@+id/button_register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:onClick="clickbt"
+                android:text="회원가입" />
         </LinearLayout>
 
         <LinearLayout
@@ -85,45 +114,20 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textView_idFind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="clickbt"
                 android:text="아이디 /" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textView_pwdFind"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="clickbt"
                 android:text=" 비밀번호 찾기"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView4" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
-
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:layout_weight="1"
-                android:text="로그인" />
-
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="1"
-                android:text="회원가입" />
+                app:layout_constraintStart_toEndOf="@+id/textView_idFind" />
         </LinearLayout>
 
         <LinearLayout
@@ -137,21 +141,24 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/button_loginNaver"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="clickbt"
                 android:text="네이버 계정으로 시작하기" />
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/button_loginFacebook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="clickbt"
                 android:text="페이스북으로 시작하기" />
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/button_loginKakaotalk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="clickbt"
                 android:text="카카오톡으로 시작하기" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

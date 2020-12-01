@@ -1,12 +1,14 @@
-package com.example.customermobile;
+package com.example.customermobile.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
+import com.example.customermobile.R;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
@@ -16,6 +18,7 @@ import java.util.Random;
 import www.sanju.motiontoast.MotionToast;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences sp;
 
     CircularProgressView circularProgressView;
     ProgressView progressView;
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         circularProgressView = findViewById(R.id.circularProgressView);
         circularProgressView.setProgress(0);
