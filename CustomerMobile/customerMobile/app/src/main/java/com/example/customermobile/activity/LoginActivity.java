@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.customermobile.R;
 import com.example.customermobile.network.HttpConnect;
@@ -72,17 +73,17 @@ public class LoginActivity extends AppCompatActivity {
         }else if(v.getId() == R.id.button_register){
             Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);
-        }else if(v.getId() == R.id.checkBox_loginAuto){
-
-        }else if(v.getId() == R.id.textView_idFind){
-
-        }else if(v.getId() == R.id.textView_pwdFind){
-
+        }else if(v.getId() == R.id.textView_findId){
+            Intent intent = new Intent(getApplicationContext(), FindIdActivity.class);
+            startActivity(intent);
+        }else if(v.getId() == R.id.textView_findPwd){
+            Intent intent = new Intent(getApplicationContext(), FindPwdActivity.class);
+            startActivity(intent);
         }
      }
 
     public void login(String id, String pwd){
-        String url = "http://192.168.0.112/webServer/userloginimpl.mc";
+        String url = "http://192.168.219.110/webServer/userloginimpl.mc";
         url += "?id="+id+"&pwd="+pwd;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
@@ -91,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
     /*
     HTTP 통신 Code
     */
-
     class HttpAsyncTask extends AsyncTask<String,String,String> {
         ProgressDialog progressDialog;
 
@@ -142,6 +142,9 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 // LOGIN SUCCESS
                 JSONObject jo = null;
+                // Date형 변수 문자열 선언
+                String strbirth = "";
+                String strregdate = "";
                 try {
                     // JSONObject 값 가져오기
                     jo = new JSONObject(s);
@@ -149,9 +152,9 @@ public class LoginActivity extends AppCompatActivity {
                     String userpwd = jo.getString("userpwd");
                     String username = jo.getString("username");
                     String userphone = jo.getString("userphone");
-                    String strbirth = jo.getString("userbirth");
+                    strbirth = jo.getString("userbirth");
                     String usersex = jo.getString("usersex");
-                    String strregdate = jo.getString("userregdate");
+                    strregdate = jo.getString("userregdate");
                     String userstate = jo.getString("userstate");
                     String usersubject = jo.getString("usersubject");
                     String babypushcheck = jo.getString("babypushcheck");
@@ -174,6 +177,16 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences.Editor edit = sp.edit();
                     edit.putString("userid", user.getUserid());
                     edit.putString("userpwd", user.getUserpwd());
+                    edit.putString("username", user.getUsername());
+                    edit.putString("userphone", user.getUserphone());
+                    edit.putString("userbirth", strbirth);
+                    edit.putString("usersex", user.getUsersex());
+                    edit.putString("userregdate", strregdate);
+                    edit.putString("userstate", user.getUserstate());
+                    edit.putString("usersubject", user.getUsersubject());
+                    edit.putString("babypushcheck", user.getBabypushcheck());
+                    edit.putString("accpushcheck", user.getAccpushcheck());
+                    edit.putString("mobiletoken", user.getMobiletoken());
                     edit.commit();
                 }
 
@@ -183,7 +196,11 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra("user", user);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+                Toast.makeText(LoginActivity.this, user.getUsername() + "님 환영합니다", Toast.LENGTH_SHORT).show();
             }
         }
-    }// End HTTP 통신 Code
+    }
+    /*
+    End HTTP 통신 Code
+     */
 }

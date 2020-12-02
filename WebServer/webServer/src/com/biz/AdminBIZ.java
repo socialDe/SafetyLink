@@ -12,10 +12,10 @@ import com.vo.AdminVO;
 import com.vo.UsersVO;
 
 @Service("abiz")
-public class AdminBIZ implements Biz<String, AdminVO> {
+public class AdminBIZ implements Biz<String, String, AdminVO> {
 
 	@Resource(name="adao")
-	Dao<String, AdminVO> dao;
+	Dao<String, String, AdminVO> dao;
 	
 	@Override
 	public void register(AdminVO v) throws Exception {
@@ -48,6 +48,12 @@ public class AdminBIZ implements Biz<String, AdminVO> {
 	@Override
 	public ArrayList<AdminVO> get() throws Exception {
 		return dao.selectall();
+	}
+
+	@Override
+	public AdminVO getFromKeys(String k1, String k2) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

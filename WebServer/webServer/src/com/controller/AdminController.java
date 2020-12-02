@@ -14,7 +14,7 @@ import com.vo.AdminVO;
 @Controller
 public class AdminController {
 	@Resource(name="abiz")
-	Biz<String, AdminVO> abiz;
+	Biz<String, String, AdminVO> abiz;
 	
 	// 로그인 (2020.11.27)
 	@RequestMapping("/loginimpl.mc")

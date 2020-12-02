@@ -114,20 +114,20 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <TextView
-                android:id="@+id/textView_idFind"
+                android:id="@+id/textView_findId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="clickbt"
                 android:text="아이디 /" />
 
             <TextView
-                android:id="@+id/textView_pwdFind"
+                android:id="@+id/textView_findPwd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="clickbt"
                 android:text=" 비밀번호 찾기"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView_idFind" />
+                app:layout_constraintStart_toEndOf="@+id/textView_findId" />
         </LinearLayout>
 
         <LinearLayout

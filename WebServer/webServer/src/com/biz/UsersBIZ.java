@@ -11,10 +11,10 @@ import com.frame.Dao;
 import com.vo.UsersVO;
 
 @Service("ubiz")
-public class UsersBIZ implements Biz<String, UsersVO> {
+public class UsersBIZ implements Biz<String, String, UsersVO> {
 
 	@Resource(name="udao")
-	Dao<String, UsersVO> dao;
+	Dao<String, String, UsersVO> dao;
 	
 	@Override
 	public void register(UsersVO v) throws Exception {
@@ -47,6 +47,11 @@ public class UsersBIZ implements Biz<String, UsersVO> {
 	@Override
 	public ArrayList<UsersVO> get() throws Exception {
 		return dao.selectall();
+	}
+
+	@Override
+	public UsersVO getFromKeys(String k1, String k2) throws Exception {
+		return dao.selectfromkeys(k1, k2);
 	}
 
 }

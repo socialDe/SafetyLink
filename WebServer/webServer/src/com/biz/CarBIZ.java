@@ -11,10 +11,10 @@ import com.frame.Dao;
 import com.vo.CarVO;
 
 @Service("cbiz")
-public class CarBIZ implements Biz<Integer, CarVO> {
+public class CarBIZ implements Biz<Integer, String, CarVO> {
 
 	@Resource(name="cdao")
-	Dao<Integer, CarVO> dao;
+	Dao<Integer, String, CarVO> dao;
 	
 	@Override
 	public void register(CarVO v) throws Exception {
@@ -47,6 +47,12 @@ public class CarBIZ implements Biz<Integer, CarVO> {
 	@Override
 	public ArrayList<CarVO> get() throws Exception {
 		return dao.selectall();
+	}
+
+	@Override
+	public CarVO getFromKeys(Integer k1, String k2) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

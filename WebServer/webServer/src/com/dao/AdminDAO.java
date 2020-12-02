@@ -6,6 +6,6 @@ import com.frame.Dao;
 import com.vo.AdminVO;
 
 @Repository("adao")
-public interface AdminDAO extends Dao<String, AdminVO> {
+public interface AdminDAO extends Dao<String, String, AdminVO> {
 
 }
