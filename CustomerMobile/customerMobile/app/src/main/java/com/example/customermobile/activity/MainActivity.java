@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.customermobile.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
@@ -22,17 +24,28 @@ import java.util.Random;
 
 import www.sanju.motiontoast.MotionToast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     SharedPreferences sp;
     UsersVO user;
 
     CircularProgressView circularProgressView;
     ProgressView progressView;
 
+    // 소셜로그인
+    private FirebaseAuth mAuth ;
+    Button btnRevoke, btnLogout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // 소셜 로그인
+        mAuth = FirebaseAuth.getInstance();
+        btnLogout = (Button)findViewById(R.id.btn_logout);
+        btnRevoke = (Button)findViewById(R.id.btn_revoke);
+        btnLogout.setOnClickListener(this);
+        btnRevoke.setOnClickListener(this);
 
         // 회원정보를 intent로 가져오기
         Intent getintent = getIntent();
@@ -77,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
             // sp 정보로 회원 객체 생성
             user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
+
         }
 
         circularProgressView = findViewById(R.id.circularProgressView);
@@ -91,6 +105,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    // 소셜 로그아웃 함수
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+    }
+    // 소셜 회원탈퇴 함수
+    private void revokeAccess() {
+        mAuth.getCurrentUser().delete();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_logout:
+                signOut();
+                finishAffinity();
+                break;
+            case R.id.btn_revoke:
+                revokeAccess();
+                finishAffinity();
+                break;
+        }
+    }
+
 
     public void clickbt(View v){
         if(v.getId() == R.id.button1){

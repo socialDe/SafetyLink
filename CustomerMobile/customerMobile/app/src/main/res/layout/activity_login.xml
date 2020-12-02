@@ -140,26 +140,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
-            <Button
-                android:id="@+id/button_loginNaver"
+            <com.google.android.gms.common.SignInButton
+                android:id="@+id/signInButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="clickbt"
-                android:text="네이버 계정으로 시작하기" />
+                android:layout_centerHorizontal="true" />
 
-            <Button
-                android:id="@+id/button_loginFacebook"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="clickbt"
-                android:text="페이스북으로 시작하기" />
-
-            <Button
-                android:id="@+id/button_loginKakaotalk"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="clickbt"
-                android:text="카카오톡으로 시작하기" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
