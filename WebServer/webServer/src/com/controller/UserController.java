@@ -173,8 +173,6 @@ public class UserController {
 
 		try {
 			UsersVO user = ubiz.get(userid);
-			System.out.println("안드로이드: " + username + ", " + username + ", " + userphone);
-			System.out.println("DB: " + user.getUsername() + ", " + user.getUserphone());
 			if (username.equals(user.getUsername()) && userphone.equals(user.getUserphone())) {
 				// 해당하는 회원정보가 존재
 				out.print("findsuccess");
