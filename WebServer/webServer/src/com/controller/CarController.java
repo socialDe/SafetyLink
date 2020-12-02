@@ -120,6 +120,33 @@ public class CarController {
 		out.close();
 		
 	}
+	
+	@RequestMapping("/carregisterimpl.mc")
+	public void carregisterimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out =  res.getWriter();
+		
+		String carnum = request.getParameter("num");
+		String cartype = request.getParameter("carType");
+		String carmodel = request.getParameter("model");
+		int caryear = Integer.parseInt(request.getParameter("year"));
+		String caroiltype = request.getParameter("oilType");
+		String tablettoken = request.getParameter("token");
+		//String carnum, String cartype, String carmodel, int caryear, String caroiltype, String tablettoken
+		CarVO car = new CarVO(carnum, cartype, carmodel, caryear, caroiltype, tablettoken);
+		System.out.println(car);
+		
+		try {
+			cbiz.register(car);
+			out.print("success");
+		} catch (Exception e) {
+			out.print("fail");
+			throw e;
+		}
+		
+		out.close();
+	}	
 
 	
 }

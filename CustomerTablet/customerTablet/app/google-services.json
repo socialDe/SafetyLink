@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "602188625430",
+    "firebase_url": "https://safetylink-fa8c9.firebaseio.com",
+    "project_id": "safetylink-fa8c9",
+    "storage_bucket": "safetylink-fa8c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602188625430:android:18d99121eaa01aa6486737",
+        "android_client_info": {
+          "package_name": "com.example.customertablet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "602188625430-9rs5ulr6o875t08qakubtgn1bqgk6los.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCngGTsmtvjBTqq5SehdDI-CffuB8KfbYE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "602188625430-9rs5ulr6o875t08qakubtgn1bqgk6los.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
