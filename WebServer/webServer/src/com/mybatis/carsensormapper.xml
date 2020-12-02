@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 	</insert>
 	
 	<update id="update" parameterType="carsensor">
-		UPDATE CARSENSOR SET HEARTBEAR=#{heartbeat},PIRFRONT=#{pirfront},PIRREAR=#{pirrear},FREIGHT=#{freight},FUEL=#{fuel},TEMPER=#{temper},STARTING=#{starting},MOVING=#{moving},AIRCON=#{aircon},CRASH=#{crash},DOOR=#{door},LAT=#{lat},LNG=#{lng} WHERE CARID=#{carid}
+		UPDATE CARSENSOR SET HEARTBEAT=#{heartbeat},PIRFRONT=#{pirfront},PIRREAR=#{pirrear},FREIGHT=#{freight},FUEL=#{fuel},TEMPER=#{temper},STARTING=#{starting},MOVING=#{moving},AIRCON=#{aircon},CRASH=#{crash},DOOR=#{door},LAT=#{lat},LNG=#{lng} WHERE CARID=#{carid}
 	</update>
 	
 	<delete id="delete" parameterType="Integer">

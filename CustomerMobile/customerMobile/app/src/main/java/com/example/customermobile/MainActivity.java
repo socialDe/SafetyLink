@@ -5,12 +5,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Notification;
@@ -28,14 +25,8 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.customermobile.df.DataFrame;
 import com.example.customermobile.vo.CarSensorVO;
@@ -44,9 +35,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.owl93.dpb.CircularProgressView;
-import com.skydoves.progressview.OnProgressChangeListener;
-import com.skydoves.progressview.ProgressView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,18 +43,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
-
-import www.sanju.motiontoast.MotionToast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -84,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     CarSensorVO carsensor;
 
     int carlistnum = 0;
+    int nowcarid = 0; // 현재 차 아이디
 
     ArrayList<CarVO> carlist = null;
     ArrayList<CarSensorVO> carsensorlist = null;
@@ -213,6 +193,18 @@ public class MainActivity extends AppCompatActivity {
         carSensorAsync.execute(carSensorUrl);
     }
 
+    public void control(String type, String control) {
+        String urlstr = "http://192.168.0.103/webServer/control.mc";
+        String conrtolUrl = urlstr+"?carid="+nowcarid+"&type="+type+"&control="+control;
+
+        Log.d("[TEST]",conrtolUrl);
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        ControlAsync controlAsync = new ControlAsync();
+        controlAsync.execute(conrtolUrl);
+    }
+
+
     public void vibrate(int sec,int power){
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); // 진동 없애려면 삭제
         if (Build.VERSION.SDK_INT >= 26) { //버전 체크를 해줘야 작동하도록 한다
@@ -276,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
             fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum(),carlist.get(0).getCarimg());
 
+            nowcarid = carlist.get(0).getCarid();
         }
 
     }
@@ -360,6 +353,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    class ControlAsync extends AsyncTask<String, Void, Void> {
+
+        public Void result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url = strings[0];
+            HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
+    }
+
+
+
     public void clickcarleft(){
         int maxnum = carlist.size()-1;
 
@@ -367,10 +379,12 @@ public class MainActivity extends AppCompatActivity {
             carlistnum = carlistnum - 1;
             fragment1.setCarData(carlist.get(carlistnum).getCarname(),carlist.get(carlistnum).getCarmodel(),carlist.get(carlistnum).getCarnum(),carlist.get(carlistnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(),carsensorlist.get(carlistnum).getFuel(),carsensorlist.get(carlistnum).getStarting(),carsensorlist.get(carlistnum).getDoor(),carsensorlist.get(carlistnum).getTemper());
+            nowcarid = carlist.get(carlistnum).getCarid();
         }else{
             carlistnum = maxnum;
             fragment1.setCarData(carlist.get(maxnum).getCarname(),carlist.get(maxnum).getCarmodel(),carlist.get(maxnum).getCarnum(),carlist.get(maxnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(),carsensorlist.get(maxnum).getFuel(),carsensorlist.get(maxnum).getStarting(),carsensorlist.get(maxnum).getDoor(),carsensorlist.get(maxnum).getTemper());
+            nowcarid = carlist.get(maxnum).getCarid();;
         }
 
 
@@ -383,10 +397,12 @@ public class MainActivity extends AppCompatActivity {
             carlistnum = carlistnum + 1;
             fragment1.setCarData(carlist.get(carlistnum).getCarname(),carlist.get(carlistnum).getCarmodel(),carlist.get(carlistnum).getCarnum(),carlist.get(carlistnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(),carsensorlist.get(carlistnum).getFuel(),carsensorlist.get(carlistnum).getStarting(),carsensorlist.get(carlistnum).getDoor(),carsensorlist.get(carlistnum).getTemper());
+            nowcarid = carlist.get(carlistnum).getCarid();;
         }else{
             carlistnum = 0;
             fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum(),carlist.get(0).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(0).getMoving(),carsensorlist.get(0).getFuel(),carsensorlist.get(0).getStarting(),carsensorlist.get(0).getDoor(),carsensorlist.get(0).getTemper());
+            nowcarid = carlist.get(0).getCarid();;
         }
 
 

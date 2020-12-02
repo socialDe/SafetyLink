@@ -47,28 +47,56 @@ public class App3 {
 //			e.printStackTrace();
 //		}
 		
-		ArrayList<CarVO> clist;
+//		ArrayList<CarVO> clist;
+//		
+//		try {
+//			clist = cbiz.getcarsfromuser("id01");
+//			for(CarVO c:clist) {
+//				System.out.println(c);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		
+//		ArrayList<CarSensorVO> slist;
+//		
+//		try {
+//			slist = sbiz.getcarsfromuser("id01");
+//			for(CarSensorVO s:slist) {
+//				System.out.println(s);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		
+		
+		CarSensorVO dbcarsensor = null;
 		
 		try {
-			clist = cbiz.getcarsfromuser("id01");
-			for(CarVO c:clist) {
-				System.out.println(c);
-			}
+			dbcarsensor = sbiz.get(1);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		dbcarsensor.setStarting("o");
+		dbcarsensor.setDoor("o");
+		dbcarsensor.setTemper(18);
+		
+		
+		
+		try {
+			sbiz.modify(dbcarsensor);
+			System.out.println("Modify OK..");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		
-		ArrayList<CarSensorVO> slist;
 		
-		try {
-			slist = sbiz.getcarsfromuser("id01");
-			for(CarSensorVO s:slist) {
-				System.out.println(s);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		
 		factory.close();
