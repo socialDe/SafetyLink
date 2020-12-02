@@ -30,12 +30,11 @@ public class RegisterActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
     ActionBar actionBar;
-    EditText edit_id, edit_pwd, edit_pwdcon, edit_name, edit_phone1, edit_phone2, edit_phone3, edit_birth;
-    TextView textView_pwdcheck;
-    RadioGroup radioGroup_sex;
+    EditText edit_registerid, edit_registerpwd, edit_registerpwdcon, edit_registername, edit_registerphone1, edit_registerphone2, edit_registerphone3, edit_registerbirth;
+    TextView textView_registerpwdcheck;
+    RadioGroup radioGroup_registersex;
 
-    // id check 확인
-    Boolean idcheck;
+    Boolean idcheck;  // id check 확인
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,32 +47,32 @@ public class RegisterActivity extends AppCompatActivity {
 
         idcheck = false;
 
-        edit_id = findViewById(R.id.editText_registerId);
-        edit_pwd = findViewById(R.id.editText_registerPwd);
-        edit_pwdcon = findViewById(R.id.editText_registerPwdCon);
-        edit_name = findViewById(R.id.editText_registerName);
-        edit_phone1 = findViewById(R.id.editText_registerPhone1);
-        edit_phone2 = findViewById(R.id.editText_registerPhone2);
-        edit_phone3 = findViewById(R.id.editText_registerPhone3);
-        edit_birth = findViewById(R.id.editText_registerBirth);
-        radioGroup_sex = findViewById(R.id.radioGroup_registerSex);
+        edit_registerid = findViewById(R.id.editText_registerId);
+        edit_registerpwd = findViewById(R.id.editText_registerPwd);
+        edit_registerpwdcon = findViewById(R.id.editText_registerPwdCon);
+        edit_registername = findViewById(R.id.editText_registerName);
+        edit_registerphone1 = findViewById(R.id.editText_registerPhone1);
+        edit_registerphone2 = findViewById(R.id.editText_registerPhone2);
+        edit_registerphone3 = findViewById(R.id.editText_registerPhone3);
+        edit_registerbirth = findViewById(R.id.editText_registerBirth);
+        radioGroup_registersex = findViewById(R.id.radioGroup_registerSex);
 
 
-        textView_pwdcheck = findViewById(R.id.textView_registerPwdCheck);
-        edit_pwdcon.addTextChangedListener(new TextWatcher() {
+        textView_registerpwdcheck = findViewById(R.id.textView_registerPwdCheck);
+        edit_registerpwdcon.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String pwd = edit_pwd.getText().toString();
-                String pwdcon = edit_pwdcon.getText().toString();
+                String pwd = edit_registerpwd.getText().toString();
+                String pwdcon = edit_registerpwdcon.getText().toString();
 
                 if(pwd.equals(pwdcon)){
-                    textView_pwdcheck.setText("");
+                    textView_registerpwdcheck.setText("");
                 }else {
-                    textView_pwdcheck.setText("비밀번호가 일치하지 않습니다");
+                    textView_registerpwdcheck.setText("비밀번호가 일치하지 않습니다");
                 }
             }
 
@@ -91,15 +90,15 @@ public class RegisterActivity extends AppCompatActivity {
         if(v.getId() == R.id.button_registerOk) {
             // 아이디 중복 확인을 하였을 경우에만 회원가입 가능
             if(idcheck) {
-                int id = radioGroup_sex.getCheckedRadioButtonId();
+                int id = radioGroup_registersex.getCheckedRadioButtonId();
                 RadioButton rb = (RadioButton) findViewById(id);
 
-                String uid = edit_id.getText().toString();
-                String pwd = edit_pwd.getText().toString();
-                String pwdcon = edit_pwdcon.getText().toString();
-                String name = edit_name.getText().toString();
-                String phone = edit_phone1.getText().toString() + edit_phone2.getText().toString() + edit_phone3.getText().toString();
-                String birth = edit_birth.getText().toString();
+                String uid = edit_registerid.getText().toString();
+                String pwd = edit_registerpwd.getText().toString();
+                String pwdcon = edit_registerpwdcon.getText().toString();
+                String name = edit_registername.getText().toString();
+                String phone = edit_registerphone1.getText().toString() + edit_registerphone2.getText().toString() + edit_registerphone3.getText().toString();
+                String birth = edit_registerbirth.getText().toString();
                 // 토큰 임시 데이터
                 String token = "token1";
                 // 성별데이터 DB 규약에 맞게 변환
@@ -111,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (pwd.equals(pwdcon)) {
-                    String url = "http://192.168.0.112/webServer/userregisterimpl.mc";
+                    String url = "http://192.168.219.110/webServer/userregisterimpl.mc";
                     url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + token;
                     httpAsyncTask = new HttpAsyncTask();
                     httpAsyncTask.execute(url);
@@ -123,7 +122,7 @@ public class RegisterActivity extends AppCompatActivity {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            edit_pwdcon.requestFocus();
+                            edit_registerpwdcon.requestFocus();
                         }
                     });
 
@@ -150,9 +149,9 @@ public class RegisterActivity extends AppCompatActivity {
             finish();
         }else if (v.getId() == R.id.button_registerIdCheck){
             // 아이디 중복 확인
-            String uid = edit_id.getText().toString();
+            String uid = edit_registerid.getText().toString();
 
-            String url = "http://192.168.0.112/webServer/useridcheckimpl.mc";
+            String url = "http://192.168.219.110/webServer/useridcheckimpl.mc";
             url += "?id=" + uid;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -168,7 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
                     new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                            edit_birth.setText(String.format("%d/%d/%d", year, monthOfYear + 1, dayOfMonth));
+                            edit_registerbirth.setText(String.format("%d/%d/%d", year, monthOfYear + 1, dayOfMonth));
                         }
                     }, mYear, mMonth, mDay);
             datePickerDialog.show();
@@ -229,7 +228,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         idcheck = false;
-                        edit_id.setText("");
+                        edit_registerid.setText("");
                     }
                 });
 
