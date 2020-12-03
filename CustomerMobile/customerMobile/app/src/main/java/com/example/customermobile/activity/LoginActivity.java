@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -43,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
+
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
     UsersVO user; // user 객체
@@ -50,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     ActionBar actionBar;
     EditText editText_loginid, editText_loginpwd;
     CheckBox checkBox_loginauto;
+
+    String email = "";
 
     // 소셜로그인을 위한 변수
     private FirebaseAuth mAuth = null;
@@ -61,6 +65,18 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // 인텐트로 string을 받아 toast를 띄워주는 부분
+        Intent intent = getIntent();
+        String getintent = intent.getStringExtra("toast");
+        if(getintent != null){
+            if(getintent.equals("loginok")){
+                Toast.makeText(LoginActivity.this, "회원가입되었습니다. 해당 아이디로 로그인해주세요.", Toast.LENGTH_SHORT).show();
+            }else if(getintent.equals("loginfail")){
+                Toast.makeText(LoginActivity.this, "회원가입에 실패하였습니다. 다시 시도해주십시오.", Toast.LENGTH_LONG).show();
+            }
+        }
+
 
         // ActionBar Setting
         actionBar = getSupportActionBar();
@@ -89,11 +105,9 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        if (mAuth.getCurrentUser() != null) {
-            Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-            startActivity(intent);
-            finish();
-        }
+//        if (mAuth.getCurrentUser() != null) {
+//            login(email,"google");
+//        }
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,36 +148,47 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+                            Log.d("[TEST]","google sign in success");
                         } else {
                             // If sign in fails, display a message to the user.
                             updateUI(null);
+                            Log.d("[TEST]","google sign in fail");
                         }
                     }
                 });
     }
-    private void updateUI(FirebaseUser user) { //update ui code here
-        if (user != null) {
+    private void updateUI(FirebaseUser fuser) { //update ui code here
+
+        if (fuser != null) {
             // Name, email address, and profile photo Url
-            String name = user.getDisplayName();
-            String email = user.getEmail();
-            Uri photoUrl = user.getPhotoUrl();
+            String name = fuser.getDisplayName();
+            email = fuser.getEmail();
+            Uri photoUrl = fuser.getPhotoUrl();
 
             // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
+            boolean emailVerified = fuser.isEmailVerified();
 
             // The user's ID, unique to the Firebase project. Do NOT use this value to
             // authenticate with your backend server, if you have one. Use
             // FirebaseUser.getIdToken() instead.
-            String uid = user.getUid();
+            String uid = fuser.getUid();
 
-            Log.d("[TEST]",name+" "+email+" "+photoUrl+" "+uid);
-            }
+            Log.d("[TEST]","GetGoogleInfo: "+name+" "+email+" "+photoUrl+" "+uid+" "+emailVerified);
 
+            // 구글이메일이 DB에 유저아이디 정보로 있는지 확인한다
+            String emailcheck = email;
 
-            Intent intent = new Intent(this, RegisterActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            String url = "http://192.168.0.37/webServer/useridcheckimpl.mc";
+            url += "?id=" + emailcheck;
+            httpAsyncTask = new LoginActivity.HttpAsyncTask();
+            httpAsyncTask.execute(url);
+
+            Log.d("[TEST]","Here:"+user);
+
+            //login(email,"google");
+
             finish();
+        }
 
     }
 
@@ -189,7 +214,7 @@ public class LoginActivity extends AppCompatActivity {
      }
 
     public void login(String id, String pwd){
-        String url = "http://192.168.0.103/webServer/userloginimpl.mc";
+        String url = "http://192.168.0.37/webServer/userloginimpl.mc";
         url += "?id="+id+"&pwd="+pwd;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
@@ -237,7 +262,7 @@ public class LoginActivity extends AppCompatActivity {
                 // LOGIN FAIL
                 androidx.appcompat.app.AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
                 dailog.setTitle("LOGIN FAIL");
-                dailog.setMessage("Try Again...");
+                dailog.setMessage("아이디와 비밀번호를 다시 확인하세요.");
                 dailog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -245,6 +270,18 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
                 dailog.show();
+            }// useridcheckimpl에서 available이 오면 db에 구글email로 아이디가 없다고 판단하고 구글정보로 회원가입을 진행시킨다.
+            else if(result.equals("available")){
+                Intent intent = new Intent(getApplicationContext(), SocialRegisterActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("email", email);
+                startActivity(intent);
+            }// useridcheckimpl에서 cannot이 오면 db에 구글email로 아이디가 있다고 판단하고 email로 로그인을 진행시킨다.
+            else if(result.equals("cannot")){
+                login(email,"google");
+            }// useridcheckimpl에서 checkfail 오면 아이디체크 오류가 발생하여 토스트로 알려준다.
+            else if(result.equals("checkfail")){
+                Toast.makeText(LoginActivity.this, user.getUsername() + "구글 로그인 오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
             } else {
                 // LOGIN SUCCESS
                 JSONObject jo = null;
@@ -302,7 +339,9 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra("user", user);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                Toast.makeText(LoginActivity.this, user.getUsername() + "님 환영합니다", Toast.LENGTH_SHORT).show();
+                Toast t = Toast.makeText(LoginActivity.this, user.getUsername() + "님 환영합니다",Toast.LENGTH_SHORT);
+                t.setGravity(Gravity.BOTTOM,0,150);
+                t.show();
             }
         }
     }

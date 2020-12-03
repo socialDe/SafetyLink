@@ -38,7 +38,7 @@ public class UserController {
 
 		try {
 			UsersVO user = ubiz.get(id);
-			System.out.println(user);
+			System.out.println("test:"+user);
 			// 비밀번호 확인 후 로그인
 			if (pwd.equals(user.getUserpwd())) {
 				// 로그인 상태 설정, DB 수정

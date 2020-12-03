@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -110,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (pwd.equals(pwdcon)) {
-                    String url = "http://192.168.219.110/webServer/userregisterimpl.mc";
+                    String url = "http://192.168.0.37/webServer/userregisterimpl.mc";
                     url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + token;
                     httpAsyncTask = new HttpAsyncTask();
                     httpAsyncTask.execute(url);
@@ -145,13 +146,15 @@ public class RegisterActivity extends AppCompatActivity {
                 builder.show();
             }
         }else if (v.getId() == R.id.button_registerCancel){
-            // 회원가입 취소
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
         }else if (v.getId() == R.id.button_registerIdCheck){
             // 아이디 중복 확인
             String uid = edit_registerid.getText().toString();
 
-            String url = "http://192.168.219.110/webServer/useridcheckimpl.mc";
+            String url = "http://192.168.0.37/webServer/useridcheckimpl.mc";
             url += "?id=" + uid;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -248,35 +251,19 @@ public class RegisterActivity extends AppCompatActivity {
 
                 builder.show();
 
-            }else if(result.equals("fail")){
+            }if (result.equals("fail")) {
                 // 회원가입 실패
-                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("ERROR");
-                builder.setMessage("회원가입에 실패하였습니다. 다시 시도해주십시오.");
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("toast", "loginfail");
+                startActivity(intent);
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-
-                builder.show();
-
-            }else if(result.equals("success")){
+            } else if (result.equals("success")) {
                 // 회원가입 성공
-                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("회원가입");
-                builder.setMessage("회원가입되었습니다. 해당 아이디로 로그인해주세요.");
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-
-                builder.show();
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("toast", "loginok");
+                startActivity(intent);
 
             }
         }

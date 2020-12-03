@@ -19,7 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="회원탈퇴"/>
+        android:enabled="false"
+        android:text="회원탈퇴" />
 
     <com.owl93.dpb.CircularProgressView
         android:id="@+id/circularProgressView"
@@ -87,6 +88,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="clickbt"
-        android:text="Button" />
+        android:text="자동 로그인 정보 삭제" />
 
 </LinearLayout>

@@ -1,17 +1,22 @@
 package com.example.customermobile.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.customermobile.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
@@ -109,23 +114,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // 소셜 로그아웃 함수
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
+        Log.d("[TEST]","로그아웃");
     }
     // 소셜 회원탈퇴 함수
-    private void revokeAccess() {
-        mAuth.getCurrentUser().delete();
-    }
+//    private void revokeAccess() {
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//
+//        user.delete()
+//                .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.d("[TEST]","User account deleted.");
+//                        }
+//                    }
+//                });
+//        Log.d("[TEST]","회원탈퇴");
+//    }
 
     @Override
     public void onClick(View v) {
+
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+
         switch (v.getId()) {
             case R.id.btn_logout:
                 signOut();
-                finishAffinity();
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
                 break;
-            case R.id.btn_revoke:
-                revokeAccess();
-                finishAffinity();
-                break;
+//            case R.id.btn_revoke:
+//                revokeAccess();
+//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                startActivity(intent);
+//                finish();
+//                break;
         }
     }
 
@@ -150,10 +174,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.clear();
             editor.commit();
 
-            // 액티비티 기록 없이 로그인 화면으로 전환
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            Toast.makeText(MainActivity.this, "자동 로그인이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+
+
+//            // 액티비티 기록 없이 로그인 화면으로 전환
+//            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
         }
     }
 }
