@@ -135,18 +135,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <EditText
-                        android:id="@+id/editText_carType"
+                    <Spinner
+                        android:id="@+id/spinner_carType"
                         android:layout_width="280dp"
                         android:layout_height="50dp"
-                        android:background="#FFFFFF"
-                        android:ems="10"
-                        android:hint="유형"
-                        android:inputType="textPersonName"
+                        android:dropDownWidth="280dp"
+                        android:spinnerMode="dropdown"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView_carType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFF"
+                        tools:layout_editor_absoluteX="194dp"
+                        tools:layout_editor_absoluteY="16dp" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
@@ -162,18 +169,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <EditText
-                        android:id="@+id/editText_oilType"
+                    <Spinner
+                        android:id="@+id/spinner_oilType"
                         android:layout_width="280dp"
                         android:layout_height="50dp"
-                        android:background="#FFFFFF"
-                        android:ems="10"
-                        android:hint="유종"
-                        android:inputType="textPersonName"
+                        android:dropDownWidth="280dp"
+                        android:spinnerMode="dropdown"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView_oilType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="TextView"
+                        android:textColor="#FFFFFF"
+                        tools:layout_editor_absoluteX="192dp"
+                        tools:layout_editor_absoluteY="14dp" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
