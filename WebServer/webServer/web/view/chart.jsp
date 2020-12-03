@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 
@@ -116,13 +117,13 @@ $(document).ready(function (){
 	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
 	$('#gender_all').change(function(){
 		if($('#gender_all').is(':checked')){
-			if($('#man').is(':checked')){
+			if($('#gender_man').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#man').trigger('click');	
+				$('#gender_man').trigger('click');	
 			}
-			if($('#woman').is(':checked')){
+			if($('#gender_woman').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#woman').trigger('click');
+				$('#gender_woman').trigger('click');
 			}
 		}
 	});
@@ -188,6 +189,14 @@ $(document).ready(function (){
 		$('#endDate').datepicker('setDate', '-1M')
 	}
 	
+	
+	
+	
+	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#gender_man').change(function(){
+		alert("clicked");
+	});
+	
 });
 /*
  *  End $(document).ready(function (){}
@@ -212,7 +221,7 @@ function displayChart(){
 		  },
 		  yAxis: {
 		    title: {
-		      text: 'Temperature (°C)'
+		      text: '차량 수'
 		    }
 		  },
 		  plotOptions: {
@@ -232,6 +241,15 @@ function displayChart(){
 		  }, {
 		    name: 'Seoul',
 		    data: [3.3, 2.2, 5.7, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+		  },{
+		    name: 'Busan',
+		    data: [7.0, 3.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+		  }, {
+		    name: 'Pohang',
+		    data: [3.9, 2.2, 5.0, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+		  }, {
+		    name: 'Bejing',
+		    data: [3.3, 2.2, 5.2, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
 		  }]
 	});
 }
@@ -248,7 +266,52 @@ function displayChart(){
 
 function chartSearch(){
 	 var formData = $('#filter_form').serialize();
-	 alert(String(formData));
+	 
+	 // gender checkbox 선택 결과를 확인(선택되지 않은 항목 포함)
+	 var gender_check = 0;
+	 $('input:checkbox[name=gender]:checked').each(function(idx,elem){
+		gender_check += Number($(elem).val()); 
+	 });
+	 // man: 22, woman: 33, gender_all: 44
+	 // man+woman: 55
+	 if(gender_check == 22){
+		 gender_check = 'Man';
+	 }else if(gender_check == 33){
+		 gender_check = 'Woman';
+	 }else if(gender_check == 44){
+		 gender_check = 'Gender_all';
+	 }else if(gender_check == 55){
+		 gender_check = 'ManWoman';
+	 }
+	 
+	 formData += '&gender_check='+gender_check;
+	 
+	 // vehecleType checkbox 선택 결과를 확인(선택되지 않은 항목 포함)
+	 var type_check = 0;
+	 $('input:checkbox[name=vehicleType]:checked').each(function(idx,elem){
+		 type_check += Number($(elem).val()); 
+		 console.log('elem:'+type_check);
+	 });
+	 // sedan: 2, van: 5, truck:8, vehicle_all: 11
+	 if(type_check == 2){
+		 type_check = 'Sedan';
+	 }else if(type_check == 5){
+		 type_check = 'Van';
+	 }else if(type_check == 7){
+		 type_check = 'SedanVan';
+	 }else if(type_check == 8){
+		 type_check = 'Truck';
+	 }else if(type_check == 10){
+		 type_check = 'SedanTruck';
+	 }else if(type_check == 11){
+		 type_check = 'Vehicle_all';
+	 }else if(type_check == 13){
+		 type_check = 'VanTruck';
+	 }else if(type_check == 15){
+		 type_check = 'SedanVanTruck';
+	 }
+	 
+	 formData += '&type_check='+type_check;
 	 console.log(String(formData));
 	 
 	 $.ajax({
@@ -259,13 +322,13 @@ function chartSearch(){
 			 console.log("success");
 			 console.log(data);
 			 console.log(typeof(data));
-			 var jsonObj = JSON.parse(data);
 		 },
 		 error : function(request,status,error) {
             	console.log("error");
             	console.log(request.responseText);
             	console.log(" error = "+error)
             	alert("code= "+request.status+" message = "+ request.responseText +" error = "+error);
+		 }
 	 });
 }
  
@@ -573,29 +636,29 @@ function searchFormCheck(){
                             	 <form id="filter_form" name="filter_form">
                             	 <p>Gender</p>
 									
-								      <input type="checkbox" id="man" name="gender" value="man" checked="checked"/>
-								      <label for="man">Man</label>&nbsp;&nbsp;&nbsp;
+								      <input type="checkbox" id="gender_man" name="gender" checked="checked" class="gender" value="22"/>
+								      <label for="gender_man">Man</label>&nbsp;&nbsp;&nbsp;
 								    
 								    
-								      <input type="checkbox" id="woman" name="gender" value="woman" checked="checked"/>
-								      <label for="woman">Woman</label>&nbsp;&nbsp;&nbsp;
+								      <input type="checkbox" id="gender_woman" name="gender" checked="checked" class="gender" value="33"/>
+								      <label for="gender_woman">Woman</label>&nbsp;&nbsp;&nbsp;
 								    
 								    
-								      <input type="checkbox" id="gender_all" value="gender_all" name="gender"/>
+								      <input type="checkbox" id="gender_all" name="gender" class="gender" value="44"/>
 								      <label for="gender_all">All</label>
 								    <br>
 								    <p>Vehicle Type</p>
 								    
-								      <input type="checkbox" id="sedan" value="sedan" name="vehicleType"/>
+								      <input type="checkbox" id="sedan" name="vehicleType" value="2"/>
 								      <label for="sedan">Sedan</label>&nbsp;&nbsp;
 								    
-								      <input type="checkbox" id="van" value="van" name="vehicleType"/>
+								      <input type="checkbox" id="van" name="vehicleType" value="5"/>
 								      <label for="van">Van</label>&nbsp;&nbsp;
 								    
-								      <input type="checkbox" id="truck" value="truck" name="vehicleType"/>
+								      <input type="checkbox" id="truck" name="vehicleType" value="8"/>
 								      <label for="truck">Truck</label>&nbsp;&nbsp;
 								    
-								      <input type="checkbox" id="vehicle_all" value="vehicle_all" name="vehicleType" checked="checked"/>
+								      <input type="checkbox" id="vehicle_all" name="vehicleType" checked="checked" value="11"/>
 								      <label for="vehicle_all">All</label>
 								    <br>
 								    <p>Search Basis</p>
