@@ -82,8 +82,11 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 <script>
+
 $(document).ready(function (){
+	var chartDatas;
 	displayChart();
+	
 	
 	var mform = document.getElementById('filter_form');
 	var div1 = document.getElementById('region_list');
@@ -192,10 +195,6 @@ $(document).ready(function (){
 	
 	
 	
-	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
-	$('#gender_man').change(function(){
-		alert("clicked");
-	});
 	
 });
 /*
@@ -205,54 +204,57 @@ $(document).ready(function (){
 /*
  *  Chart Display Function Start
  */
-function displayChart(){
-	$('#gra1').highcharts({
-		  chart: {
-		    type: 'line'
-		  },
-		  title: {
-		    text: 'Monthly Average Temperature'
-		  },
-		  subtitle: {
-		    text: 'Source: WorldClimate.com'
-		  },
-		  xAxis: {
-		    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-		  },
-		  yAxis: {
-		    title: {
-		      text: '차량 수'
-		    }
-		  },
-		  plotOptions: {
-		    line: {
-		      dataLabels: {
-		        enabled: true
-		      },
-		      enableMouseTracking: false
-		    }
-		  },
-		  series: [{
-		    name: 'Tokyo',
-		    data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-		  }, {
-		    name: 'London',
-		    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-		  }, {
-		    name: 'Seoul',
-		    data: [3.3, 2.2, 5.7, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-		  },{
-		    name: 'Busan',
-		    data: [7.0, 3.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-		  }, {
-		    name: 'Pohang',
-		    data: [3.9, 2.2, 5.0, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-		  }, {
-		    name: 'Bejing',
-		    data: [3.3, 2.2, 5.2, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-		  }]
-	});
+ function displayChart(){
+		$('#gra1').highcharts({
+			  chart: {
+			    type: 'line'
+			  },
+			  title: {
+			    text: 'Monthly Average Temperature'
+			  },
+			  subtitle: {
+			    text: 'Source: WorldClimate.com'
+			  },
+			  xAxis: {
+			    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+			  },
+			  yAxis: {
+			    title: {
+			      text: '차량 수'
+			    }
+			  },
+			  plotOptions: {
+			    line: {
+			      dataLabels: {
+			        enabled: true
+			      },
+			      enableMouseTracking: false
+			    }
+			  },
+			  series: [{
+			    name: 'Tokyo',
+			    data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+			  }, {
+			    name: 'London',
+			    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			  }, {
+			    name: 'Seoul',
+			    data: [3.3, 2.2, 5.7, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			  },{
+			    name: 'Busan',
+			    data: [7.0, 3.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+			  }, {
+			    name: 'Pohang',
+			    data: [3.9, 2.2, 5.0, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			  }, {
+			    name: 'Bejing',
+			    data: [3.3, 2.2, 5.2, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
+			  }]
+		});
 }
+ 
+ 
+ 
  /*
   *   End Chart Display Function
   */ 
@@ -322,6 +324,9 @@ function chartSearch(){
 			 console.log("success");
 			 console.log(data);
 			 console.log(typeof(data));
+			 
+			 chartDatas = data;
+			 displayChart2();
 		 },
 		 error : function(request,status,error) {
             	console.log("error");
@@ -338,6 +343,98 @@ function chartSearch(){
  */
 function searchFormCheck(){
 	chartSearch();
+}
+
+function displayChart2(){
+	
+	
+	$('#gra1').highcharts({
+		  chart: {
+		    type: 'line'
+		  },
+		  title: {
+		    text: 'Monthly Average Temperature'
+		  },
+		  subtitle: {
+		    text: 'Source: WorldClimate.com'
+		  },
+		  xAxis: {
+		    categories: (function(){
+		    	var xAxisDatas = [];
+		    	for (i = 0; i<chartDatas[0].datas.length; i++){
+		    		xAxisDatas.push(chartDatas[0].datas[i].basisSpecific);
+		    	}
+		    	return xAxisDatas;
+		    })()
+		  },
+		  yAxis: {
+		    title: {
+		      text: '차량 수'
+		    }
+		  },
+		  plotOptions: {
+		    line: {
+		      dataLabels: {
+		        enabled: true
+		      },
+		      enableMouseTracking: false
+		    }
+		  },
+		  series: (function(){
+			  var seriesDatas = [];
+			  for  (i = 0; i<chartDatas.length; i++){
+				  seriesDatas.push({
+					  name: chartDatas[i].line,
+					  data: (function(){
+						  var pointDatas = []
+						  for(j=0; j<chartDatas[i].datas.length; j++){
+							  pointDatas.push(chartDatas[i].datas[j].quantity);
+							  
+						  }
+						  return pointDatas;
+					  })()
+				  });
+			  }
+			  return seriesDatas;
+		})()
+	});
+	var test1 = function(){
+    	var xAxisDatas = [];
+    	for (i = 0; i < chartDatas[0].datas.length; i++){
+    		xAxisDatas.push(chartDatas[0].datas[i].basisSpecific);
+    	}
+    	return xAxisDatas;
+	}
+	
+	var test2 = function(){
+		  var seriesDatas = [];
+		  for  (i = 0; i<chartDatas.length; i++){
+			  seriesDatas.push({
+				  name: chartDatas[i].line,
+				  data: (function(){
+					  var pointDatas = []
+					  for(j=0; j<chartDatas[i].datas.length; j++){
+						  pointDatas.push(chartDatas[i].datas[j].quantity);
+						  
+					  }
+					  return pointDatas;
+				  })()
+			  });
+		  }
+		  return seriesDatas;
+	}
+	
+	/* console.log('chartDatas.Length: '+ chartDatas.length); */
+	console.log(chartDatas);
+	console.log('chartDatas[0].datas.Length: '+ chartDatas[0].datas.length);
+	console.log(chartDatas[0].datas[0].quantity);
+	
+	console.log(test2()[0].name);
+	console.log(test2()[0].data);
+	
+	console.log(test1());
+	console.log(test2());
+	
 }
 </script>
 	

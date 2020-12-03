@@ -83,9 +83,9 @@ public class AdminController {
 	// Chart Search
 	@ResponseBody
 	@RequestMapping("/chartSearch.mc")
-	public ModelAndView chartSearch(ModelAndView mv, HttpServletResponse res, String gender_check,
+	public ArrayList<LineData> chartSearch(ModelAndView mv, HttpServletResponse res, String gender_check,
 			String type_check, String searchBasis, String regionLists, String startPeriod, String endPeriod,
-			String timeList1, String timeList2) {
+			String timeLists1, String timeLists2) {
 		
 		
 		ArrayList<LineData> lineDatas = new ArrayList<>();
@@ -550,16 +550,1740 @@ public class AdminController {
 			}
 		}else if(searchBasis.equals("Period")) {
 			
+			String[] startData = startPeriod.split("-");
+			String[] endData = endPeriod.split("-");
+			
+			int startYear, startMonth;
+			int endYear, endMonth;
+			
+			startYear = Integer.parseInt(startData[0]);
+			startMonth = Integer.parseInt(startData[1]);
+			endYear = Integer.parseInt(endData[0]);
+			endMonth = Integer.parseInt(endData[1]);
+			
+			/* 연도 차이가 나는 경우,
+			 * 시작 년도에는 시작 월부터 12월까지 데이터 생성,
+			 * 시작 년도 이후 ~ 마지막 년도 전까지는 시작 월부터 12월까지 데이터 생성,
+			 * 마지막 년도에는 1월부터 종료 월까지 데이터 생성
+			 */
+			
+			if(gender_check.equals("Man")) {
+				if(type_check.equals("Sedan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+					
+				}else if(type_check.equals("Van")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Truck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVan")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Truck"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("VanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Van&Truck"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van&Truck"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Vehicle_all")){
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type+"/"+gender_check);
+						lineDatas.add(lineData);
+					}
+				}
+			}else if(gender_check.equals("Woman")) {
+				if(type_check.equals("Sedan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Van")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Truck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVan")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Truck"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("VanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Van&Truck"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van&Truck"+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Vehicle_all")){
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type+"/"+gender_check);
+						lineDatas.add(lineData);
+					}
+				}
+			}else if(gender_check.equals("ManWoman")) {
+				if(type_check.equals("Sedan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Van")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Truck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVan")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van"+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Truck"+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("VanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Van&Truck"+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVanTruck")){
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+					if(startYear != endYear) {
+						for(int j = startMonth; j <= 12; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						for(int i = startYear+1; i <= endYear-1; i++) {
+							for(int j = 1; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						for(int j = 1; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}else if(startYear == endYear) {
+						// 연도 차이가 나지 않는 경우,
+						// 시작 월부터 종료 월까지 데이터 생성
+						for(int j = startMonth; j <= endMonth; j++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van&Truck"+"/"+"Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Vehicle_all")){
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type+"/"+"Man&Woman");
+						lineDatas.add(lineData);
+					}
+				}
+			}else if(gender_check.equals("Gender_all")) {
+				String[] genderTypes = {"Man", "Woman"};
+				if(type_check.equals("Sedan")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type_check+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("Van")){
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type_check+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("Truck")){
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type_check+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("SedanVan")){
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Sedan&Van"+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("SedanTruck")){
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Sedan&Truck"+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("VanTruck")){
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Van&Truck"+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("SedanVanTruck")){
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+						if(startYear != endYear) {
+							for(int j = startMonth; j <= 12; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							for(int i = startYear+1; i <= endYear-1; i++) {
+								for(int j = 1; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							for(int j = 1; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}else if(startYear == endYear) {
+							// 연도 차이가 나지 않는 경우,
+							// 시작 월부터 종료 월까지 데이터 생성
+							for(int j = startMonth; j <= endMonth; j++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Sedan&Van&Truck"+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("Vehicle_all")){
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						for(String gender : genderTypes) {
+							LineData lineData = new LineData();
+							ArrayList<PointData> pointDatas = new ArrayList<>();
+							if(startYear != endYear) {
+								for(int j = startMonth; j <= 12; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(startYear)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+								for(int i = startYear+1; i <= endYear-1; i++) {
+									for(int j = 1; j <= 12; j++) {
+										PointData pointData = new PointData();
+										pointData.setBasisSpecific(String.valueOf(i)+"/"+String.valueOf(j));
+										pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+										pointDatas.add(pointData);
+									}
+								}
+								for(int j = 1; j <= endMonth; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}else if(startYear == endYear) {
+								// 연도 차이가 나지 않는 경우,
+								// 시작 월부터 종료 월까지 데이터 생성
+								for(int j = startMonth; j <= endMonth; j++) {
+									PointData pointData = new PointData();
+									pointData.setBasisSpecific(String.valueOf(endYear)+"/"+String.valueOf(j));
+									pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+									pointDatas.add(pointData);
+								}
+							}
+							lineData.setDatas(pointDatas);
+							lineData.setLine(type+"/"+gender);
+							lineDatas.add(lineData);
+						}
+					}
+				}
+			}
+			
 		}else if(searchBasis.equals("Time")) {
 			
+			int startTime = Integer.parseInt(timeLists1);
+			int endTime = Integer.parseInt(timeLists2);
+			
+			if(gender_check.equals("Man")) {
+				if(type_check.equals("Sedan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Van")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Truck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Truck/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("VanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Van&Truck/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van&Truck/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Vehicle_all")) {
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type+"/"+gender_check);
+						lineDatas.add(lineData);
+					}
+				}
+			}else if(gender_check.equals("Woman")) {
+				if(type_check.equals("Sedan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Van")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Truck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Truck/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("VanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Van&Truck/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van&Truck/"+gender_check);
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Vehicle_all")) {
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type+"/"+gender_check);
+						lineDatas.add(lineData);
+					}
+				}
+			}else if(gender_check.equals("ManWoman")) {
+				if(type_check.equals("Sedan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Van")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Truck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine(type_check+"/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVan")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Truck/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("VanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Van&Truck/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("SedanVanTruck")) {
+					LineData lineData = new LineData();
+					ArrayList<PointData> pointDatas = new ArrayList<>();
+			
+					for(int i = startTime ; i < endTime; i++) {
+						PointData pointData = new PointData();
+						pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+						pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+						pointDatas.add(pointData);
+					}
+					lineData.setDatas(pointDatas);
+					lineData.setLine("Sedan&Van&Truck/Man&Woman");
+					lineDatas.add(lineData);
+				}else if(type_check.equals("Vehicle_all")) {
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type+"/Man&Woman");
+						lineDatas.add(lineData);
+					}
+				}
+			}else if(gender_check.equals("Gender_all")) {
+				String[] genderTypes = {"Man", "Woman"};
+				
+				if(type_check.equals("Sedan")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type_check+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("Van")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type_check+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("Truck")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine(type_check+"/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("SedanVan")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Sedan&Van/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("SedanTruck")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Sedan&Truck/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("VanTruck")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Van&Truck/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("SedanVanTruck")) {
+					for(String gender : genderTypes) {
+						LineData lineData = new LineData();
+						ArrayList<PointData> pointDatas = new ArrayList<>();
+				
+						for(int i = startTime ; i < endTime; i++) {
+							PointData pointData = new PointData();
+							pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+							pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+							pointDatas.add(pointData);
+						}
+						lineData.setDatas(pointDatas);
+						lineData.setLine("Sedan&Van&Truck/"+gender);
+						lineDatas.add(lineData);
+					}
+				}else if(type_check.equals("Vehicle_all")) {
+					String[] vehicleTypes = {"Sedan", "Van", "Truck"};
+					for(String type : vehicleTypes) {
+						for(String gender : genderTypes) {
+							LineData lineData = new LineData();
+							ArrayList<PointData> pointDatas = new ArrayList<>();
+					
+							for(int i = startTime ; i < endTime; i++) {
+								PointData pointData = new PointData();
+								pointData.setBasisSpecific(String.valueOf(i)+"~"+String.valueOf(i+1)+"시");
+								pointData.setQuantity(r.nextInt(100000)+10000+r.nextInt(100000)+10000);
+								pointDatas.add(pointData);
+							}
+							lineData.setDatas(pointDatas);
+							lineData.setLine(type+"/"+gender);
+							lineDatas.add(lineData);
+						}
+					}
+				}
+			}
 		}
+		
+		
 		for(LineData ldt: lineDatas) {
 			System.out.println(ldt);
 		}
 
-		mv.addObject(lineDatas);
-		mv.setViewName("chart");
-		return mv;
+		
+		return lineDatas;
 	}
 	
 	public class LineData {
