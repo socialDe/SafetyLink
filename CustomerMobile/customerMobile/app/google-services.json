@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "58502582738",
+    "firebase_url": "https://safetylink-44423.firebaseio.com",
+    "project_id": "safetylink-44423",
+    "storage_bucket": "safetylink-44423.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:58502582738:android:013118fe7c0029a3ecb80b",
+        "android_client_info": {
+          "package_name": "com.example.customermobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "58502582738-vfpnqiq6fu1nh7678mibjuffqd2imbqs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFDscQdTrhSsAdSwux5aCD2wk2TmDdi40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "58502582738-vfpnqiq6fu1nh7678mibjuffqd2imbqs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

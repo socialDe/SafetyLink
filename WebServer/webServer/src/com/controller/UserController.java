@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.annotation.Resource;
@@ -30,7 +31,8 @@ public class UserController {
 	public void userloginimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		String id = request.getParameter("id");
 		String pwd = request.getParameter("pwd");
-		System.out.println(id + ", " + pwd);
+		String token = request.getParameter("token");
+		System.out.println(id + ", " + pwd + ", " + token);
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -39,31 +41,38 @@ public class UserController {
 		try {
 			UsersVO user = ubiz.get(id);
 			System.out.println(user);
+			
 			// 비밀번호 확인 후 로그인
-			if (pwd.equals(user.getUserpwd())) {
-				// 로그인 상태 설정, DB 수정
-				user.setUserstate("t");
-				ubiz.modify(user);
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String userbirth = sdf.format(user.getUserbirth());
-				String userregdate = sdf.format(user.getUserregdate());
+			if (user != null && pwd.equals(user.getUserpwd())) {
+				// 로그인 상태이며 토큰이 다를 경우
+				if(user.getUserstate().equals("t") && !user.getMobiletoken().equals(token)) {
+					out.print("login");
+				} else {
+					// 로그인 상태 설정, DB 수정
+					user.setUserstate("t");
+					user.setMobiletoken(token);
+					ubiz.modify(user);
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String userbirth = sdf.format(user.getUserbirth());
+					String userregdate = sdf.format(user.getUserregdate());
 
-				JSONObject jo = new JSONObject();
-				jo.put("userid", user.getUserid());
-				jo.put("userpwd", user.getUserpwd());
-				jo.put("username", user.getUsername());
-				jo.put("userphone", user.getUserphone());
-				jo.put("userbirth", userbirth);
-				jo.put("usersex", user.getUsersex());
-				jo.put("userregdate", userregdate);
-				jo.put("userstate", user.getUserstate());
-				jo.put("usersubject", user.getUsersubject());
-				jo.put("babypushcheck", user.getBabypushcheck());
-				jo.put("accpushcheck", user.getAccpushcheck());
-				jo.put("mobiletoken", user.getMobiletoken());
-				out.print(jo.toJSONString());
+					JSONObject jo = new JSONObject();
+					jo.put("userid", user.getUserid());
+					jo.put("userpwd", user.getUserpwd());
+					jo.put("username", user.getUsername());
+					jo.put("userphone", user.getUserphone());
+					jo.put("userbirth", userbirth);
+					jo.put("usersex", user.getUsersex());
+					jo.put("userregdate", userregdate);
+					jo.put("userstate", user.getUserstate());
+					jo.put("usersubject", user.getUsersubject());
+					jo.put("babypushcheck", user.getBabypushcheck());
+					jo.put("accpushcheck", user.getAccpushcheck());
+					jo.put("mobiletoken", user.getMobiletoken());
+					out.print(jo.toJSONString());
+				}
 			} else {
-				out.print("fail");
+				out.print("cannot");
 			}
 		} catch (Exception e) {
 			// 로그인 실패 정보 전송
@@ -80,6 +89,7 @@ public class UserController {
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
 		PrintWriter out = res.getWriter();
+		String result = "";
 
 		String userid = request.getParameter("id");
 		String userpwd = request.getParameter("pwd");
@@ -92,15 +102,29 @@ public class UserController {
 		Date userbirth = sdf.parse(strbirth);
 
 		UsersVO user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, mobiletoken);
-		System.out.println(user);
 
 		try {
+			// 가입된 회원 확인
+			ArrayList<UsersVO> users = ubiz.get();
+			for(UsersVO u : users) {
+				System.out.println(u.toString());
+				if(user.getUsername().equals(u.getUsername()) && user.getUserphone().equals(u.getUserphone())) {
+					result = "cannot user";
+					throw new Exception();
+				}
+			}
+			
+			// 회원가입
 			ubiz.register(user);
-			out.print("success");
+			result = "success";
 		} catch (Exception e) {
-			out.print("fail");
+			// 회원가입 실패
+			if(result == "") {
+				result = "fail";
+			}
 			throw e;
 		} finally {
+			out.println(result);
 			out.close();
 		}
 	}
@@ -113,6 +137,7 @@ public class UserController {
 		PrintWriter out = res.getWriter();
 
 		String userid = request.getParameter("id");
+		System.out.println(userid);
 
 		try {
 			UsersVO user = ubiz.get(userid);
@@ -121,7 +146,7 @@ public class UserController {
 				out.print("available");
 			} else {
 				// 중복되는 id 있음, 사용 불가
-				out.print("cannot");
+				out.print("cannot id");
 			}
 		} catch (Exception e) {
 			// 조회 실패
@@ -171,10 +196,12 @@ public class UserController {
 		String username = request.getParameter("name");
 		String userphone = request.getParameter("phone");
 
-		try {
+		try {System.out.println("try");
 			UsersVO user = ubiz.get(userid);
+			System.out.println("user get");
 			if (username.equals(user.getUsername()) && userphone.equals(user.getUserphone())) {
 				// 해당하는 회원정보가 존재
+				System.out.println("findsuccess");
 				out.print("findsuccess");
 			} else {
 				// 해당하는 회원정보가 없음

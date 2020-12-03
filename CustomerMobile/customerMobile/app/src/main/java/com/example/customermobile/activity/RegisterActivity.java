@@ -1,5 +1,6 @@
 package com.example.customermobile.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,10 +8,12 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,12 +25,17 @@ import android.widget.TextView;
 
 import com.example.customermobile.R;
 import com.example.customermobile.network.HttpConnect;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class RegisterActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
+    SharedPreferences sptoken;
 
     ActionBar actionBar;
     EditText edit_registerid, edit_registerpwd, edit_registerpwdcon, edit_registername, edit_registerphone1, edit_registerphone2, edit_registerphone3, edit_registerbirth;
@@ -45,6 +53,8 @@ public class RegisterActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.hide();
 
+        // 디바이스 토큰 정보 가져오기
+        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
         idcheck = false;
 
         edit_registerid = findViewById(R.id.editText_registerId);
@@ -56,7 +66,6 @@ public class RegisterActivity extends AppCompatActivity {
         edit_registerphone3 = findViewById(R.id.editText_registerPhone3);
         edit_registerbirth = findViewById(R.id.editText_registerBirth);
         radioGroup_registersex = findViewById(R.id.radioGroup_registerSex);
-
 
         textView_registerpwdcheck = findViewById(R.id.textView_registerPwdCheck);
         edit_registerpwdcon.addTextChangedListener(new TextWatcher() {
@@ -99,8 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String name = edit_registername.getText().toString();
                 String phone = edit_registerphone1.getText().toString() + edit_registerphone2.getText().toString() + edit_registerphone3.getText().toString();
                 String birth = edit_registerbirth.getText().toString();
-                // 토큰 임시 데이터
-                String token = "token1";
+                String mobiletoken = sptoken.getString("token", "");
                 // 성별데이터 DB 규약에 맞게 변환
                 String sex = "";
                 if (rb.getText().toString().equals("여")) {
@@ -110,14 +118,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (pwd.equals(pwdcon)) {
-                    String url = "http://192.168.219.110/webServer/userregisterimpl.mc";
-                    url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + token;
+//                    String url = "http://192.168.219.110/webServer/userregisterimpl.mc";
+                    String url = "http://192.168.0.112/webServer/userregisterimpl.mc";
+                    url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + mobiletoken;
                     httpAsyncTask = new HttpAsyncTask();
                     httpAsyncTask.execute(url);
                 }else {
                     android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                    builder.setTitle("회원가입");
-                    builder.setMessage("비밀번호가 일치하지 않습니다");
+                    builder.setTitle("비밀번호가 일치하지 않습니다.");
 
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
@@ -130,8 +138,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }else {
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("회원가입");
-                builder.setMessage("아이디 중복 확인을 해주십시오");
+                builder.setTitle("아이디 중복 확인을 해주십시오.");
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -151,7 +158,8 @@ public class RegisterActivity extends AppCompatActivity {
             // 아이디 중복 확인
             String uid = edit_registerid.getText().toString();
 
-            String url = "http://192.168.219.110/webServer/useridcheckimpl.mc";
+//            String url = "http://192.168.219.110/webServer/useridcheckimpl.mc";
+            String url = "http://192.168.0.112/webServer/useridcheckimpl.mc";
             url += "?id=" + uid;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -218,7 +226,7 @@ public class RegisterActivity extends AppCompatActivity {
                 });
 
                 builder.show();
-            }else if(result.equals("cannot")){
+            }else if(result.equals("cannot id")){
                 // id 사용 불가
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                 builder.setTitle("아이디 중복 확인");
@@ -236,8 +244,8 @@ public class RegisterActivity extends AppCompatActivity {
             }else if(result.equals("checkfail")){
                 // 회원 조회 실패
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("ERROR");
-                builder.setMessage("아이디 조회에 실패하였습니다. 다시 시도해주십시오.");
+                builder.setTitle("아이디 조회에 실패하였습니다.");
+                builder.setMessage("다시 시도해 주십시오.");
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -251,8 +259,8 @@ public class RegisterActivity extends AppCompatActivity {
             }else if(result.equals("fail")){
                 // 회원가입 실패
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("ERROR");
-                builder.setMessage("회원가입에 실패하였습니다. 다시 시도해주십시오.");
+                builder.setTitle("회원가입에 실패하였습니다.");
+                builder.setMessage("다시 시도해 주십시오.");
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -266,8 +274,8 @@ public class RegisterActivity extends AppCompatActivity {
             }else if(result.equals("success")){
                 // 회원가입 성공
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("회원가입");
-                builder.setMessage("회원가입되었습니다. 해당 아이디로 로그인해주세요.");
+                builder.setTitle("회원가입되었습니다.");
+                builder.setMessage("해당 아이디로 로그인해십시오.");
 
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -278,6 +286,21 @@ public class RegisterActivity extends AppCompatActivity {
 
                 builder.show();
 
+            }else if(result.equals("cannot user")){
+                // 이미 가입된 회원(username, userphone으로 판단)
+                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+                builder.setTitle("이미 가입된 회원입니다.");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        edit_registerpwd.setText("");
+                        edit_registerpwdcon.setText("");
+                        edit_registername.requestFocus();
+                    }
+                });
+
+                builder.show();
             }
         }
     }
