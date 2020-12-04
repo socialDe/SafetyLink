@@ -81,8 +81,11 @@
 <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
-<script>
+<!-- DATA TABLE SCRIPTS -->
+    <script src="view/assets/js/dataTables/jquery.dataTables.js"></script>
+    <script src="view/assets/js/dataTables/dataTables.bootstrap.js"></script>
 
+<script>
 $(document).ready(function (){
 	var chartDatas;
 	displayChart();
@@ -202,7 +205,7 @@ $(document).ready(function (){
  */
 
 /*
- *  Chart Display Function Start
+ *  First Chart Display Test
  */
  function displayChart(){
 		$('#gra1').highcharts({
@@ -249,15 +252,18 @@ $(document).ready(function (){
 			  }, {
 			    name: 'Bejing',
 			    data: [3.3, 2.2, 5.2, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }]
+			  }],
+			  caption: {
+				  text: '<b>Caption Test<b>'
+			  }
 		});
 }
  
  
  
- /*
-  *   End Chart Display Function
-  */ 
+/*
+ *   End Chart Display Function
+ */ 
 
   
   
@@ -327,6 +333,14 @@ function chartSearch(){
 			 
 			 chartDatas = data;
 			 displayChart2();
+			 if(chartDatas.length == 6){
+				 makingTable_DoubleAll();
+			 }else if(chartDatas.length == 3 || chartDatas.length == 1){
+				 makingTable_VehicleAllOrNotAll();
+			 }else if(chartDatas.length == 2){
+				 makingTable_GenderAll();
+			 }
+			 $('#chartTable').dataTable();
 		 },
 		 error : function(request,status,error) {
             	console.log("error");
@@ -336,7 +350,160 @@ function chartSearch(){
 		 }
 	 });
 }
+/*
+ *  Table 동적 생성
+ *  12/4 현재, 한 페이지에서 두 번 이상 검색할 경우 Chart에서 검색기능 마비 버그 존재
+ *  Search 버튼을 클릭할 때마다 table class를 생성하도록 구조 수정하면 해결될 것으로 예
+ *  
+ */
  
+
+
+function makingTable_GenderAll(){
+	$('#chartTable').empty();
+	//gender_all, vehicle_all
+	var tableHead = '<thead><tr><th>Vehicle Type</th>';
+	chartDatas.sort(function(a,b){
+		return a.line.charCodeAt(0)-b.line.charCodeAt(0);
+	});
+	console.log('*');
+	console.log(chartDatas);
+	console.log('*');
+	// 대그룹(차종 구분) 입력 HTML 생성
+	for (i = 0; i<chartDatas.length-1; i++){
+		
+		// 라인의 이름 추출 및 차종/성별 파싱
+		var topHead = chartDatas[i].line.split('/');
+		tableHead += '<th colspan="2">'+topHead[0]+'</th>';
+	}
+	tableHead += '</tr></tr><tr><th>Gender</th>';
+	
+	// 중그룹(성별 구분) 입력 HTML 생성
+	for (i = 0; i<chartDatas.length; i++){
+		// 라인의 이름 추출 및 차종/성별 파싱
+		var topHead = chartDatas[i].line.split('/');
+		var bottomHead = topHead[1]; 
+		
+		tableHead += '<th>'+bottomHead+'</th>';
+	}
+	tableHead += '</tr>';
+	tableHead += '</thead>';
+	
+	
+	var tableBody = '<tbody>'  
+	for (i = 0; i<chartDatas[0].datas.length; i++){
+		tableBody += '<tr><td>'+chartDatas[0].datas[i].basisSpecific+'</td>';
+		for (j = 0; j<chartDatas.length; j++){
+			tableBody += '<td>'+chartDatas[j].datas[i].quantity+'</td>';
+		}
+		tableBody += '</tr>';
+	}
+	tableBody += '</tbody>'
+	
+	
+	
+	
+	$('#chartTable').append(tableHead+tableBody);
+	// Table Search 등 UI/UX Library 적용
+}
+
+
+function makingTable_VehicleAllOrNotAll(){
+	$('#chartTable').empty();
+	//gender_all, vehicle_all
+	var tableHead = '<thead><tr><th>Vehicle Type</th>';
+	chartDatas.sort(function(a,b){
+		return a.line.charCodeAt(0)-b.line.charCodeAt(0);
+	});
+	console.log('*');
+	console.log(chartDatas);
+	console.log('*');
+	// 대그룹(차종 구분) 입력 HTML 생성
+	for (i = 0; i<chartDatas.length; i++){
+		
+		// 라인의 이름 추출 및 차종/성별 파싱
+		var topHead = chartDatas[i].line.split('/');
+		tableHead += '<th>'+topHead[0]+'</th>';
+	}
+	tableHead += '</tr></tr><tr><th>Gender</th>';
+	
+	// 중그룹(성별 구분) 입력 HTML 생성
+	for (i = 0; i<chartDatas.length; i++){
+		// 라인의 이름 추출 및 차종/성별 파싱
+		var topHead = chartDatas[i].line.split('/');
+		var bottomHead = topHead[1]; 
+		
+		tableHead += '<th>'+bottomHead+'</th>';
+	}
+	tableHead += '</tr>';
+	tableHead += '</thead>';
+	
+	
+	var tableBody = '<tbody>'  
+	for (i = 0; i<chartDatas[0].datas.length; i++){
+		tableBody += '<tr><td>'+chartDatas[0].datas[i].basisSpecific+'</td>';
+		for (j = 0; j<chartDatas.length; j++){
+			tableBody += '<td>'+chartDatas[j].datas[i].quantity+'</td>';
+		}
+		tableBody += '</tr>';
+	}
+	tableBody += '</tbody>'
+	
+	
+	
+	
+	$('#chartTable').append(tableHead+tableBody);
+	// Table Search 등 UI/UX Library 적용
+}
+ 
+function makingTable_DoubleAll(){
+	$('#chartTable').empty();
+	//gender_all, vehicle_all
+	var tableHead = '<thead><tr><th>Vehicle Type</th>';
+	chartDatas.sort(function(a,b){
+		return a.line.charCodeAt(0)-b.line.charCodeAt(0);
+	});
+	console.log('*');
+	console.log(chartDatas);
+	console.log('*');
+	// 대그룹(차종 구분) 입력 HTML 생성
+	for (i = 0; i<chartDatas.length; i+=2){
+		
+		// 라인의 이름 추출 및 차종/성별 파싱
+		var topHead = chartDatas[i].line.split('/');
+		tableHead += '<th colspan="2">'+topHead[0]+'</th>';
+	}
+	tableHead += '</tr></tr><tr><th>Gender</th>';
+	
+	// 중그룹(성별 구분) 입력 HTML 생성
+	for (i = 0; i<chartDatas.length; i++){
+		// 라인의 이름 추출 및 차종/성별 파싱
+		var topHead = chartDatas[i].line.split('/');
+		var bottomHead = topHead[1]; 
+		
+		
+		tableHead += '<th>'+bottomHead+'</th>';
+	}
+	tableHead += '</tr>';
+	tableHead += '</thead>';
+	
+	
+	var tableBody = '<tbody>'  
+	for (i = 0; i<chartDatas[0].datas.length; i++){
+		tableBody += '<tr><td>'+chartDatas[0].datas[i].basisSpecific+'</td>';
+		for (j = 0; j<chartDatas.length; j++){
+			tableBody += '<td>'+chartDatas[j].datas[i].quantity+'</td>';
+		}
+		tableBody += '</tr>';
+	}
+	tableBody += '</tbody>'
+	
+	
+	
+	
+	$('#chartTable').append(tableHead+tableBody);
+	// Table Search 등 UI/UX Library 적용
+}
  
 /*
  *  Search Form 체크(공백으로 submit할 때)
@@ -353,10 +520,10 @@ function displayChart2(){
 		    type: 'line'
 		  },
 		  title: {
-		    text: 'Monthly Average Temperature'
+		    text: '차량 운행 분포 조회'
 		  },
 		  subtitle: {
-		    text: 'Source: WorldClimate.com'
+		    text: 'Safety Link 서비스 유저 데이터 기반'
 		  },
 		  xAxis: {
 		    categories: (function(){
@@ -887,17 +1054,37 @@ function displayChart2(){
 							<figure class="highcharts-figure">
 							  <div id="gra1"></div>
 							  <p class="highcharts-description">
-							    This chart shows how data labels can be added to the data series. This
-							    can increase readability and comprehension for small datasets.
+							    <!-- Description -->
 							  </p>
 							</figure>
                         </div>
                     </div>            
                 </div> 
-                
-           </div>
+        	</div>
                  <!-- /. ROW  -->
-				 <footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
+                                  
+                 <!--  Table Start -->
+                 <div class="row">
+                <div class="col-md-12">
+                    <!-- Advanced Tables -->
+                    <div class="card">
+                        <div class="card-action">
+                             Advanced Tables
+                        </div>
+                        <div class="card-content">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="chartTable">
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--End Advanced Tables -->
+                    
+                </div>
+            </div>
+                <!-- /. ROW  -->
+                 
+		 	<footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
 </p></footer>
 				</div>
              <!-- /. PAGE INNER  -->

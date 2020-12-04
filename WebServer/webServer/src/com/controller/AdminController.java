@@ -2281,8 +2281,6 @@ public class AdminController {
 		for(LineData ldt: lineDatas) {
 			System.out.println(ldt);
 		}
-
-		
 		return lineDatas;
 	}
 	
