@@ -5,12 +5,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NotificationCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.Notification;
@@ -28,14 +26,9 @@ import android.os.Bundle;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.customermobile.df.DataFrame;
 import com.example.customermobile.vo.CarSensorVO;
@@ -44,9 +37,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.owl93.dpb.CircularProgressView;
-import com.skydoves.progressview.OnProgressChangeListener;
-import com.skydoves.progressview.ProgressView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,20 +45,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.Socket;
-import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
-import www.sanju.motiontoast.MotionToast;
-
-public class MainActivity extends AppCompatActivity {
+public class CarActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     TextView toolbar_title;
@@ -116,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_car);
 
 
         // tcpip 설정
@@ -202,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.0.37/webServer/cardata.mc?carid=1";
+        String carUrl = "http://192.168.0.103/webServer/cardata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -211,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getCarSensorData() {
         // URL 설정
-        String carSensorUrl = "http://192.168.0.37/webServer/carsensordata.mc?carid=1";
+        String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarSensorAsync carSensorAsync = new CarSensorAsync();
@@ -290,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog = new ProgressDialog(CarActivity.this);
             progressDialog.setTitle("Get Data ...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -479,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
                     builder = new NotificationCompat.Builder(context);
                 }
 
-                Intent intent1 = new Intent(context, MainActivity.class);
+                Intent intent1 = new Intent(context, CarActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
                 );

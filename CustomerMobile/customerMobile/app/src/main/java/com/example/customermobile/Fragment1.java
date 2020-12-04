@@ -1,26 +1,11 @@
 package com.example.customermobile;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +14,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,7 +86,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_startingOn.setImageResource(R.drawable.startingon1);
                 imageButton_startingOff.setImageResource(R.drawable.startingoff);
-                ((MainActivity)getActivity()).vibrate(300,3);
+                ((CarActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -114,7 +95,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_startingOff.setImageResource(R.drawable.startingoff1);
                 imageButton_startingOn.setImageResource(R.drawable.startingon);
-                ((MainActivity)getActivity()).vibrate(300,3);
+                ((CarActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -123,7 +104,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
                 imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
-                ((MainActivity)getActivity()).vibrate(300,3);
+                ((CarActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -132,7 +113,7 @@ public class Fragment1 extends Fragment {
             public void onClick(View v) {
                 imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
                 imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
-                ((MainActivity)getActivity()).vibrate(300,3);
+                ((CarActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -146,7 +127,7 @@ public class Fragment1 extends Fragment {
                 }else{
                     textView_targetTemper.setText(String.valueOf(targetTemper+1));
                 }
-                ((MainActivity)getActivity()).vibrate(300,3);
+                ((CarActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
@@ -159,7 +140,7 @@ public class Fragment1 extends Fragment {
                 }else{
                     textView_targetTemper.setText(String.valueOf(targetTemper-1));
                 }
-                ((MainActivity)getActivity()).vibrate(300,3);
+                ((CarActivity)getActivity()).vibrate(300,3);
             }
         }) ;
 
