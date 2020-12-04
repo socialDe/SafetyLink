@@ -5,23 +5,23 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 <mapper namespace="com.dao.UsersDAO">
 	
 	<insert id="insert" parameterType="users">
-		INSERT INTO ADMIN VALUES (#{adminid},#{adminpwd},#{adminname},#{adminphone},#{adminstate})
+		INSERT INTO USERS VALUES (#{userid},#{userpwd},#{username},#{userphone},#{userbirth},#{usersex},SYSDATE,'f','car','o','o',#{mobiletoken})
 	</insert>
 	
 	<update id="update" parameterType="users">
-		UPDATE ADMIN SET ADMINPWD=#{adminpwd}, ADMINNAME=#{adminname}, ADMINPHONE=#{adminphone}, ADMINSTATE=#{adminstate} WHERE ADMINID=#{adminid}
+		UPDATE USERS SET USERPWD=#{userpwd}, USERPHONE=#{userphone}, USERBIRTH=#{userbirth}, USERSEX=#{usersex}, USERSTATE=#{userstate}, USERSUBJECT=#{usersubject}, BABYPUSHCHECK=#{babypushcheck}, ACCPUSHCHECK=#{accpushcheck} WHERE USERID=#{userid}
 	</update>
 	
 	<delete id="delete" parameterType="String">
-		DELETE FROM ADMIN WHERE ADMINID=#{k}
+		DELETE FROM USERS WHERE USERID=#{k}
 	</delete>
 	
 	<select id="select" parameterType="String" resultType="users">
-		SELECT * FROM ADMIN WHERE ADMINID=#{k}
+		SELECT * FROM USERS WHERE USERID=#{k}
 	</select>
 	
 	<select id="selectall" resultType="users">
-		SELECT * FROM ADMIN 
+		SELECT * FROM USERS
 	</select>
 	
 	<!-- 사용안함 -->
@@ -29,5 +29,8 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 		
 	</select>
 	
+	<select id="selectfromkeys" parameterType="String" resultType="users">
+		SELECT * FROM USERS WHERE USERNAME=#{param1} AND USERPHONE=#{param2}
+	</select>
 	
 </mapper>

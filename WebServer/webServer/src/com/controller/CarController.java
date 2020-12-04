@@ -109,6 +109,7 @@ public class CarController {
 			ja.add(data);
 		}
 		
+		System.out.println("---------test:"+ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");

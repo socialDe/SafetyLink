@@ -14,4 +14,5 @@ public interface Biz<K1,K2,V> {
 	public V get(K1 k) throws Exception;
 	public ArrayList<V> get() throws Exception;
 	public ArrayList<V> getcarsfromuser(K2 k) throws Exception;
+	public V getFromKeys(K1 k1, K2 k2) throws Exception;
 }

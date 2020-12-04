@@ -1,4 +1,4 @@
-package com.example.customermobile;
+package com.example.customermobile.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -8,9 +8,9 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -18,8 +18,10 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,16 +29,26 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.customermobile.Fragment1;
+import com.example.customermobile.Fragment2;
+import com.example.customermobile.Fragment3;
+import com.example.customermobile.network.HttpConnect;
+import com.example.customermobile.R;
 import com.example.customermobile.df.DataFrame;
 import com.example.customermobile.vo.CarSensorVO;
 import com.example.customermobile.vo.CarVO;
+import com.example.customermobile.vo.UsersVO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.owl93.dpb.CircularProgressView;
+import com.skydoves.progressview.OnProgressChangeListener;
+import com.skydoves.progressview.ProgressView;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,10 +58,23 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.example.customermobile.activity.LoginActivity.ip;
+
 public class CarActivity extends AppCompatActivity {
+
+    SharedPreferences sp;
+
+    UsersVO user;
+    CarVO car;
+    CarSensorVO carsensor;
+
+    CircularProgressView circularProgressView;
+    ProgressView progressView;
 
     Toolbar toolbar;
     TextView toolbar_title;
@@ -58,11 +83,10 @@ public class CarActivity extends AppCompatActivity {
     Fragment2 fragment2;
     Fragment3 fragment3;
 
-//    FragmentManager fragmentManager;
-//    FrameLayout container;
+    // 소셜로그인
+    private FirebaseAuth mAuth;
 
-    CarVO car;
-    CarSensorVO carsensor;
+    HttpAsyncTask httpAsyncTask;
 
     int carlistnum = 0;
     int nowcarid = 0; // 현재 차 아이디
@@ -74,7 +98,6 @@ public class CarActivity extends AppCompatActivity {
 
     //  네이게이션 드로우어어
     private DrawerLayout mDrawerLayout;
-//    private Context context = this;
 
     // TCP/IP 통신
     int port;
@@ -83,22 +106,60 @@ public class CarActivity extends AppCompatActivity {
     Socket socket;
     Sender sender;
 
-
-    // circularProgress구현부분
-//    CircularProgressView circularProgressView;
-//    ProgressView progressView;
-    // circularProgress구현부분 종료
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car);
 
+        // 소셜 로그인
+        mAuth = FirebaseAuth.getInstance();
+
+
+        // 회원정보를 intent로 가져오기
+        Intent getintent = getIntent();
+        user = null;
+        user = (UsersVO) getintent.getSerializableExtra("user");
+
+        sp = getSharedPreferences("user", MODE_PRIVATE);
+
+        // intent 정보가 없을 경우, sp로 회원정보 가져오기
+        if (user == null) {
+            String userid = sp.getString("userid", "");
+
+
+            // 자동로그인 정보가 있으면 회원정보 계속 가져오기
+            String userpwd = sp.getString("userpwd", "");
+            String username = sp.getString("username", "");
+            String userphone = sp.getString("userphone", "");
+            String strbirth = sp.getString("userbirth", "");
+            String usersex = sp.getString("usersex", "");
+            String strregdate = sp.getString("userregdate", "");
+            String userstate = sp.getString("userstate", "");
+            String usersubject = sp.getString("usersubject", "");
+            String babypushcheck = sp.getString("babypushcheck", "");
+            String accpushcheck = sp.getString("accpushcheck", "");
+            String mobiletoken = sp.getString("mobiletoken", "");
+
+            // String 변수를 Date로 변환
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date userbirth = null;
+            Date userregdate = null;
+            try {
+                userbirth = sdf.parse(strbirth);
+                userregdate = sdf.parse(strregdate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            // sp 정보로 회원 객체 생성
+            user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
+
+        }
+
 
         // tcpip 설정
         port = 5558;
-        address = "192.168.0.103";
+        address = ip;
         id = "MobileJH";
 
         //new Thread(con).start(); // 풀면 tcpip 사용
@@ -136,7 +197,16 @@ public class CarActivity extends AppCompatActivity {
                 } else if (id == R.id.map) {
                     onChangedFragment(3, null);
                 } else if (id == R.id.logout) {
+                    // 자동 로그인 정보 삭제
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.clear();
+                    editor.commit();
 
+
+                    String url = "http://" + ip + "/webServer/userlogoutimpl.mc";
+                    url += "?id=" + user.getUserid() + "&destroy=no";
+                    httpAsyncTask = new HttpAsyncTask();
+                    httpAsyncTask.execute(url);
                 }
 
                 return true;
@@ -172,14 +242,13 @@ public class CarActivity extends AppCompatActivity {
         lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
         getCarData();
-        getCarSensorData();
 
     }// end onCreat
 
 
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.0.103/webServer/cardata.mc?userid=id01";
+        String carUrl = "http://" + ip + "/webServer/cardata.mc?userid=" + user.getUserid();
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -188,7 +257,7 @@ public class CarActivity extends AppCompatActivity {
 
     public void getCarSensorData() {
         // URL 설정
-        String carSensorUrl = "http://192.168.0.103/webServer/carsensordata.mc?userid=id01";
+        String carSensorUrl = "http://" + ip + "/webServer/carsensordata.mc?userid=" + user.getUserid();
 
 
         // AsyncTask를 통해 HttpURLConnection 수행.
@@ -197,10 +266,10 @@ public class CarActivity extends AppCompatActivity {
     }
 
     public void control(String type, String control) {
-        String urlstr = "http://192.168.0.103/webServer/control.mc";
-        String conrtolUrl = urlstr+"?carid="+nowcarid+"&type="+type+"&control="+control;
+        String urlstr = "http://" + ip + "/webServer/control.mc";
+        String conrtolUrl = urlstr + "?carid=" + nowcarid + "&type=" + type + "&control=" + control;
 
-        Log.d("[TEST]",conrtolUrl);
+        Log.d("[TEST]", conrtolUrl);
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         ControlAsync controlAsync = new ControlAsync();
@@ -208,7 +277,7 @@ public class CarActivity extends AppCompatActivity {
     }
 
 
-    public void vibrate(int sec,int power){
+    public void vibrate(int sec, int power) {
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); // 진동 없애려면 삭제
         if (Build.VERSION.SDK_INT >= 26) { //버전 체크를 해줘야 작동하도록 한다
             vibrator.vibrate(VibrationEffect.createOneShot(sec, power));
@@ -223,10 +292,7 @@ public class CarActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-//            progressDialog = new ProgressDialog(MainActivity.this);
-//            progressDialog.setTitle("Get Data ...");
-//            progressDialog.setCancelable(false);
-//            progressDialog.show();
+
         }
 
         @Override
@@ -239,41 +305,56 @@ public class CarActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-//            progressDialog.dismiss();
 
-            JSONArray ja = null;
-            try {
-                ja = new JSONArray(s);
-                carlist = new ArrayList<>();
+            Log.d("[TEST]", "s:" + s);
 
-                for(int i=0; i<ja.length(); i++){
-                    JSONObject jo = ja.getJSONObject(i);
+            // userid가 car를 갖고있지 않으면 차량을 등록하는 화면으로 넘긴다
+            if (s == null || s.equals("[]")) {
+                Intent intent = new Intent(getApplicationContext(), CarRegisterActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra("userid", user.getUserid());
+                startActivity(intent);
+            }
+            // 차별 차정보를 저장한다
+            else {
+                JSONArray ja = null;
+                try {
+                    ja = new JSONArray(s);
+                    carlist = new ArrayList<>();
 
-                    int carid = jo.getInt("carid");
-                    String userid = jo.getString("userid");
-                    String carnum = jo.getString("carnum");
-                    String carname = jo.getString("carname");
-                    String cartype = jo.getString("cartype");
-                    String carmodel = jo.getString("carmodel");
-                    int caryear = jo.getInt("caryear");
-                    String carimg = jo.getString("carimg");
-                    String caroiltype = jo.getString("caroiltype");
-                    String tablettoken = jo.getString("tablettoken");
+                    for (int i = 0; i < ja.length(); i++) {
+                        JSONObject jo = ja.getJSONObject(i);
 
-                    car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
+                        int carid = jo.getInt("carid");
+                        String userid = jo.getString("userid");
+                        String carnum = jo.getString("carnum");
+                        String carname = jo.getString("carname");
+                        String cartype = jo.getString("cartype");
+                        String carmodel = jo.getString("carmodel");
+                        int caryear = jo.getInt("caryear");
+                        String carimg = jo.getString("carimg");
+                        String caroiltype = jo.getString("caroiltype");
+                        String tablettoken = jo.getString("tablettoken");
 
-                    carlist.add(car);
+                        car = new CarVO(carid, userid, carnum, carname, cartype, carmodel, caryear, carimg, caroiltype, tablettoken);
 
+                        carlist.add(car);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
+
+                fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
+
+                nowcarid = carlist.get(0).getCarid();
+
+                //차 정보를 가져온 이후 차센서 정보를 가져온다
+                getCarSensorData();
             }
 
-            fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum(),carlist.get(0).getCarimg());
 
-            nowcarid = carlist.get(0).getCarid();
         }
-
     }
 
 
@@ -298,12 +379,13 @@ public class CarActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
+
             progressDialog.dismiss();
             JSONArray ja = null;
             try {
                 ja = new JSONArray(s);
                 carsensorlist = new ArrayList<>();
-                for(int i=0; i<ja.length(); i++){
+                for (int i = 0; i < ja.length(); i++) {
                     JSONObject jo = ja.getJSONObject(i);
 
                     int carid = jo.getInt("carid");
@@ -322,14 +404,14 @@ public class CarActivity extends AppCompatActivity {
                     //날자 문자열에서 날자형식으로 변환
                     Date movingstarttime = null;
 
-//                    String movingstarttimeString = jo.getString("movingstarttime");
-//                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//                    try {
-//                        movingstarttime = sdf.parse(movingstarttimeString);
-//                    }
-//                    catch(ParseException e){
-//                        e.printStackTrace();
-//                    }
+                    //                    String movingstarttimeString = jo.getString("movingstarttime");
+                    //                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    //                    try {
+                    //                        movingstarttime = sdf.parse(movingstarttimeString);
+                    //                    }
+                    //                    catch(ParseException e){
+                    //                        e.printStackTrace();
+                    //                    }
 
                     String aircon = jo.getString("aircon");
                     String crash = jo.getString("crash");
@@ -338,11 +420,11 @@ public class CarActivity extends AppCompatActivity {
                     double lng = jo.getDouble("lng");
 
 
-                    carsensor = new CarSensorVO(carid,heartbeat,pirfront,pirrear,freight,fuel,fuelmax,temper,starting,moving,movingstarttime,aircon,crash,door,lat,lng);
+                    carsensor = new CarSensorVO(carid, heartbeat, pirfront, pirrear, freight, fuel, fuelmax, temper, starting, moving, movingstarttime, aircon, crash, door, lat, lng);
 
                     carsensorlist.add(carsensor);
 
-                    fragment1.setCarSensorData(carsensorlist.get(0).getMoving(),carsensorlist.get(0).getFuel(),carsensorlist.get(0).getStarting(),carsensorlist.get(0).getDoor(),carsensorlist.get(0).getTemper());
+                    fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper());
 
 
                 }
@@ -350,9 +432,7 @@ public class CarActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
         }
-
     }
 
 
@@ -374,42 +454,48 @@ public class CarActivity extends AppCompatActivity {
     }
 
 
+    public void clickcarleft() {
+        int maxnum = carlist.size() - 1;
 
-    public void clickcarleft(){
-        int maxnum = carlist.size()-1;
-
-        if(carlistnum - 1 >= 0){
+        if (carlistnum - 1 >= 0) {
             carlistnum = carlistnum - 1;
-            fragment1.setCarData(carlist.get(carlistnum).getCarname(),carlist.get(carlistnum).getCarmodel(),carlist.get(carlistnum).getCarnum(),carlist.get(carlistnum).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(),carsensorlist.get(carlistnum).getFuel(),carsensorlist.get(carlistnum).getStarting(),carsensorlist.get(carlistnum).getDoor(),carsensorlist.get(carlistnum).getTemper());
+            fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper());
             nowcarid = carlist.get(carlistnum).getCarid();
-        }else{
+        } else {
             carlistnum = maxnum;
-            fragment1.setCarData(carlist.get(maxnum).getCarname(),carlist.get(maxnum).getCarmodel(),carlist.get(maxnum).getCarnum(),carlist.get(maxnum).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(),carsensorlist.get(maxnum).getFuel(),carsensorlist.get(maxnum).getStarting(),carsensorlist.get(maxnum).getDoor(),carsensorlist.get(maxnum).getTemper());
-            nowcarid = carlist.get(maxnum).getCarid();;
+            fragment1.setCarData(carlist.get(maxnum).getCarname(), carlist.get(maxnum).getCarmodel(), carlist.get(maxnum).getCarnum(), carlist.get(maxnum).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(), carsensorlist.get(maxnum).getFuel(), carsensorlist.get(maxnum).getStarting(), carsensorlist.get(maxnum).getDoor(), carsensorlist.get(maxnum).getTemper());
+            nowcarid = carlist.get(maxnum).getCarid();
+            ;
         }
 
 
-    };
+    }
 
-    public void clickcarright(){
-        int maxnum = carlist.size()-1;
+    ;
 
-        if(carlistnum + 1 <= maxnum){
+    public void clickcarright() {
+        int maxnum = carlist.size() - 1;
+
+        if (carlistnum + 1 <= maxnum) {
             carlistnum = carlistnum + 1;
-            fragment1.setCarData(carlist.get(carlistnum).getCarname(),carlist.get(carlistnum).getCarmodel(),carlist.get(carlistnum).getCarnum(),carlist.get(carlistnum).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(),carsensorlist.get(carlistnum).getFuel(),carsensorlist.get(carlistnum).getStarting(),carsensorlist.get(carlistnum).getDoor(),carsensorlist.get(carlistnum).getTemper());
-            nowcarid = carlist.get(carlistnum).getCarid();;
-        }else{
+            fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper());
+            nowcarid = carlist.get(carlistnum).getCarid();
+
+        } else {
             carlistnum = 0;
-            fragment1.setCarData(carlist.get(0).getCarname(),carlist.get(0).getCarmodel(),carlist.get(0).getCarnum(),carlist.get(0).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(0).getMoving(),carsensorlist.get(0).getFuel(),carsensorlist.get(0).getStarting(),carsensorlist.get(0).getDoor(),carsensorlist.get(0).getTemper());
-            nowcarid = carlist.get(0).getCarid();;
+            fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
+            fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper());
+            nowcarid = carlist.get(0).getCarid();
+
         }
 
 
-    };
+    }
+
+    ;
 
 
     Runnable con = new Runnable() {
@@ -448,8 +534,6 @@ public class CarActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
     // 뒤로가기 눌렀을 때 q를 보내 tcp/ip 통신 종료
@@ -511,7 +595,7 @@ public class CarActivity extends AppCompatActivity {
 //                    }
 //                } // 추가로 제어할 것이 있으면 이곳에 else if 추가
 
-                vibrate(500,5);
+                vibrate(500, 5);
 
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -666,6 +750,67 @@ public class CarActivity extends AppCompatActivity {
     }
 
 
+    /*
+    HTTP 통신 Code
+    */
+    class HttpAsyncTask extends AsyncTask<String, String, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(CarActivity.this);
+            progressDialog.setTitle("로그아웃");
+            progressDialog.setCancelable(false);
+
+            if (sp.getString("userid", "") == null) {
+                progressDialog.show();
+            } else {
+
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String url = strings[0].toString();
+            String result = HttpConnect.getString(url);
+            return result;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialog.dismiss();
+            String result = s.trim();
+            if (result.equals("logoutsuccess")) {
+                // 로그아웃
+                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            } else if (result.equals("destroy")) {
+                // destroy
+            } else if (result.equals("logoutfail")) {
+                // 로그아웃 실패: Exception
+                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(CarActivity.this);
+                builder.setTitle("로그아웃에 실패하였습니다.");
+                builder.setMessage("다시 시도해 주십시오.");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+
+                builder.show();
+            }
+        }
+    }
+    // End HTTP 통신 Code
+
+
     // 네이게이션 드로우어 메뉴 선택
     public void onChangedFragment(int position, Bundle bundle) {
         Fragment fragment = null;
@@ -681,6 +826,7 @@ public class CarActivity extends AppCompatActivity {
                 toolbar_title.setText("My Page");
                 break;
             case 3:
+                Log.d("[TEST]", "qqq");
                 fragment = fragment3;
                 toolbar_title.setText("Map");
                 break;
@@ -703,79 +849,16 @@ public class CarActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        String url = "http://" + ip + "/webServer/userlogoutimpl.mc";
+        String destroy = "yes";
 
-//    public void clickImageButton_carLeft(View view){
-//
-//    }
-//
-//    public void clickImageButton_carRight(View view){
-//
-//    }
-//
-//    public void clickImageButton_startingOn(View view){
-//
-//    }
-//
-//    public void clickImageButton_startingOff(View view){
-//
-//    }
-//
-//    public void clickImageButton_doorOn(View view){
-//
-//    }
-//
-//    public void clickImageButton_doorOff(View view){
-//
-//    }
-//
-//    public void clickImageButton_downTemper(View view){
-//        //Log.d("[TAG]",textView_targetTemper.getText().toString());
-//        int targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-//        textView_targetTemper.setText(String.valueOf(targetTemper-1));
-//    }
-//    public void clickImageButton_upTemper(View view){
-//        int targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-//        textView_targetTemper.setText(targetTemper+1);
-//    }
-
-
-
-
-    //circularProgress구현부분
-//        circularProgressView = findViewById(R.id.circularProgressView);
-//        circularProgressView.setProgress(0);
-//        circularProgressView.setMaxValue(100);
-//
-//        progressView = findViewById(R.id.progressView);
-//        progressView.setOnProgressChangeListener(new OnProgressChangeListener() {
-//            @Override
-//            public void onChange(float v) {
-//                progressView.setLabelText("Progress: " + v + "%");
-//            }
-//        });
-    // circularProgress구현부분 종료
-
-
-//    public void clickbt(View v) {
-//
-    //circularProgress구현부분
-//        if(v.getId() == R.id.button1){
-//            circularProgressView.setProgress(circularProgressView.getProgress() + 5);
-//        }else if(v.getId() == R.id.button2){
-//            MotionToast.Companion.createToast(this,
-//                    "Hurray success 😍",
-//                    "Upload Completed successfully!",
-//                    MotionToast.TOAST_SUCCESS,
-//                    MotionToast.GRAVITY_BOTTOM,
-//                    MotionToast.LONG_DURATION,
-//                    ResourcesCompat.getFont(this,R.font.helvetica_regular));
-//        }else if(v.getId() == R.id.button3){
-//            Random r = new Random();
-//            progressView.setProgress(r.nextInt(100));
-//        }
-    // circularProgress구현부분 종료
-//
-//    }
+        url += "?id=" + user.getUserid() + "&destroy=" + destroy;
+        httpAsyncTask = new HttpAsyncTask();
+        httpAsyncTask.execute(url);
+        super.onDestroy();
+    }
 
 
 }

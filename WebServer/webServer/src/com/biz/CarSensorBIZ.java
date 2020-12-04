@@ -53,5 +53,10 @@ public class CarSensorBIZ implements Biz<Integer,String,CarSensorVO> {
 	public ArrayList<CarSensorVO> getcarsfromuser(String k) throws Exception {
 		return dao.selectcarsfromuser(k);
 	}
+	
+	public CarSensorVO getFromKeys(Integer k1, String k2) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

@@ -53,6 +53,11 @@ public class AdminBIZ implements Biz<String,Integer,AdminVO> {
 	// 안씀
 	@Override
 	public ArrayList<AdminVO> getcarsfromuser(Integer k) throws Exception {
+		return null;
+	}
+
+	@Override
+	public AdminVO getFromKeys(String k1, Integer k2) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

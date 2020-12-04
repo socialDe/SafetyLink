@@ -9,3 +9,4 @@ import com.vo.CarSensorVO;
 public interface CarSensorDAO extends Dao<Integer,String,CarSensorVO> {
 
 }
+

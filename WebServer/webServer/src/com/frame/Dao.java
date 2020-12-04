@@ -9,4 +9,5 @@ public interface Dao<K1,K2,V> {
 	public V select(K1 k) throws Exception;
 	public ArrayList<V> selectall() throws Exception;
 	public ArrayList<V> selectcarsfromuser(K2 k) throws Exception;
+	public V selectfromkeys(K1 k1, K2 k2) throws Exception;
 }

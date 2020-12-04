@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.customermobile.activity.CarActivity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -180,7 +182,7 @@ public class Fragment1 extends Fragment {
                     temperTimer.cancel();
                     temperTimer.start();
                 }
-                
+
             }
 
 

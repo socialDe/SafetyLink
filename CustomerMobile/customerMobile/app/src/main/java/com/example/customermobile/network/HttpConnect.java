@@ -1,4 +1,6 @@
-package com.example.customermobile;
+package com.example.customermobile.network;
+
+import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -9,6 +11,7 @@ import java.net.URL;
 
 public class HttpConnect {
     public static String getString(String urlstr){
+        Log.d("[Log]", "HttpConnect.getString: " + urlstr);
         String result = null;
         URL url = null;
         HttpURLConnection hcon = null;
@@ -16,11 +19,14 @@ public class HttpConnect {
         try{
             url = new URL(urlstr);
             hcon = (HttpURLConnection)url.openConnection();
-            hcon.setConnectTimeout(2000);
+            hcon.setConnectTimeout(10000);
             hcon.setRequestMethod("GET");
             is = new BufferedInputStream(hcon.getInputStream());
+            Log.d("[Log]", "is: ");
             result = convertStr(is);
+            Log.d("[Log]", "result: " + result);
         }catch(Exception e){
+            Log.d("[Log]", "Exception!!");
             e.printStackTrace();
         }
 
