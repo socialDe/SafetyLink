@@ -1,30 +1,12 @@
 package com.example.customermobile;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.os.CountDownTimer;
-import android.os.Looper;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,11 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.customermobile.vo.CarVO;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.messaging.FirebaseMessaging;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,7 +24,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 
 
 public class Fragment1 extends Fragment {
@@ -102,14 +78,14 @@ public class Fragment1 extends Fragment {
         imageButton_carLeft.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-               ((MainActivity)getActivity()).clickcarleft();
+               ((CarActivity)getActivity()).clickcarleft();
             }
         }) ;
 
         imageButton_carRight.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).clickcarright();
+                ((CarActivity)getActivity()).clickcarright();
             }
         }) ;
 
@@ -120,12 +96,12 @@ public class Fragment1 extends Fragment {
                 if(startingSW == 0){
                     startingSW = 1;
 
-                    ((MainActivity)getActivity()).control("starting","o");
+                    ((CarActivity)getActivity()).control("starting","o");
 
                     imageButton_startingOn.setImageResource(R.drawable.startingon1);
                     imageButton_startingOff.setImageResource(R.drawable.startingoff);
 
-                    ((MainActivity)getActivity()).vibrate(300,3);
+                    ((CarActivity)getActivity()).vibrate(300,3);
                 }
 
             }
@@ -137,12 +113,12 @@ public class Fragment1 extends Fragment {
                 if(startingSW == 1){
                     startingSW = 0;
 
-                    ((MainActivity)getActivity()).control("starting","f");
+                    ((CarActivity)getActivity()).control("starting","f");
 
                     imageButton_startingOff.setImageResource(R.drawable.startingoff1);
                     imageButton_startingOn.setImageResource(R.drawable.startingon);
 
-                    ((MainActivity)getActivity()).vibrate(300,3);
+                    ((CarActivity)getActivity()).vibrate(300,3);
                 }
 
             }
@@ -154,12 +130,12 @@ public class Fragment1 extends Fragment {
                 if(doorSW == 0) {
                     doorSW = 1;
 
-                    ((MainActivity) getActivity()).control("door", "o");
+                    ((CarActivity) getActivity()).control("door", "o");
 
                     imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
                     imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
 
-                    ((MainActivity) getActivity()).vibrate(300, 3);
+                    ((CarActivity) getActivity()).vibrate(300, 3);
                 }
 
             }
@@ -171,12 +147,12 @@ public class Fragment1 extends Fragment {
                 if(doorSW == 1) {
                     doorSW = 0;
 
-                    ((MainActivity)getActivity()).control("starting","f");
+                    ((CarActivity)getActivity()).control("starting","f");
 
                     imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
                     imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
 
-                    ((MainActivity)getActivity()).vibrate(300,3);
+                    ((CarActivity)getActivity()).vibrate(300,3);
                 }
 
             }
@@ -246,11 +222,11 @@ public class Fragment1 extends Fragment {
 
         @Override
         public void onFinish() {
-            ((MainActivity)getActivity()).control("temper",String.valueOf(targetTemper));
+            ((CarActivity)getActivity()).control("temper",String.valueOf(targetTemper));
 
             Toast t = Toast.makeText(getActivity(),"차량온도가 "+targetTemper+"로 세팅합니다!",Toast.LENGTH_SHORT);
             t.show();
-            ((MainActivity)getActivity()).vibrate(500,5);
+            ((CarActivity)getActivity()).vibrate(500,5);
 
         }
     }

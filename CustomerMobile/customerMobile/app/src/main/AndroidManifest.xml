@@ -22,7 +22,7 @@
         </service>
 
         <activity
-            android:name=".MainActivity">
+            android:name=".CarActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

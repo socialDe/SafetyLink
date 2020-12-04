@@ -47,7 +47,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity {
+public class CarActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     TextView toolbar_title;
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_car);
 
 
         // tcpip 설정
@@ -280,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog = new ProgressDialog(CarActivity.this);
             progressDialog.setTitle("Get Data ...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -523,7 +523,7 @@ public class MainActivity extends AppCompatActivity {
                     builder = new NotificationCompat.Builder(context);
                 }
 
-                Intent intent1 = new Intent(context, MainActivity.class);
+                Intent intent1 = new Intent(context, CarActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(
                         context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
                 );
