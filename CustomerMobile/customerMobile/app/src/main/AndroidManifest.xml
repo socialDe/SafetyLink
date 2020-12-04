@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.customermobile">
+    package="com.example.customermobile" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_logo1_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".activity.ResultPwdActivity"></activity>
+        android:usesCleartextTraffic="true" >
+
+        <activity android:name=".activity.ResultPwdActivity" />
         <activity android:name=".activity.ResultIdActivity" />
         <activity android:name=".activity.FindPwdActivity" />
         <activity android:name=".activity.FindIdActivity" />
@@ -21,7 +22,12 @@
         <activity android:name=".activity.SocialRegisterActivity" />
         <activity
             android:name=".activity.LoginActivity"
+<<<<<<< HEAD
             android:windowSoftInputMode="adjustResize">
+=======
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.MainActivity" >
+>>>>>>> feature/mobile_login
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

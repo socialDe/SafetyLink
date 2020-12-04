@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,6 +52,8 @@ public class LoginActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
     UsersVO user; // user 객체
+    SharedPreferences sptoken; // token
+    String token; // token 값 저장
 
     ActionBar actionBar;
     EditText editText_loginid, editText_loginpwd;
@@ -88,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         editText_loginpwd = findViewById(R.id.editText_loginPwd);
         checkBox_loginauto = findViewById(R.id.checkBox_loginAuto);
 
+<<<<<<< HEAD
         sp = getSharedPreferences("autoLogin", MODE_PRIVATE);
 
         String userid = sp.getString("userid", "");
@@ -192,14 +197,23 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
+=======
+        sp = getSharedPreferences("user", MODE_PRIVATE);
+        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
+        token = sptoken.getString("token", "");
+>>>>>>> feature/mobile_login
     }
 
 
 
     public void clickbt(View v){
+<<<<<<< HEAD
         if(v.getId() == R.id.button_login) {
             UsersVO user = new UsersVO(editText_loginid.getText().toString(), editText_loginpwd.getText().toString());
 
+=======
+        if(v.getId() == R.id.button_login){
+>>>>>>> feature/mobile_login
             String id = editText_loginid.getText().toString();
             String pwd = editText_loginpwd.getText().toString();
             login(id, pwd);
@@ -216,8 +230,14 @@ public class LoginActivity extends AppCompatActivity {
      }
 
     public void login(String id, String pwd){
+<<<<<<< HEAD
         String url = "http://"+ip+"/webServer/userloginimpl.mc";
         url += "?id="+id+"&pwd="+pwd;
+=======
+//        String url = "http://192.168.219.110/webServer/userloginimpl.mc";
+        String url = "http://192.168.0.112/webServer/userloginimpl.mc";
+        url += "?id="+id+"&pwd=" + pwd + "&token=" + token;
+>>>>>>> feature/mobile_login
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
     }
@@ -258,13 +278,42 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
-            String result = s.trim();
+            final String result = s.trim();
 
             if (result.equals("fail")) {
                 // LOGIN FAIL
+<<<<<<< HEAD
                 androidx.appcompat.app.AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
                 dailog.setTitle("LOGIN FAIL");
                 dailog.setMessage("아이디와 비밀번호를 다시 확인하세요.");
+=======
+                AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
+                dailog.setTitle("로그인에 실패하였습니다.");
+                dailog.setMessage("다시 시도해 주십시오.");
+                dailog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+                dailog.show();
+            } else if (result.equals("login")) {
+                // 다른 디바이스에서 로그인한 계정
+                AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
+                dailog.setTitle("다른 기기에서 로그인 중입니다.");
+                dailog.setMessage("로그아웃 후 사용해 주세요.");
+                dailog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+                dailog.show();
+            } else if (result.equals("cannot")) {
+                // 비밀번호가 다름
+                AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
+                dailog.setTitle("아이디 또는 비밀번호를 다시 확인해 주세요.");
+>>>>>>> feature/mobile_login
                 dailog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

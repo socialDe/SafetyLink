@@ -143,7 +143,12 @@ public class FindPwdActivity extends AppCompatActivity {
                 String phone = edit_pwdFindphone1.getText().toString() + edit_pwdFindphone2.getText().toString() + edit_pwdFindphone3.getText().toString();
 
                 // HTTP URL Connected
+<<<<<<< HEAD
                 String url = "http://"+ip+"/webServer/userpwdfindimpl.mc";
+=======
+//                String url = "http://192.168.219.110/webServer/userpwdfindimpl.mc";
+                String url = "http://192.168.0.112/webServer/userpwdfindimpl.mc";
+>>>>>>> feature/mobile_login
                 url += "?id="+ id + "&name="+ name + "&phone=" + phone;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);
