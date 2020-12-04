@@ -8,11 +8,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-<<<<<<< HEAD
 import android.content.Intent;
-=======
 import android.content.SharedPreferences;
->>>>>>> feature/mobile_login
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -61,6 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         // 디바이스 토큰 정보 가져오기
         sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
+
         idcheck = false;
 
         edit_registerid = findViewById(R.id.editText_registerId);
@@ -124,14 +122,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (pwd.equals(pwdcon)) {
-<<<<<<< HEAD
                     String url = "http://"+ip+"/webServer/userregisterimpl.mc";
-                    url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + token;
-=======
-//                    String url = "http://192.168.219.110/webServer/userregisterimpl.mc";
-                    String url = "http://192.168.0.112/webServer/userregisterimpl.mc";
                     url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + mobiletoken;
->>>>>>> feature/mobile_login
                     httpAsyncTask = new HttpAsyncTask();
                     httpAsyncTask.execute(url);
                 }else {
@@ -171,12 +163,7 @@ public class RegisterActivity extends AppCompatActivity {
             // 아이디 중복 확인
             String uid = edit_registerid.getText().toString();
 
-<<<<<<< HEAD
             String url = "http://"+ip+"/webServer/useridcheckimpl.mc";
-=======
-//            String url = "http://192.168.219.110/webServer/useridcheckimpl.mc";
-            String url = "http://192.168.0.112/webServer/useridcheckimpl.mc";
->>>>>>> feature/mobile_login
             url += "?id=" + uid;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -275,47 +262,17 @@ public class RegisterActivity extends AppCompatActivity {
 
             }if (result.equals("fail")) {
                 // 회원가입 실패
-<<<<<<< HEAD
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("toast", "loginfail");
                 startActivity(intent);
-=======
-                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("회원가입에 실패하였습니다.");
-                builder.setMessage("다시 시도해 주십시오.");
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
-                });
-
-                builder.show();
->>>>>>> feature/mobile_login
 
             } else if (result.equals("success")) {
                 // 회원가입 성공
-<<<<<<< HEAD
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("toast", "loginok");
                 startActivity(intent);
-=======
-                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-                builder.setTitle("회원가입되었습니다.");
-                builder.setMessage("해당 아이디로 로그인해십시오.");
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-
-                builder.show();
->>>>>>> feature/mobile_login
 
             }else if(result.equals("cannot user")){
                 // 이미 가입된 회원(username, userphone으로 판단)

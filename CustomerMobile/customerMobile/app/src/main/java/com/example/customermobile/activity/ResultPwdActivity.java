@@ -73,12 +73,7 @@ public class ResultPwdActivity extends AppCompatActivity {
             String pwdcon = edit_pwdResultPwdCon.getText().toString();
             if(pwdcon.equals(pwd)){
                 // HTTP URL Connected
-<<<<<<< HEAD
                 String url = "http://"+ip+"/webServer/userpwdchangeimpl.mc";
-=======
-//                String url = "http://192.168.219.110/webServer/userpwdchangeimpl.mc";
-                String url = "http://192.168.0.112/webServer/userpwdchangeimpl.mc";
->>>>>>> feature/mobile_login
                 url += "?id="+ id + "&pwd="+ pwd + "&pwdcon=" + pwdcon;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);

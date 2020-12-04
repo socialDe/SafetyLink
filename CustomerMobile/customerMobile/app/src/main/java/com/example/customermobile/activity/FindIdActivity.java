@@ -123,12 +123,7 @@ public class FindIdActivity extends AppCompatActivity {
                 String phone = edit_idFindPhone1.getText().toString() + edit_idFindPhone2.getText().toString() + edit_idFindPhone3.getText().toString();
 
                 // HTTP URL Connected
-<<<<<<< HEAD
                 String url = "http://"+ip+"/webServer/useridfindimpl.mc";
-=======
-//                String url = "http://192.168.219.110/webServer/useridfindimpl.mc";
-                String url = "http://192.168.0.112/webServer/useridfindimpl.mc";
->>>>>>> feature/mobile_login
                 url += "?name="+ name +"&phone=" + phone;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);

@@ -38,6 +38,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.vo.UsersVO;
 
 import org.json.JSONObject;
@@ -72,6 +74,13 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // 앱 실행시 디바이스 토큰 불러오기
+        getToken();
+
+        sp = getSharedPreferences("user", MODE_PRIVATE);
+        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
+        token = sptoken.getString("token", "");
+
         // 인텐트로 string을 받아 toast를 띄워주는 부분
         Intent intent = getIntent();
         String getintent = intent.getStringExtra("toast");
@@ -92,8 +101,6 @@ public class LoginActivity extends AppCompatActivity {
         editText_loginpwd = findViewById(R.id.editText_loginPwd);
         checkBox_loginauto = findViewById(R.id.checkBox_loginAuto);
 
-<<<<<<< HEAD
-        sp = getSharedPreferences("autoLogin", MODE_PRIVATE);
 
         String userid = sp.getString("userid", "");
         String userpwd = sp.getString("userpwd", "");
@@ -197,23 +204,33 @@ public class LoginActivity extends AppCompatActivity {
             finish();
         }
 
-=======
-        sp = getSharedPreferences("user", MODE_PRIVATE);
-        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
-        token = sptoken.getString("token", "");
->>>>>>> feature/mobile_login
     }
 
 
+    public void getToken(){
+        //토큰값을 받아옵니다.
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+
+                        // 토큰이 계속 초기화가 되기때문에 sharedPreferences로 저장하여 초기화 방지
+                        token = task.getResult().getToken();
+                        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sptoken.edit();
+                        editor.putString("token",token); // key, value를 이용하여 저장하는 형태
+                        editor.commit();
+                        Log.d("[Log]", token);
+                    }
+                });
+    }
+
 
     public void clickbt(View v){
-<<<<<<< HEAD
-        if(v.getId() == R.id.button_login) {
-            UsersVO user = new UsersVO(editText_loginid.getText().toString(), editText_loginpwd.getText().toString());
-
-=======
         if(v.getId() == R.id.button_login){
->>>>>>> feature/mobile_login
             String id = editText_loginid.getText().toString();
             String pwd = editText_loginpwd.getText().toString();
             login(id, pwd);
@@ -230,14 +247,8 @@ public class LoginActivity extends AppCompatActivity {
      }
 
     public void login(String id, String pwd){
-<<<<<<< HEAD
         String url = "http://"+ip+"/webServer/userloginimpl.mc";
-        url += "?id="+id+"&pwd="+pwd;
-=======
-//        String url = "http://192.168.219.110/webServer/userloginimpl.mc";
-        String url = "http://192.168.0.112/webServer/userloginimpl.mc";
-        url += "?id="+id+"&pwd=" + pwd + "&token=" + token;
->>>>>>> feature/mobile_login
+        url += "?id="+id+"&pwd="+pwd+"&token="+token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
     }
@@ -254,7 +265,7 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setTitle("Login");
             progressDialog.setCancelable(false);
-            progressDialog.show();
+            //progressDialog.show();
         }
 
         @Override
@@ -280,13 +291,10 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog.dismiss();
             final String result = s.trim();
 
+            Log.d("[TEST]","[TEST]:"+result);
+
             if (result.equals("fail")) {
                 // LOGIN FAIL
-<<<<<<< HEAD
-                androidx.appcompat.app.AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
-                dailog.setTitle("LOGIN FAIL");
-                dailog.setMessage("아이디와 비밀번호를 다시 확인하세요.");
-=======
                 AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
                 dailog.setTitle("로그인에 실패하였습니다.");
                 dailog.setMessage("다시 시도해 주십시오.");
@@ -313,7 +321,6 @@ public class LoginActivity extends AppCompatActivity {
                 // 비밀번호가 다름
                 AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
                 dailog.setTitle("아이디 또는 비밀번호를 다시 확인해 주세요.");
->>>>>>> feature/mobile_login
                 dailog.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -328,7 +335,7 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra("email", email);
                 startActivity(intent);
             }// useridcheckimpl에서 cannot이 오면 db에 구글email로 아이디가 있다고 판단하고 email로 로그인을 진행시킨다.
-            else if(result.equals("cannot")){
+            else if(result.equals("cannot id")){
                 login(email,"google");
             }// useridcheckimpl에서 checkfail 오면 아이디체크 오류가 발생하여 토스트로 알려준다.
             else if(result.equals("checkfail")){

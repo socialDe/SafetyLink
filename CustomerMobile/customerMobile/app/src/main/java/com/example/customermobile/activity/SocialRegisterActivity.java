@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -34,6 +35,8 @@ public class SocialRegisterActivity extends AppCompatActivity {
 
     HttpAsyncTask httpAsyncTask;
 
+    SharedPreferences sptoken;
+
     ActionBar actionBar;
     EditText edit_registername, edit_registerphone1, edit_registerphone2, edit_registerphone3, edit_registerbirth;
     TextView textView_registerpwdcheck;
@@ -56,6 +59,9 @@ public class SocialRegisterActivity extends AppCompatActivity {
         // ActionBar Setting
         actionBar = getSupportActionBar();
         actionBar.hide();
+
+        // 디바이스 토큰 정보 가져오기
+        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
 
         idcheck = false;
 
@@ -84,8 +90,7 @@ public class SocialRegisterActivity extends AppCompatActivity {
             String name = edit_registername.getText().toString();
             String phone = edit_registerphone1.getText().toString() + edit_registerphone2.getText().toString() + edit_registerphone3.getText().toString();
             String birth = edit_registerbirth.getText().toString();
-            // 토큰 임시 데이터
-            String token = "token1";
+            String mobiletoken = sptoken.getString("token", "");
             // 성별데이터 DB 규약에 맞게 변환
             String sex = "";
             if (rb.getText().toString().equals("여")) {
@@ -95,7 +100,7 @@ public class SocialRegisterActivity extends AppCompatActivity {
             }
 
             String url = "http://"+ip+"/webServer/userregisterimpl.mc";
-            url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + token;
+            url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + mobiletoken;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
 

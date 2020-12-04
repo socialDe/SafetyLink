@@ -254,13 +254,22 @@ public class UserController {
 		res.setContentType("application/json");
 		PrintWriter out = res.getWriter();
 
+		String destroy = "";
+		
 		String userid = request.getParameter("id");
+		destroy = request.getParameter("destroy");
 
 		try {
 			UsersVO user = ubiz.get(userid);
 			user.setUserstate("f");
 			ubiz.modify(user);
-			out.print("logoutsuccess");
+			
+			if(destroy.equals("yes")) {
+				out.print("destroy");
+			}else {
+				out.print("logoutsuccess");
+			}
+			
 		} catch (Exception e) {
 			// 로그아웃 실패
 			out.print("logoutfail");

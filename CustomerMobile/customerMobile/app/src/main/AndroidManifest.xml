@@ -22,12 +22,7 @@
         <activity android:name=".activity.SocialRegisterActivity" />
         <activity
             android:name=".activity.LoginActivity"
-<<<<<<< HEAD
             android:windowSoftInputMode="adjustResize">
-=======
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activity.MainActivity" >
->>>>>>> feature/mobile_login
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

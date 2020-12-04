@@ -18,18 +18,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.customermobile.R;
-<<<<<<< HEAD
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-=======
 import com.example.customermobile.network.HttpConnect;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
->>>>>>> feature/mobile_login
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
@@ -42,13 +37,10 @@ import java.util.Random;
 
 import www.sanju.motiontoast.MotionToast;
 
-<<<<<<< HEAD
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+import static com.example.customermobile.activity.LoginActivity.ip;
+
+public class MainActivity extends AppCompatActivity{
     SharedPreferences sp;
-=======
-public class MainActivity extends AppCompatActivity {
-    SharedPreferences sp; // 자동 로그인
->>>>>>> feature/mobile_login
     UsersVO user;
     SharedPreferences sptoken; // token
     String token; // token 값 저장
@@ -56,28 +48,22 @@ public class MainActivity extends AppCompatActivity {
     CircularProgressView circularProgressView;
     ProgressView progressView;
 
-<<<<<<< HEAD
     // 소셜로그인
     private FirebaseAuth mAuth ;
     Button btnRevoke, btnLogout;
-=======
+
     HttpAsyncTask httpAsyncTask;
     NotificationManager manager;
->>>>>>> feature/mobile_login
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // 앱 실행시 디바이스 토큰 불러오기
-        getToken();
+
 
         // 소셜 로그인
         mAuth = FirebaseAuth.getInstance();
-        btnLogout = (Button)findViewById(R.id.btn_logout);
-        btnRevoke = (Button)findViewById(R.id.btn_revoke);
-        btnLogout.setOnClickListener(this);
-        btnRevoke.setOnClickListener(this);
+
 
         // 회원정보를 intent로 가져오기
         Intent getintent = getIntent();
@@ -90,12 +76,6 @@ public class MainActivity extends AppCompatActivity {
         if(user == null) {
             String userid = sp.getString("userid", "");
 
-            // 자동로그인 정보가 없을 경우 메인액티비티 없이 로그인 페이지로 전환
-            if (userid == null || userid == "") {
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            }
 
             // 자동로그인 정보가 있으면 회원정보 계속 가져오기
             String userpwd = sp.getString("userpwd", "");
@@ -160,26 +140,7 @@ public class MainActivity extends AppCompatActivity {
 //        Log.d("[TEST]","회원탈퇴");
 //    }
 
-    @Override
-    public void onClick(View v) {
 
-        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-
-        switch (v.getId()) {
-            case R.id.btn_logout:
-                signOut();
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-                break;
-//            case R.id.btn_revoke:
-//                revokeAccess();
-//                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                startActivity(intent);
-//                finish();
-//                break;
-        }
-    }
 
 
     public void clickbt(View v){
@@ -197,49 +158,23 @@ public class MainActivity extends AppCompatActivity {
             Random r = new Random();
             progressView.setProgress(r.nextInt(100));
         }else if(v.getId() == R.id.button4){
-<<<<<<< HEAD
+            // 로그아웃 버튼
+
             // 자동 로그인 정보 삭제
             SharedPreferences.Editor editor = sp.edit();
             editor.clear();
             editor.commit();
 
-            Toast.makeText(MainActivity.this, "자동 로그인이 취소되었습니다.", Toast.LENGTH_SHORT).show();
 
-
-//            // 액티비티 기록 없이 로그인 화면으로 전환
-//            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-=======
-            // 로그아웃 버튼
-//                    String url = "http://192.168.219.110/webServer/userlogoutimpl.mc";
-            String url = "http://192.168.0.112/webServer/userlogoutimpl.mc";
-            url += "?id=" + user.getUserid();
+            String url = "http://"+ip+"/webServer/userlogoutimpl.mc";
+            url += "?id=" + user.getUserid()+"&destroy=no";
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
+
         }
     }
 
-    public void getToken(){
-        //토큰값을 받아옵니다.
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            return;
-                        }
 
-                        // 토큰이 계속 초기화가 되기때문에 sharedPreferences로 저장하여 초기화 방지
-                        token = task.getResult().getToken();
-                        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sptoken.edit();
-                        editor.putString("token",token); // key, value를 이용하여 저장하는 형태
-                        editor.commit();
-                        Log.d("[Log]", token);
-                    }
-                });
-    }
 
 
     /*
@@ -253,7 +188,12 @@ public class MainActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(MainActivity.this);
             progressDialog.setTitle("로그아웃");
             progressDialog.setCancelable(false);
-            progressDialog.show();
+
+            if(sp.getString("userid","") == null){
+                progressDialog.show();
+            }else{
+
+            }
         }
 
         @Override
@@ -274,15 +214,11 @@ public class MainActivity extends AppCompatActivity {
             String result = s.trim();
             if (result.equals("logoutsuccess")) {
                 // 로그아웃
-                // 자동 로그인 정보 삭제
-                SharedPreferences.Editor editor = sp.edit();
-                editor.clear();
-                editor.commit();
-
-                // 액티비티 기록 없이 로그인 화면으로 전환
                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
+            }else if(result.equals("destroy")){
+                // destroy
             }else if(result.equals("logoutfail")){
                 // 로그아웃 실패: Exception
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -297,8 +233,20 @@ public class MainActivity extends AppCompatActivity {
 
                 builder.show();
             }
->>>>>>> feature/mobile_login
         }
     }
     // End HTTP 통신 Code
+
+    @Override
+    protected void onDestroy() {
+        String url = "http://"+ip+"/webServer/userlogoutimpl.mc";
+        String destroy = "yes";
+
+        url += "?id=" + user.getUserid() +"&destroy="+destroy;
+        httpAsyncTask = new HttpAsyncTask();
+        httpAsyncTask.execute(url);
+        super.onDestroy();
+    }
+
+
 }
