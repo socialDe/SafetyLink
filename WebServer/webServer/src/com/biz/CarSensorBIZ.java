@@ -11,10 +11,10 @@ import com.frame.Dao;
 import com.vo.CarSensorVO;
 
 @Service("sbiz")
-public class CarSensorBIZ implements Biz<Integer, CarSensorVO> {
+public class CarSensorBIZ implements Biz<Integer,String,CarSensorVO> {
 
 	@Resource(name="sdao")
-	Dao<Integer, CarSensorVO> dao;
+	Dao<Integer,String,CarSensorVO> dao;
 	
 	@Override
 	public void register(CarSensorVO v) throws Exception {
@@ -47,6 +47,11 @@ public class CarSensorBIZ implements Biz<Integer, CarSensorVO> {
 	@Override
 	public ArrayList<CarSensorVO> get() throws Exception {
 		return dao.selectall();
+	}
+
+	@Override
+	public ArrayList<CarSensorVO> getcarsfromuser(String k) throws Exception {
+		return dao.selectcarsfromuser(k);
 	}
 
 }

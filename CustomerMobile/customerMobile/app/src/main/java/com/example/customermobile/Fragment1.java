@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,12 +36,19 @@ public class Fragment1 extends Fragment {
     ImageButton imageButton_carLeft, imageButton_carRight, imageButton_startingOn, imageButton_startingOff;
     ImageButton imageButton_doorOn, imageButton_doorOff, imageButton_downTemper, imageButton_upTemper;
 
+    // 버튼 계속 안눌리게 하기 위한 스위치 변수
+    int startingSW = 0;
+    int doorSW = 0;
+
+    int targetTemper;
+    TemperTimer temperTimer;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         ViewGroup viewGroup = null;
         viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment1,container,false);
+
 
         textView_carName = viewGroup.findViewById(R.id.textView_carName);
         textView_carModel = viewGroup.findViewById(R.id.textView_carModel);
@@ -70,101 +79,187 @@ public class Fragment1 extends Fragment {
         imageButton_carLeft.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+               ((CarActivity)getActivity()).clickcarleft();
             }
         }) ;
 
         imageButton_carRight.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-
+                ((CarActivity)getActivity()).clickcarright();
             }
         }) ;
+
 
         imageButton_startingOn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                imageButton_startingOn.setImageResource(R.drawable.startingon1);
-                imageButton_startingOff.setImageResource(R.drawable.startingoff);
-                ((CarActivity)getActivity()).vibrate(300,3);
+                if(startingSW == 0){
+                    startingSW = 1;
+
+                    ((CarActivity)getActivity()).control("starting","o");
+
+                    imageButton_startingOn.setImageResource(R.drawable.startingon1);
+                    imageButton_startingOff.setImageResource(R.drawable.startingoff);
+
+                    ((CarActivity)getActivity()).vibrate(300,3);
+                }
+
             }
         }) ;
 
         imageButton_startingOff.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                imageButton_startingOff.setImageResource(R.drawable.startingoff1);
-                imageButton_startingOn.setImageResource(R.drawable.startingon);
-                ((CarActivity)getActivity()).vibrate(300,3);
+                if(startingSW == 1){
+                    startingSW = 0;
+
+                    ((CarActivity)getActivity()).control("starting","f");
+
+                    imageButton_startingOff.setImageResource(R.drawable.startingoff1);
+                    imageButton_startingOn.setImageResource(R.drawable.startingon);
+
+                    ((CarActivity)getActivity()).vibrate(300,3);
+                }
+
             }
         }) ;
 
         imageButton_doorOn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
-                imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
-                ((CarActivity)getActivity()).vibrate(300,3);
+                if(doorSW == 0) {
+                    doorSW = 1;
+
+                    ((CarActivity) getActivity()).control("door", "o");
+
+                    imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
+                    imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
+
+                    ((CarActivity) getActivity()).vibrate(300, 3);
+                }
+
             }
         }) ;
 
         imageButton_doorOff.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
-                imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
-                ((CarActivity)getActivity()).vibrate(300,3);
+                if(doorSW == 1) {
+                    doorSW = 0;
+
+                    ((CarActivity)getActivity()).control("starting","f");
+
+                    imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
+                    imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
+
+                    ((CarActivity)getActivity()).vibrate(300,3);
+                }
+
             }
         }) ;
 
 
+        // 현재 타겟온도 가져오기
+        targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
+        // 온도 타이머 3초로 세팅하기
+        temperTimer = new TemperTimer(3000, 1000);
+
+
         imageButton_upTemper.setOnClickListener(new View.OnClickListener(){
+
             @Override
             public void onClick(View v) {
-                int targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-                if(targetTemper+1 > 30){
+                targetTemper = targetTemper + 1;
+
+                if(targetTemper > 30){
                     Toast.makeText(getActivity(),"30도 이하로 설정해주세요!",Toast.LENGTH_SHORT).show();
                 }else{
-                    textView_targetTemper.setText(String.valueOf(targetTemper+1));
+                    textView_targetTemper.setText(String.valueOf(targetTemper));
+
+                    temperTimer.cancel();
+                    temperTimer.start();
                 }
-                ((CarActivity)getActivity()).vibrate(300,3);
+                
             }
+
+
         }) ;
 
         imageButton_downTemper.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                int targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-                if(targetTemper-1 < 18){
+                targetTemper = targetTemper - 1;
+
+                if(targetTemper < 18){
                     Toast.makeText(getActivity(),"18도 이상으로 설정해주세요!",Toast.LENGTH_SHORT).show();
                 }else{
-                    textView_targetTemper.setText(String.valueOf(targetTemper-1));
+                    textView_targetTemper.setText(String.valueOf(targetTemper));
+
+                    temperTimer.cancel();
+                    temperTimer.start();
                 }
-                ((CarActivity)getActivity()).vibrate(300,3);
+
             }
         }) ;
 
-        //setCarData();
 
         return viewGroup;
     } // end onCreate
 
 
+
+    // 온도설정을 위한 타이머
+    class TemperTimer extends CountDownTimer
+    {
+        public TemperTimer(long millisInFuture, long countDownInterval)
+        {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            ((CarActivity)getActivity()).control("temper",String.valueOf(targetTemper));
+
+            Toast t = Toast.makeText(getActivity(),"차량온도가 "+targetTemper+"로 세팅합니다!",Toast.LENGTH_SHORT);
+            t.show();
+            ((CarActivity)getActivity()).vibrate(500,5);
+
+        }
+    }
+
+
+
     // 차 정보를 세팅하는 함수
-    public void setCarData(String carname, String carmodel, String carnum){
+    public void setCarData(String carname, String carmodel, String carnum, String carimg){
 
         textView_carName.setText(carname);
         textView_carModel.setText(carmodel);
         textView_carNum.setText(carnum);
 
-        Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum);
+        int[] imglist = {R.drawable.car1,R.drawable.car2};
+
+
+        if(carimg.equals("car1.jpg")){
+            imageView_car.setImageResource(imglist[0]);
+        }else if(carimg.equals("car2.jpg")){
+            imageView_car.setImageResource(imglist[1]);
+        }
+
+
+        Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum+" "+carimg);
 
     }
 
     // 차센서 정보를 세팅하는 함수
     public void setCarSensorData(String moving, int fuel, String starting, String door, int temper){
 
-        if(moving.equals('o')){
+        if(moving.equals("o")){
             textView_moving.setText("주행중");
             textView_moving.setTextColor(Color.GREEN);
         }else{
@@ -174,17 +269,21 @@ public class Fragment1 extends Fragment {
         textView_fuel.setText(String.valueOf(fuel));
         textView_possibleDistance.setText(String.valueOf(fuel*12));
         Log.d("[TAG]","Here:"+fuel+" "+starting+" "+door+" "+temper);
-        if(starting.equals('o')){
+        if(starting.equals("o")){
+            startingSW = 1;
             imageButton_startingOn.setImageResource(R.drawable.startingon1);
             imageButton_startingOff.setImageResource(R.drawable.startingoff);
         }else{
+            startingSW = 0;
             imageButton_startingOff.setImageResource(R.drawable.startingoff1);
             imageButton_startingOn.setImageResource(R.drawable.startingon);
         }
-        if(door.equals('o')){
+        if(door.equals("o")){
+            doorSW = 1;
             imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
             imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
         }else{
+            doorSW = 0;
             imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
             imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
         }

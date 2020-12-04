@@ -6,6 +6,6 @@ import com.frame.Dao;
 import com.vo.CarSensorVO;
 
 @Repository("sdao")
-public interface CarSensorDAO extends Dao<Integer, CarSensorVO> {
+public interface CarSensorDAO extends Dao<Integer,String,CarSensorVO> {
 
 }
