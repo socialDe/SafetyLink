@@ -27,6 +27,8 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.example.customermobile.activity.LoginActivity.ip;
+
 public class FindIdActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
@@ -121,7 +123,7 @@ public class FindIdActivity extends AppCompatActivity {
                 String phone = edit_idFindPhone1.getText().toString() + edit_idFindPhone2.getText().toString() + edit_idFindPhone3.getText().toString();
 
                 // HTTP URL Connected
-                String url = "http://192.168.219.110/webServer/useridfindimpl.mc";
+                String url = "http://"+ip+"/webServer/useridfindimpl.mc";
                 url += "?name="+ name +"&phone=" + phone;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);

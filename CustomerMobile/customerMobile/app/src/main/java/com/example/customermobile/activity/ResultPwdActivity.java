@@ -18,6 +18,8 @@ import android.widget.TextView;
 import com.example.customermobile.R;
 import com.example.customermobile.network.HttpConnect;
 
+import static com.example.customermobile.activity.LoginActivity.ip;
+
 public class ResultPwdActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
@@ -71,7 +73,7 @@ public class ResultPwdActivity extends AppCompatActivity {
             String pwdcon = edit_pwdResultPwdCon.getText().toString();
             if(pwdcon.equals(pwd)){
                 // HTTP URL Connected
-                String url = "http://192.168.219.110/webServer/userpwdchangeimpl.mc";
+                String url = "http://"+ip+"/webServer/userpwdchangeimpl.mc";
                 url += "?id="+ id + "&pwd="+ pwd + "&pwdcon=" + pwdcon;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);

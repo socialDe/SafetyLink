@@ -45,6 +45,8 @@ import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public static String ip = "192.168.0.103";
+
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
     UsersVO user; // user 객체
@@ -178,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
             // 구글이메일이 DB에 유저아이디 정보로 있는지 확인한다
             String emailcheck = email;
 
-            String url = "http://192.168.0.37/webServer/useridcheckimpl.mc";
+            String url = "http://"+ip+"/webServer/useridcheckimpl.mc";
             url += "?id=" + emailcheck;
             httpAsyncTask = new LoginActivity.HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -214,7 +216,7 @@ public class LoginActivity extends AppCompatActivity {
      }
 
     public void login(String id, String pwd){
-        String url = "http://192.168.0.37/webServer/userloginimpl.mc";
+        String url = "http://"+ip+"/webServer/userloginimpl.mc";
         url += "?id="+id+"&pwd="+pwd;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);

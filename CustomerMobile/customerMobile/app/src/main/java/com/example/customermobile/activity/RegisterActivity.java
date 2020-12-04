@@ -27,6 +27,8 @@ import com.example.customermobile.network.HttpConnect;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static com.example.customermobile.activity.LoginActivity.ip;
+
 public class RegisterActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
@@ -111,7 +113,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (pwd.equals(pwdcon)) {
-                    String url = "http://192.168.0.37/webServer/userregisterimpl.mc";
+                    String url = "http://"+ip+"/webServer/userregisterimpl.mc";
                     url += "?id=" + uid + "&pwd=" + pwd + "&name=" + name + "&sex=" + sex + "&phone=" + phone + "&birth=" + birth + "&token=" + token;
                     httpAsyncTask = new HttpAsyncTask();
                     httpAsyncTask.execute(url);
@@ -154,7 +156,7 @@ public class RegisterActivity extends AppCompatActivity {
             // 아이디 중복 확인
             String uid = edit_registerid.getText().toString();
 
-            String url = "http://192.168.0.37/webServer/useridcheckimpl.mc";
+            String url = "http://"+ip+"/webServer/useridcheckimpl.mc";
             url += "?id=" + uid;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
