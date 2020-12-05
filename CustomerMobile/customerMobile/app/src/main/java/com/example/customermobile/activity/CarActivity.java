@@ -43,7 +43,9 @@ import com.example.customermobile.vo.UsersVO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.owl93.dpb.CircularProgressView;
 import com.skydoves.progressview.OnProgressChangeListener;
@@ -111,6 +113,10 @@ public class CarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car);
 
+        if (!FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }
+
         // 소셜 로그인
         mAuth = FirebaseAuth.getInstance();
 
@@ -153,6 +159,8 @@ public class CarActivity extends AppCompatActivity {
 
             // sp 정보로 회원 객체 생성
             user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
+
+
 
         }
 
@@ -560,42 +568,11 @@ public class CarActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
-                String title = intent.getStringExtra("title");
+                String carid = intent.getStringExtra("carid");
+                String type = intent.getStringExtra("type");
                 String control = intent.getStringExtra("control");
-                String data = intent.getStringExtra("data");
 
-//                if (control.equals("temper")) { // control이 temper면, data(온도값)을 set해라
-//                    if (Integer.parseInt(data) > 30) {
-//                        Toast.makeText(MainActivity.this,
-//                                "30도 이하의 온도로 설정해주세요.", Toast.LENGTH_LONG).show();
-//                    } else if (Integer.parseInt(data) < 18) {
-//                        Toast.makeText(MainActivity.this,
-//                                "18도 이상의 온도로 설정해 주세요.", Toast.LENGTH_LONG).show();
-//                    } else if (data.equals(textView_temper.getText())) {
-//
-//                    } else {
-//                        textView_targetTemper.setText(data);
-//                        Toast.makeText(MainActivity.this,
-//                                "희망 온도가 " + data + "℃로 변경되었습니다." + "\n", Toast.LENGTH_LONG).show();
-//                    }
-//                    // 반대 핸드폰에서 희망 온도가 바뀌지 않는 경우에도 FCM이 가는걸 막으려면 if문을 밖으로 빼준다.
-//                } else if (control.equals("door")) { // 문 제어
-//                    if (data.equals("f")) {
-//                        imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
-//
-//                    } else if (data.equals("o")) {
-//                        imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
-//                    }
-//
-//                } else if (control.equals("starting")) { // 시동 제어
-//                    if (data.equals("o")) {
-//                        imageButton_startingOn.setImageResource(R.drawable.startingon);
-//                    } else if (data.equals("f")) {
-//                        imageButton_startingOff.setImageResource(R.drawable.startingoff);
-//                    }
-//                } // 추가로 제어할 것이 있으면 이곳에 else if 추가
-
-                vibrate(500, 5);
+                vibrate(300, 5);
 
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -618,33 +595,33 @@ public class CarActivity extends AppCompatActivity {
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
 
-                builder.setContentTitle(title);
+                builder.setContentTitle(carid+" "+type+" "+control);
 
 
-                // control이 temper면, data(온도값)을 set해라
-                if (control.equals("temper")) {
-                    builder.setContentText(control + " 이(가)" + data + " ℃로 변경되었습니다.");
-                } // 문 제어
-                else if (control.equals("door")) {
-                    if (data.equals("f")) {
-                        builder.setContentText(control + " 이(가) LOCK 상태로 변경되었습니다.");
-                    } else if (data.equals("o")) {
-                        builder.setContentText(control + " 이(가) UNLOCK 상태로 변경되었습니다.");
-                    }
-
-                } // 시동 제어
-                else if (control.equals("starting")) {
-                    if (data.equals("o")) {
-                        builder.setContentText(control + " 이(가) ON 상태로 변경되었습니다.");
-                    } else if (data.equals("f")) {
-                        builder.setContentText(control + " 이(가) OFF 상태로 변경되었습니다.");
-                    }
-                }
+//                // control이 temper면, data(온도값)을 set해라
+//                if (control.equals("temper")) {
+//                    builder.setContentText(control + " 이(가)" + data + " ℃로 변경되었습니다.");
+//                } // 문 제어
+//                else if (control.equals("door")) {
+//                    if (data.equals("f")) {
+//                        builder.setContentText(control + " 이(가) LOCK 상태로 변경되었습니다.");
+//                    } else if (data.equals("o")) {
+//                        builder.setContentText(control + " 이(가) UNLOCK 상태로 변경되었습니다.");
+//                    }
+//
+//                } // 시동 제어
+//                else if (control.equals("starting")) {
+//                    if (data.equals("o")) {
+//                        builder.setContentText(control + " 이(가) ON 상태로 변경되었습니다.");
+//                    } else if (data.equals("f")) {
+//                        builder.setContentText(control + " 이(가) OFF 상태로 변경되었습니다.");
+//                    }
+//                }
 
 
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
-                //manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
+                manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
             }
         }
     };

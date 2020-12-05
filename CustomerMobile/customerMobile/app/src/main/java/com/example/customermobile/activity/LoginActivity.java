@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
         token = sptoken.getString("token", "");
 
+
         // 인텐트로 string을 받아 toast를 띄워주는 부분
         Intent intent = getIntent();
         String getintent = intent.getStringExtra("toast");
@@ -230,6 +231,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d("[Log]", token);
                     }
                 });
+
     }
 
 
@@ -277,7 +279,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            Log.d("[Log]", "preExecute");
             progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setTitle("Login");
             progressDialog.setCancelable(false);

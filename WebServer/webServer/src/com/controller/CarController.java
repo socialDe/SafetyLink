@@ -20,12 +20,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.frame.Biz;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.Message;
 import com.vo.CarSensorVO;
 import com.vo.CarVO;
+import com.vo.UsersVO;
 
 @Controller
 public class CarController {
 	
+	@Resource(name="ubiz")
+	Biz<String,String,UsersVO> ubiz;
 	@Resource(name="cbiz")
 	Biz<Integer,String,CarVO> cbiz;
 	@Resource(name="sbiz")
@@ -142,6 +150,9 @@ public class CarController {
 			e1.printStackTrace();
 		}
 		
+
+		String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
+		
 		
 		if(type.equals("starting")) {
 			
@@ -165,8 +176,9 @@ public class CarController {
 			e.printStackTrace();
 		}
 		
-			
-				
+
+		
+		
 		
 		// FCM으로 차량 제어
 		URL url = null;
@@ -190,11 +202,15 @@ public class CarController {
 
 		// set my firebase server key
 		conn.setRequestProperty("Authorization", "key="
-				+ "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
+				+ "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
 
 		// create notification message into JSON format
 		JSONObject message = new JSONObject();
-		message.put("to", "/topics/car");
+		
+		System.out.println(token);
+		
+		message.put("to", token);
+		//message.put("to", "cc2HxZRBKwU:APA91bE4hev939gcGtMkMBakY75puzTTqhzAZmGAhW31AnPMZ3Iv5OQ3gUmDmCTrDpW_dKNJfHkYi_HV1VE7TotqmNhN7_vUb_7MgBe7xyOoYHm_7QBw1yZUym2dtrIkkVkeH4Hx2yXs");
 		message.put("priority", "high");
 		
 		JSONObject notification = new JSONObject();
@@ -222,10 +238,10 @@ public class CarController {
 			e.printStackTrace();
 		}
 		
+	
+		
 		
 	}
 	
-	
-
-	
+		
 }
