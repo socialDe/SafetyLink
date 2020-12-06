@@ -6,7 +6,7 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 <mapper namespace="com.dao.CarDAO">
 	
 	<insert id="insert" parameterType="car">
-		INSERT INTO CAR VALUES (C_SEQ.NEXTVAL,#{userid},#{carnum},#{carname},#{cartype},#{carmodel},#{caryear},#{carimg},#{caroiltype},#{tablettoken})
+		INSERT INTO CAR VALUES (C_SEQ.NEXTVAL,#{userid},#{carnum, jdbcType=VARCHAR},#{carname, jdbcType=VARCHAR},#{cartype},#{carmodel},#{caryear},#{carimg, jdbcType=VARCHAR},#{caroiltype},#{tablettoken})
 	</insert>
 	
 	<update id="update" parameterType="car">

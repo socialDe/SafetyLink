@@ -46,11 +46,11 @@ public class UserController {
 				
 				System.out.println("dbtoken:"+user.getMobiletoken());
 				
-				// 로그인 상태이며 토큰이 다를 경우
-				if(user.getUserstate().equals("t") || !user.getMobiletoken().equals(token)) {
-					out.print("login");
-					System.out.println("logined..........");
-				} else {
+//				// 로그인 상태이며 토큰이 다를 경우
+//				if(user.getUserstate().equals("t") || !user.getMobiletoken().equals(token)) {
+//					out.print("login");
+//					System.out.println("logined..........");
+//				} else {
 					// 로그인 상태 설정, DB 수정
 					user.setUserstate("t");
 					user.setMobiletoken(token);
@@ -73,7 +73,7 @@ public class UserController {
 					jo.put("accpushcheck", user.getAccpushcheck());
 					jo.put("mobiletoken", user.getMobiletoken());
 					out.print(jo.toJSONString());
-				}
+//				}
 			} else {
 				out.print("cannot");
 			}

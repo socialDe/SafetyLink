@@ -32,8 +32,8 @@ import com.vo.UsersVO;
 @Controller
 public class CarController {
 	
-	@Resource(name="ubiz")
-	Biz<String,String,UsersVO> ubiz;
+	// @Resource(name="ubiz")
+	// Biz<String,String,UsersVO> ubiz;
 	@Resource(name="cbiz")
 	Biz<Integer,String,CarVO> cbiz;
 	@Resource(name="sbiz")
@@ -76,9 +76,9 @@ public class CarController {
 
 		out.print(ja.toJSONString());
 		out.close();
-		
+
 	}
-	
+
 	// 차량센서 데이터
 	@RequestMapping("/carsensordata.mc")
 	@ResponseBody
@@ -143,7 +143,7 @@ public class CarController {
 		
 		// DB에 control 변경값 저장
 		CarSensorVO dbcarsensor = null;
-		
+
 		try {
 			dbcarsensor = sbiz.get(Integer.parseInt(carid));
 		} catch (Exception e1) {
@@ -244,4 +244,59 @@ public class CarController {
 	}
 	
 		
+
+
+	// 차량 등록
+	@RequestMapping("/carregisterimpl.mc")
+	public void carregisterimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+
+		String userid = request.getParameter("userid");
+		String carnum = request.getParameter("num");
+		String cartype = request.getParameter("cartype");
+		String carmodel = request.getParameter("model");
+		int caryear = Integer.parseInt(request.getParameter("year"));
+		String carimg = request.getParameter("img");
+		String caroiltype = request.getParameter("oilType");
+		String tablettoken = request.getParameter("token");
+		// String carnum, String cartype, String carmodel, int caryear, String
+		// caroiltype, String tablettoken
+		CarVO car = new CarVO(userid, carnum, cartype, carmodel, caryear, carimg, caroiltype, tablettoken);
+		System.out.println(car);
+
+		try {
+			cbiz.register(car);
+			out.print("success");
+		} catch (Exception e) {
+			out.print("fail");
+			throw e;
+		}
+
+		out.close();
+	}
+
+	// 토큰이 바꼈을 때 car number을 통해 token 업데이트
+	@RequestMapping("/tokenupdateimpl")
+	public void tokenupdateimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+
+		String carnum = request.getParameter("num");
+		String tablettoken = request.getParameter("token");
+		CarVO car = new CarVO(carnum, tablettoken);
+		System.out.println(car);
+
+		try {
+			cbiz.modify(car);
+			out.print("success");
+		} catch (Exception e) {
+			out.print("fail");
+			throw e;
+		}
+
+		out.close();
+	}
 }

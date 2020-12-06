@@ -170,7 +170,7 @@ public class CarActivity extends AppCompatActivity {
         address = ip;
         id = "MobileJH";
 
-        //new Thread(con).start(); // 풀면 tcpip 사용
+        new Thread(con).start(); // 풀면 tcpip 사용
 
 
         // 상단 바 설정
