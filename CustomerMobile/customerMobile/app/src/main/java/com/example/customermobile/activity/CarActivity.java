@@ -167,10 +167,11 @@ public class CarActivity extends AppCompatActivity {
 
         // tcpip 설정
         port = 5558;
-        address = ip;
-        id = "MobileJH";
+        address = "192.168.0.109";
+        id = "Mobile";
 
         new Thread(con).start(); // 풀면 tcpip 사용
+        Log.d("[TAG]","TAG00----------");
 
 
         // 상단 바 설정
@@ -511,7 +512,9 @@ public class CarActivity extends AppCompatActivity {
         public void run() {
             try {
                 connect();
+                Log.d("[TAG]","TAG-0----------");
             } catch (IOException e) {
+                Log.d("[TAG]","TAG-err----------");
                 e.printStackTrace();
             }
         }
@@ -522,11 +525,13 @@ public class CarActivity extends AppCompatActivity {
         // 소켓이 만들어지는 구간
         try {
             socket = new Socket(address, port);
+            Log.d("[TAG]","TAG-1----------");
         } catch (Exception e) {
             while (true) {
                 try {
                     Thread.sleep(2000);
                     socket = new Socket(address, port);
+                    Log.d("[TAG]","TAG-11----------");
                     break;
                 } catch (Exception e1) {
                     System.out.println("Retry...");
@@ -534,7 +539,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("Connected Server:" + address);
+        Log.d("[TAG]","Connected Server:" + address);
 
         sender = new Sender(socket);
         new Receiver(socket).start();

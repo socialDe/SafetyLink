@@ -48,7 +48,7 @@ public class Server {
 					try {
 						Socket socket = null;
 						System.out.println("Server Ready..");
-						socket = serverSocket.accept();
+						System.out.println(serverSocket.toString());
 						System.out.println("Connected:" + socket.getInetAddress() + " " + timeNow); // 연결된 IP표시
 						new Receiver(socket).start();
 
