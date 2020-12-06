@@ -56,6 +56,16 @@
     display: none;
 }
 
+.ui-datepicker-year, .ui-datepicker-month{
+	display: inline-block;
+	
+}
+
+.hasDatepicker{
+	display: inline-block;
+	width: 30%;
+}
+
 #submitButton:focus {
     outline: none;
     background-color: #2bbbad;
@@ -109,7 +119,7 @@ $(document).ready(function (){
 				div3.style.display = 'none';
 			}else if(this.value=='Period'){
 				div1.style.display = 'none';
-				div2.style.display = 'block';
+				div2.style.display = 'inline-block';
 				div3.style.display = 'none';
 			}else if(this.value=='Time'){
 				div1.style.display = 'none';
@@ -152,7 +162,7 @@ $(document).ready(function (){
 	});
 
 	
-	// 월 단위 datepicker
+/* 	// 월 단위 datepicker
 	$.datepicker.setDefaults({
  		dateFormat: 'yy-mm', // Input Date Format 설정
 	    showMonthAfterYear:true, // 년도 먼저 나오고, 뒤에 월 표시
@@ -192,8 +202,62 @@ $(document).ready(function (){
 	if(div2.style.display == 'block'){
 	 	$('#startDate').datepicker('setDate', '-6M');
 		$('#endDate').datepicker('setDate', '-1M')
-	}
+	} */
 	
+	
+	$.datepicker.regional['ko'] = {
+	        closeText: '닫기',
+	        prevText: '이전달',
+	        nextText: '다음달',
+	        currentText: '오늘',
+	        monthNames: ['1월(JAN)','2월(FEB)','3월(MAR)','4월(APR)','5월(MAY)','6월(JUN)',
+	        '7월(JUL)','8월(AUG)','9월(SEP)','10월(OCT)','11월(NOV)','12월(DEC)'],
+	        monthNamesShort: ['1월','2월','3월','4월','5월','6월',
+	        '7월','8월','9월','10월','11월','12월'],
+	        dayNames: ['일','월','화','수','목','금','토'],
+	        dayNamesShort: ['일','월','화','수','목','금','토'],
+	        dayNamesMin: ['일','월','화','수','목','금','토'],
+	        weekHeader: 'Wk',
+	        dateFormat: 'yy-mm-dd',
+	        firstDay: 0,
+	        isRTL: false,
+	        showMonthAfterYear: true,
+	        yearSuffix: '',
+	        changeMonth: true,
+	        changeYear: true,
+	        showButtonPanel: true,
+	        yearRange: 'c-99:c+99'
+	    };
+	    $.datepicker.setDefaults($.datepicker.regional['ko']);
+
+	    var datepicker_default = {
+	        currentText: "이번달",
+	        changeMonth: true,
+	        changeYear: true,
+	        showButtonPanel: true,
+	        yearRange: 'c-2:c',
+	        showOtherMonths: true,
+	        selectOtherMonths: true
+	    }
+
+	    datepicker_default.closeText = "선택";
+	    datepicker_default.dateFormat = "yy-mm";
+	    datepicker_default.onClose = function (dateText, inst) {
+	        var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+	        var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+	        $(this).datepicker( "option", "defaultDate", new Date(year, month, 1) );
+	        $(this).datepicker('setDate', new Date(year, month, 1));
+	    }
+
+	    datepicker_default.beforeShow = function () {
+	        var selectDate = $("#startDate").val().split("-");
+	        var year = Number(selectDate[0]);
+	        var month = Number(selectDate[1]) - 1;
+	        $(this).datepicker( "option", "defaultDate", new Date(year, month, 1) );
+	    }
+
+	    $("#startDate").datepicker(datepicker_default);
+	    $("#endDate").datepicker(datepicker_default);
 	
 	
 	
@@ -889,7 +953,7 @@ function displayChart2(){
             <div id="page-inner"> 
              
            <div class="row"> 
-                  <div class="col-md-6 col-sm-12 col-xs-12">                     
+                  <div class="col-md-3">                     
                     <div class="card">
                         <div class="card-action">
                             Chart Filter
@@ -961,7 +1025,7 @@ function displayChart2(){
 								    	
 								    <div id = period_list style="display:none">
 								    	<p>Period</p>
-								    	<p><input type="text" id="startDate" name="startPeriod" data-toggle="datepicker" value="none">~<input type="text" id="endDate" name="endPeriod" data-toggle="datepicker" value="none"></p>
+								    	<p><input type="text" id="startDate" name="startPeriod" data-toggle="datepicker" value="시작 월 선택">~<input type="text" id="endDate" name="endPeriod" data-toggle="datepicker" value="종료 월 선택"></p>
 								    </div>
 								    
 								    <div id = time_list style="display:none">
@@ -1039,7 +1103,7 @@ function displayChart2(){
                         </div>
                     </div>            
                 </div>
-                      <div class="col-md-6 col-sm-12 col-xs-12">                     
+                      <div class="col-md-9">                     
                     <div class="card">
                         <div class="card-action">
                             Chart
