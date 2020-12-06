@@ -1,13 +1,23 @@
 package com.controller;
 
+import java.util.ArrayList;
+
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.frame.Biz;
+import com.vo.UsersVO;
+
 @Controller
 public class MainController {
 
+	@Resource(name = "ubiz")
+    Biz<String, UsersVO> ubiz;
 
+	
 	@RequestMapping("/main.mc")
 	public ModelAndView main() {
 		ModelAndView mv = new ModelAndView();
@@ -43,6 +53,15 @@ public class MainController {
     @RequestMapping("/table.mc")
     public ModelAndView table() {
             ModelAndView mv = new ModelAndView();
+            
+            ArrayList<UsersVO> usersInfo = new ArrayList<>();
+            try {
+				usersInfo = ubiz.get();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+            System.out.println(usersInfo);
+            mv.addObject("usersInfo",usersInfo);
             mv.setViewName("table");  
             return mv;
     }

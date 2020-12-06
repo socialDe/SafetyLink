@@ -15,7 +15,11 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
         </delete>
         
         <select id="select" parameterType="String" resultType="users">
-        		
+        		SELECT * FROM USERS
+        </select>
+        
+        <select id="selectall" resultType="users">
+        		SELECT * FROM USERS
         </select>
         
 </mapper>
