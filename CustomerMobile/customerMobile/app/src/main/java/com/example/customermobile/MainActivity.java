@@ -278,7 +278,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
         }
 
     }
@@ -375,7 +374,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
 
     private void connect() throws IOException {
         // 소켓이 만들어지는 구간
@@ -509,7 +507,6 @@ public class MainActivity extends AppCompatActivity {
                         builder.setContentText(control + " 이(가) OFF 상태로 변경되었습니다.");
                     }
                 }
-
 
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();

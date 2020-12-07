@@ -19,7 +19,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-
+//
 public class MainActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
     ActionBar actionBar;
@@ -48,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
             finish();
         } else if (pref.getString("token", "").equals("") || pref.getString("token", "") == null) {
             // token이 null이면 그대로 차량 등록을 진행한다
-        } else {
+        } else{
             // 토큰이 바꼈다면 url 연결해서 token값을 update 해줘야 함
             String num = pref.getString("num", "");
             String token = FirebaseInstanceId.getInstance().getToken();
             editor.putString("token", token);// 새로운 토큰 받아와서 SharedPreference에 저장
             editor.commit();
 
-            String url = "http://192.168.0.60/webServer/tokenupdateimpl.mc";
+            String url = "http://192.168.25.35/webServer/tokenupdateimpl.mc";
             url += "?num=" + num + "&token=" + token;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("token", token);
         editor.commit();
 
-        String url = "http://192.168.0.60/webServer/carregisterimpl.mc";
+        String url = "http://192.168.25.35/webServer/carregisterimpl.mc";
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
