@@ -1,6 +1,5 @@
 package com.example.customertablet;
 
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -10,20 +9,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private static final String TAG = "FMS";
-
-    public MyFirebaseMessagingService() {
-
+public class MyFService extends FirebaseMessagingService {
+    public MyFService() {
     }
 
-    @Override
-    public void onNewToken(String token){
-        super.onNewToken(token);
-        Log.e(TAG, "onNewToken 호출됨 : "+ token);
-    }
-
-    //    생성
+//    생성
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         String title = remoteMessage.getNotification().getTitle();
@@ -32,21 +22,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String contents = remoteMessage.getData().get("contents");
 
         Log.d("[TAG]",title+" "+carid+" "+contents);
+
         Intent intent = new Intent("notification");
         intent.putExtra("carid",carid);
         intent.putExtra("contents",contents);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
-    private void sendToActivity(Context context, String from, String contents){
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("from", from);
-        intent.putExtra("contents", contents);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|
-                Intent.FLAG_ACTIVITY_SINGLE_TOP|
-                Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        context.startActivity(intent);
-    }
 }

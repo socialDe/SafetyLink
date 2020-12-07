@@ -129,16 +129,15 @@ public class CarController {
 	}
 	
 	
-	// 차량 제어
-	@RequestMapping("/control.mc")
+	// FCM전송 함수
+	@RequestMapping("/sendfcm.mc")
 	@ResponseBody
-	public void control(HttpServletRequest request, HttpServletResponse res) throws Exception {
+	public void sendfcm(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
 		String carid = request.getParameter("carid");
-		String type = request.getParameter("type");
-		String control = request.getParameter("control");
+		String contents = request.getParameter("contents");
 		
-		System.out.println(carid+" "+type+" "+control);
+		System.out.println(carid+" "+contents);
 		
 		
 		// DB에 control 변경값 저장
@@ -151,20 +150,29 @@ public class CarController {
 		}
 		
 
-		String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
+		//String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
+		String token = "f-elHc_dSWmzNmggDPXniF:APA91bFau8uHurIBjjakAoY4s3MKbCV30sTx5B0rgm9mVde2eZDaLRMNAOlqUs5utK-NhBD7rG4qqQOLh2KYRlY-WXXJMpe-5g7IhA66YYo-T1bkhh_hlBHldvRA3Cmhnvh13dO7U9ZD";
 		
 		
-		if(type.equals("starting")) {
+		if(contents.equals("on")) {
 			
-			dbcarsensor.setStarting(control);
+			dbcarsensor.setStarting("o");
 			
-		}else if(type.equals("door")) {
+		}else if(contents.equals("off")) {
 			
-			dbcarsensor.setDoor(control);
+			dbcarsensor.setStarting("f");
 			
-		}else if(type.equals("temper")) {
+		}else if(contents.equals("open")) {
 			
-			dbcarsensor.setTemper(Integer.parseInt(control));
+			dbcarsensor.setDoor("o");
+			
+		}else if(contents.equals("close")) {
+			
+			dbcarsensor.setDoor("f");
+			
+		}else if(contents.charAt(0) =='T') {
+			
+			dbcarsensor.setTemper(Integer.parseInt(contents.substring(1)));
 			
 		}
 		
@@ -209,19 +217,18 @@ public class CarController {
 		
 		System.out.println(token);
 		
-		message.put("to", token);
-		//message.put("to", "cc2HxZRBKwU:APA91bE4hev939gcGtMkMBakY75puzTTqhzAZmGAhW31AnPMZ3Iv5OQ3gUmDmCTrDpW_dKNJfHkYi_HV1VE7TotqmNhN7_vUb_7MgBe7xyOoYHm_7QBw1yZUym2dtrIkkVkeH4Hx2yXs");
+		//message.put("to", token);
+		message.put("to", "/topics/car");
 		message.put("priority", "high");
 		
 		JSONObject notification = new JSONObject();
 		notification.put("title", "차 제어");
-		notification.put("body", "test:"+carid+" "+type+" "+control);
+		notification.put("body", "test:"+carid+" "+contents);
 		message.put("notification", notification);
 		
 		JSONObject data = new JSONObject();
 		data.put("carid",carid);
-		data.put("type",type);
-		data.put("control", control);
+		data.put("contents",contents);
 		message.put("data", data);
 
 

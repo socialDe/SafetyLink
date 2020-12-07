@@ -274,9 +274,9 @@ public class CarActivity extends AppCompatActivity {
         carSensorAsync.execute(carSensorUrl);
     }
 
-    public void control(String type, String control) {
-        String urlstr = "http://" + ip + "/webServer/control.mc";
-        String conrtolUrl = urlstr + "?carid=" + nowcarid + "&type=" + type + "&control=" + control;
+    public void sendfcm(String contents) {
+        String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
+        String conrtolUrl = urlstr + "?carid=" + nowcarid +"&contents=" + contents;
 
         Log.d("[TEST]", conrtolUrl);
 

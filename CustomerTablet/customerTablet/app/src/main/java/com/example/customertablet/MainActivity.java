@@ -5,10 +5,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,16 +18,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.customertablet.df.DataFrame;
 import com.google.firebase.iid.FirebaseInstanceId;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Date;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
@@ -42,35 +31,12 @@ public class MainActivity extends AppCompatActivity {
     String[] carType = {"승용차", "승합차", "트럭"};
     String[] oilType = {"휘발유", "경유", "전기차", "LPG", "수소차", "하이브리드"};
 
-    // TCP/IP 통신
-    int port;
-    String address;
-    String id;
-    Socket socket;
 
-    // TCP/IP Server
-    ServerSocket serverSocket;
-    int serverPort = 5558;
-    Sender sender;
-    HashMap<String, ObjectOutputStream> maps = new HashMap<>();
-
-    // 현재 시간 표시 설정
-    SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-    Date time = new Date();
-    String timeNow = format.format(time);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // serverStart
-        //Server server = new Server(5558);
-        try {
-            startServer();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         // token 비교를 위한 SharedPreferences 사용 준비
         SharedPreferences pref = getSharedPreferences("token", MODE_PRIVATE);
@@ -90,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("token", token);// 새로운 토큰 받아와서 SharedPreference에 저장
             editor.commit();
 
-            String url = "http://192.168.0.103/webServer/tokenupdateimpl.mc";
+            String url = "http://192.168.0.37/webServer/tokenupdateimpl.mc";
             url += "?num=" + num + "&token=" + token;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -145,135 +111,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//        // 현재 시간 표시 설정
-//        SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-//        Date time = new Date();
-//        String timeNow = format.format(time);
 
 
-    public void startServer() throws Exception {
-        serverSocket = new ServerSocket(serverPort);
-        Log.d("[Server]", "Start Server...");
-
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Socket socket = null;
-                        Log.d("[Server]", "Server Ready..");
-                        Log.d("[Server]", serverSocket.toString());
-                        socket = serverSocket.accept();
-                        Log.d("[Server]", "Connected:" + socket.getInetAddress() + " " + timeNow); // 연결된 IP표시
-                        new Receiver(socket).start();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        };
-        new Thread(r).start();
-    }
-
-    class Receiver extends Thread {
-        Socket socket;
-        ObjectInputStream oi;
-
-
-        public Receiver(Socket socket) throws IOException {
-            this.socket = socket;
-            ObjectOutputStream oo;
-            oi = new ObjectInputStream(this.socket.getInputStream());
-            oo = new ObjectOutputStream(this.socket.getOutputStream());
-
-            maps.put(socket.getInetAddress().toString(), oo);
-            Log.d("[Server]", "[Server]" + socket.getInetAddress() + "연결되었습니다.");
-        }
-
-
-        @Override
-        public void run() {
-            while (oi != null) {
-                try {
-                    DataFrame input = (DataFrame) oi.readObject();
-                    Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
-
-                    sendDataFrame(input);
-
-
-                } catch (Exception e) {
-                    maps.remove(socket.getInetAddress().toString());
-                    Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
-                    e.printStackTrace();
-                    Log.d("[Server]", socket.getInetAddress() + " :Receiver 객체 수신 실패 ");
-
-                    break;
-                }
-            } // end while
-
-            try {
-                if (oi != null) {
-                    Log.d("[Server]", "ObjectInputStream Closed ..");
-                    oi.close();
-                }
-                if (socket != null) {
-                    Log.d("[Server]", "Socket Closed ..");
-                    socket.close();
-                }
-            } catch (Exception e) {
-                Log.d("[Server]", "객체 수신 실패 후 InputStream, socket 닫기 실패");
-            }
-
-        }
-    }// End Receiver
-
-    public void sendDataFrame(DataFrame df) {
-        try {
-            sender = new Sender();
-            Log.d("[Server]", "setDataFrame 실행");
-            sender.setDataFrame(df);
-            Log.d("[Server]", "객체 송신 Thread 호출");
-            sender.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    class Sender extends Thread {
-        DataFrame dataFrame;
-        Socket socket;
-
-        public Sender() {
-
-        }
-
-        public void setDataFrame(DataFrame df) {
-            this.dataFrame = df;
-            Log.d("[Server]", "setDataFrame 완료");
-        }
-
-        @Override
-        public void run() {
-            try {
-                Log.d("[Server]", "Sender Thread 실행");
-                // dataFrame.setIp("192.168.35.149");
-                // dataFrame.setSender("[TabletServer]");
-                // Log.d("[Server]", "테스트 목적 Client로 목적지 재설정");
-
-                maps.get("/" + dataFrame.getIp()).writeObject(dataFrame);
-                Log.d("[Server]", "Sender 객체 전송.. " + dataFrame.getIp() + "주소로 " + dataFrame.getContents());
-                Log.d("[Server]", "Sender 객체 전송 성공");
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
 
 
     // Car Register
@@ -305,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("token", token);
         editor.commit();
 
-        String url = "http://192.168.0.103/webServer/carregisterimpl.mc";
+        String url = "http://192.168.0.37/webServer/carregisterimpl.mc";
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);

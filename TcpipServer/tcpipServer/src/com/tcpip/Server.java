@@ -22,7 +22,7 @@ public class Server {
     HashMap<String, ObjectOutputStream> maps = new HashMap<>();
     int serverPort;
     
-    // 현재 시간 표시 설정
+    // �쁽�옱 �떆媛� �몴�떆 �꽕�젙
     SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
     Date time = new Date();
     String timeNow = format.format(time);
@@ -49,7 +49,8 @@ public class Server {
 						Socket socket = null;
 						System.out.println("Server Ready..");
 						System.out.println(serverSocket.toString());
-						System.out.println("Connected:" + socket.getInetAddress() + " " + timeNow); // 연결된 IP표시
+						socket = serverSocket.accept();
+						System.out.println("Connected:" + socket.getInetAddress() + " " + timeNow); // �뿰寃곕맂 IP�몴�떆
 						new Receiver(socket).start();
 
 					} catch (IOException e) {
@@ -74,7 +75,7 @@ public class Server {
             oo = new ObjectOutputStream(this.socket.getOutputStream());
             
             maps.put(socket.getInetAddress().toString(), oo);
-            System.out.println("[Server]"+socket.getInetAddress()+"연결되었습니다.");
+            System.out.println("[Server]"+socket.getInetAddress()+"�뿰寃곕릺�뿀�뒿�땲�떎.");
         }
 
 
@@ -83,16 +84,16 @@ public class Server {
 			while (oi != null) {
 				try {
 					DataFrame input = (DataFrame) oi.readObject();
-					System.out.println("[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
+					System.out.println("[DataFrame �닔�떊] " + input.getSender() + ": " + input.getContents());
 						
-					sendDataFrame(input);
+					//sendDataFrame(input);
 										
 
 				} catch (Exception e) {
 					maps.remove(socket.getInetAddress().toString());
                 	System.out.println(socket.getInetAddress()+" Exit..."+timeNow);
                 	e.printStackTrace();
-                	System.out.println(socket.getInetAddress() +" :Receiver 객체 수신 실패 ");
+                	System.out.println(socket.getInetAddress() +" :Receiver 媛앹껜 �닔�떊 �떎�뙣 ");
 
 					break;
 				}
@@ -108,7 +109,7 @@ public class Server {
 					socket.close();
 				}
 			} catch (Exception e) {
-				System.out.println("객체 수신 실패 후 InputStream, socket 닫기 실패");
+				System.out.println("媛앹껜 �닔�떊 �떎�뙣 �썑 InputStream, socket �떕湲� �떎�뙣");
 			}
 
 		}
@@ -117,9 +118,9 @@ public class Server {
 	public void sendDataFrame(DataFrame df) {
 		try {
 			sender = new Sender();
-			System.out.println("setDataFrame 실행");
+			System.out.println("setDataFrame �떎�뻾");
 			sender.setDataFrame(df);
-			System.out.println("객체 송신 Thread 호출");
+			System.out.println("媛앹껜 �넚�떊 Thread �샇異�");
 			sender.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -137,20 +138,20 @@ public class Server {
 
 		public void setDataFrame(DataFrame df) {
 			this.dataFrame = df;
-			System.out.println("setDataFrame 완료");
+			System.out.println("setDataFrame �셿猷�");
 		}
 
 		@Override
 		public void run() {
 			try {
-				System.out.println("Sender Thread 실행");
+				System.out.println("Sender Thread �떎�뻾");
 				// dataFrame.setIp("192.168.35.149");
 				// dataFrame.setSender("[TabletServer]");
-				// Log.d("[Server]", "테스트 목적 Client로 목적지 재설정");
+				// Log.d("[Server]", "�뀒�뒪�듃 紐⑹쟻 Client濡� 紐⑹쟻吏� �옱�꽕�젙");
 
 				maps.get("/"+dataFrame.getIp()).writeObject(dataFrame);
-                System.out.println("Sender 객체 전송.. "+dataFrame.getIp()+"주소로 "+dataFrame.getContents());
-                System.out.println( "Sender 객체 전송 성공");
+                System.out.println("Sender 媛앹껜 �쟾�넚.. "+dataFrame.getIp()+"二쇱냼濡� "+dataFrame.getContents());
+                System.out.println( "Sender 媛앹껜 �쟾�넚 �꽦怨�");
 
 			} catch (IOException e) {
 				e.printStackTrace();
