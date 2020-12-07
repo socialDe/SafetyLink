@@ -7,4 +7,7 @@
     <color name="black">#000000</color>
 
     <color name="skyBlue">#57A8D8</color>
+
+    <color name="ic_launcher_logo1_background">#EEEEEE</color>
+    <color name="ic_launcher_logo2_background">#46C3CB</color>
 </resources>

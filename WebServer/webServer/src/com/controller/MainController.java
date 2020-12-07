@@ -15,7 +15,7 @@ import com.vo.UsersVO;
 public class MainController {
 
 	@Resource(name = "ubiz")
-    Biz<String, UsersVO> ubiz;
+    Biz<String, String, UsersVO> ubiz;
 
 	
 	@RequestMapping("/main.mc")

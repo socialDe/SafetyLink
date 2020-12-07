@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.CarSensorDAO">
+	
+	<insert id="insert" parameterType="carsensor">
+		INSERT INTO CARSENSOR VALUES (#{carid},#{heartbeat},#{pirfront},#{pirrear},#{freight},#{fuel},#{fuelmax},#{temper},#{starting},#{moving},#{movingstarttime},#{aircon},#{crash},#{door},#{lat},#{lng})
+	</insert>
+	
+	<update id="update" parameterType="carsensor">
+		UPDATE CARSENSOR SET HEARTBEAT=#{heartbeat},PIRFRONT=#{pirfront},PIRREAR=#{pirrear},FREIGHT=#{freight},FUEL=#{fuel},TEMPER=#{temper},STARTING=#{starting},MOVING=#{moving},AIRCON=#{aircon},CRASH=#{crash},DOOR=#{door},LAT=#{lat},LNG=#{lng} WHERE CARID=#{carid}
+	</update>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM CARSENSOR WHERE CARID=#{k}
+	</delete>
+	
+	<select id="select" parameterType="Integer" resultType="carsensor">
+		SELECT * FROM CARSENSOR WHERE CARID=#{k}
+	</select>
+	
+	<select id="selectall" resultType="carsensor">
+		SELECT * FROM CARSENSOR 
+	</select>
+	<select id="selectcarsfromuser" parameterType="carsensor" resultType="carsensor">
+		SELECT * FROM CARSENSOR WHERE CARID IN (SELECT CARID FROM CAR WHERE USERID=#{userid}) ORDER BY CARID
+	</select>
+	
+	
+</mapper>
+

@@ -6,6 +6,7 @@ import com.frame.Dao;
 import com.vo.UsersVO;
 
 @Repository("udao")
-public interface UsersDAO extends Dao<String, UsersVO> {
+
+public interface UsersDAO extends Dao<String, String, UsersVO> {
 
 }

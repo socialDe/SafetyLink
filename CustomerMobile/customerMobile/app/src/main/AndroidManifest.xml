@@ -2,21 +2,47 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.customermobile">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_logo1"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_logo1_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".SafetyFunctionSetting"></activity>
-        <activity android:name=".MainActivity">
+
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.CarRegisterActivity"></activity>
+        <!-- FService 추가 -->
+        <service android:name=".MyFService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name=".activity.CarActivity" />
+        <activity android:name=".activity.ResultPwdActivity" />
+        <activity android:name=".activity.ResultIdActivity" />
+        <activity android:name=".activity.FindPwdActivity" />
+        <activity android:name=".activity.FindIdActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.SocialRegisterActivity" />
+        <activity
+            android:name=".activity.LoginActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.MainActivity"></activity>
     </application>
 
 </manifest>
