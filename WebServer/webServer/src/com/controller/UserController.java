@@ -71,6 +71,8 @@ public class UserController {
 					jo.put("usersubject", user.getUsersubject());
 					jo.put("babypushcheck", user.getBabypushcheck());
 					jo.put("accpushcheck", user.getAccpushcheck());
+					jo.put("sleeppushcheck", user.getSleeppushcheck());
+					jo.put("droppushcheck", user.getDroppushcheck());
 					jo.put("mobiletoken", user.getMobiletoken());
 					out.print(jo.toJSONString());
 //				}

@@ -55,7 +55,7 @@ import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static String ip = "192.168.0.177";
+    public static String ip = "192.168.10.100";
 
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
@@ -377,6 +377,8 @@ public class LoginActivity extends AppCompatActivity {
                     String usersubject = jo.getString("usersubject");
                     String babypushcheck = jo.getString("babypushcheck");
                     String accpushcheck = jo.getString("accpushcheck");
+                    String sleeppushcheck = jo.getString("sleeppushcheck");
+                    String droppushcheck = jo.getString("droppushcheck");
                     String mobiletoken = jo.getString("mobiletoken");
 
                     // String 변수를 Date로 변환
@@ -385,7 +387,7 @@ public class LoginActivity extends AppCompatActivity {
                     Date userregdate = sdf.parse(strregdate);
 
                     // user 객체 생성
-                    user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
+                    user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, sleeppushcheck, droppushcheck, mobiletoken);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -404,6 +406,8 @@ public class LoginActivity extends AppCompatActivity {
                     edit.putString("usersubject", user.getUsersubject());
                     edit.putString("babypushcheck", user.getBabypushcheck());
                     edit.putString("accpushcheck", user.getAccpushcheck());
+                    edit.putString("sleeppushcheck", user.getAccpushcheck());
+                    edit.putString("droppushcheck", user.getAccpushcheck());
                     edit.putString("mobiletoken", user.getMobiletoken());
                     edit.commit();
                 }
