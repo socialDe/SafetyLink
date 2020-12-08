@@ -36,14 +36,13 @@ public class UsersVO {
 		this.userphone = userphone;
 	}
 
-	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex) {
-		super();
+	public UsersVO(String userid, String usersubject, String babypushcheck, String accpushcheck, String sleeppushcheck, String droppushcheck) {
 		this.userid = userid;
-		this.userpwd = userpwd;
-		this.username = username;
-		this.userphone = userphone;
-		this.userbirth = userbirth;
-		this.usersex = usersex;
+		this.usersubject = usersubject;
+		this.babypushcheck = babypushcheck;
+		this.accpushcheck = accpushcheck;
+		this.sleeppushcheck = sleeppushcheck;
+		this.droppushcheck = droppushcheck;
 	}
 
 	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex,

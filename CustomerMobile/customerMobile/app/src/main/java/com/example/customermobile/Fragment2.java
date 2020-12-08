@@ -50,7 +50,6 @@ public class Fragment2 extends Fragment {
                     intent.putExtra("userId",userId);
                     intent.putExtra("nowCarId", nowCarId);
                     intent.putExtra("nowCar", nowCar);
-                    intent.putExtra("user", user);
                     System.out.println("Intent putExtra: "+nowCarId);
                     startActivity(intent);
 
@@ -58,10 +57,10 @@ public class Fragment2 extends Fragment {
                     // 현재 선택된 차량이 트럭인 경우
                     Intent intent = new Intent(getActivity(), TruckFuncSetActivity.class);
                     intent.putExtra("userId",userId);
+                    intent.putExtra("nowCar", nowCar);
                     intent.putExtra("nowCarId", nowCarId);
                     System.out.println("Intent putExtra: "+nowCarId);
                     startActivity(intent);
-
                 }
 
 
