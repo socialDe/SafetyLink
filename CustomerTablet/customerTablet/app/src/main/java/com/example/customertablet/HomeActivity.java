@@ -196,7 +196,7 @@ public class HomeActivity extends AppCompatActivity {
                     // 받은 DataFrame을 웹서버로 HTTP 전송
                     // call AsynTask to perform network operation on separate thread
                     HttpAsyncTask httpTask = new HttpAsyncTask(HomeActivity.this);
-                    httpTask.execute("http://192.168.0.60/webServer/getTabletSensor.mc", input.getIp(), input.getSender(), input.getContents());
+                    httpTask.execute("http://192.168.25.35/webServer/getTabletSensor.mc", car.getCarid()+"", input.getContents());
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
                     Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
@@ -272,7 +272,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.0.60/webServer/cardata.mc?carid=1";
+        String carUrl = "http://192.168.25.35/webServer/cardata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -333,10 +333,10 @@ public class HomeActivity extends AppCompatActivity {
     /*
         HTTP 통신 Code
      */
-    public String GET(String webUrl, String ip, String sender, String contents) {
+    public String GET(String webUrl, String carid, String contents) {
         URL url = null;
         StringBuilder html = new StringBuilder();
-        webUrl += "?ip=" + ip + "&sender=" + sender + "&contents=" + contents;
+        webUrl += "?carid=" + carid + "&contents=" + contents;
         try {
             url = new URL(webUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -363,7 +363,7 @@ public class HomeActivity extends AppCompatActivity {
         return html.toString();
     }
 
-    public static String POST(String url, DataFrame df) {
+    public static String POST(String url, DataFrame df, CarVO car) {
         InputStream is = null;
         String result = "";
         try {
@@ -374,8 +374,7 @@ public class HomeActivity extends AppCompatActivity {
 
             // build jsonObject
             JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("ip", df.getIp());
-            jsonObject.accumulate("sender", df.getSender());
+            jsonObject.accumulate("carid", car.getCarid()+"");
             jsonObject.accumulate("contents", df.getContents());
 
             // convert JSONObject to JSON to String
@@ -443,13 +442,12 @@ public class HomeActivity extends AppCompatActivity {
         protected String doInBackground(String... urls) {
 
             dataF = new DataFrame();
-            dataF.setIp(urls[1]);
-            dataF.setSender(urls[2]);
-            dataF.setContents(urls[3]);
-            Log.d("[Server]", "[AsyncTask Background]" + urls[0] + urls[1] + urls[2] + urls);
+            car.getCarid(urls[1]); // CarVO에 public void get Carid(String url) 추가
+            dataF.setContents(urls[2]);
+            Log.d("[Server]", "[AsyncTask Background]" + urls[0] + urls[1] + urls);
 
 //            return POST(urls[0], dataF);
-            return GET(urls[0], urls[1], urls[2], urls[3]);
+            return GET(urls[0], urls[1], urls[2]);
         }
 
         // onPostExecute displays the results of the AsyncTask.

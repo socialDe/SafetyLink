@@ -79,13 +79,12 @@ public class TabletController {
 		return mv;
 	}
 	
-	@RequestMapping("/getFromTablet.mc")
+	@RequestMapping("/getTabletSensor.mc")
 	public void androidWithRequest(HttpServletRequest request) {
 		System.out.println("Tablet에서 연결");
-		String ip = request.getParameter("ip");
-		String sender = request.getParameter("sender");
+		String carid = request.getParameter("carid");
 		String contents = request.getParameter("contents");
-		System.out.println(ip+ " "+sender+" "+contents);
+		System.out.println(carid+" "+contents);
 	}
 	
 }

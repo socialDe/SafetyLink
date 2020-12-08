@@ -18,7 +18,7 @@ public class App2 {
 		System.out.println("Spring Started .......");
 		// IoC
 		
-		Biz<String,AdminVO> biz = (Biz)factory.getBean("abiz");
+		Biz<String,Integer,AdminVO> biz = (Biz)factory.getBean("abiz");
 		
 		//MemberVO u = new MemberVO("id73", "pwd73","�Ӹ���");
 		ArrayList<AdminVO> list = null;

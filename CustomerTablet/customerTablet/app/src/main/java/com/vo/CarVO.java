@@ -184,6 +184,8 @@ public class CarVO {
 				+ ", cartype=" + cartype + ", carmodel=" + carmodel + ", caryear=" + caryear + ", carimg=" + carimg
 				+ ", caroiltype=" + caroiltype + ", tablettoken=" + tablettoken + "]";
 	}
-	
-	
+
+
+	public void getCarid(String url) {
+	}
 }

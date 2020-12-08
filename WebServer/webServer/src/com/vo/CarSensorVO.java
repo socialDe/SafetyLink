@@ -23,6 +23,14 @@ public class CarSensorVO {
 	public CarSensorVO() {
 		super();
 	}
+	
+	public CarSensorVO(int carid, int temper, String starting, String moving) {
+		super();
+		this.carid = carid;
+		this.temper = temper;
+		this.starting = starting;
+		this.moving = moving;
+	}
 
 	public CarSensorVO(int carid, String pirfront, String pirrear, int freight, int temper, String crash) {
 		super();

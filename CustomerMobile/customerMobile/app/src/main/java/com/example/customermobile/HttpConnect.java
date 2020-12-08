@@ -10,11 +10,10 @@ import java.net.URL;
 public class HttpConnect {
     public static String getString(String urlstr){
         String result = null;
-        URL url = null;
         HttpURLConnection hcon = null;
         InputStream is = null;
         try{
-            url = new URL(urlstr);
+            URL url = new URL(urlstr);
             hcon = (HttpURLConnection)url.openConnection();
             hcon.setConnectTimeout(2000);
             hcon.setRequestMethod("GET");
@@ -23,10 +22,8 @@ public class HttpConnect {
         }catch(Exception e){
             e.printStackTrace();
         }
-
         return result;
     }
-
     public static String convertStr(InputStream is){
         String result = null;
         BufferedReader bi = null;
@@ -39,6 +36,7 @@ public class HttpConnect {
             while((temp =bi.readLine()) != null){
                 sb.append(temp);
             }
+
         }catch(Exception e){
             e.printStackTrace();
         }
