@@ -59,4 +59,10 @@ public class CarSensorBIZ implements Biz<Integer,String,CarSensorVO> {
 		return null;
 	}
 
+	@Override
+	public CarSensorVO caridfromnumber(String k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

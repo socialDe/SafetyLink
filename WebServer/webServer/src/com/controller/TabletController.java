@@ -7,16 +7,23 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.frame.Biz;
+import com.vo.CarVO;
+
 @Controller
 public class TabletController {
 	
+	@Resource(name="cbiz")
+	Biz<Integer,String,CarVO> cbiz;
 	
 	@RequestMapping("/fcmPhone.mc")
 	public ModelAndView inputChat(ModelAndView mv, String fcmContents) throws IOException {
@@ -80,11 +87,24 @@ public class TabletController {
 	}
 	
 	@RequestMapping("/getTabletSensor.mc")
-	public void androidWithRequest(HttpServletRequest request) {
+	public void androidWithRequest(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		System.out.println("Tablet에서 연결");
-		String carid = request.getParameter("carid");
+		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
-		System.out.println(carid+" "+contents);
+		System.out.println(carnum+" "+contents);
+		// 
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		
+		CarVO dbcar = null;
+		try {
+			dbcar = cbiz.get(carid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(dbcar);
+		// 이 부분에 수정할 코드를 넣는다
+		
+		cbiz.modify(dbcar);
 	}
 	
 }

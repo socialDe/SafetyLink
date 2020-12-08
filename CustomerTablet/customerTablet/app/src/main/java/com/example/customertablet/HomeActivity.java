@@ -1,17 +1,16 @@
 package com.example.customertablet;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.ProgressDialog;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,17 +27,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // HTTP
     DataFrame dataF;
-    static String strJson = "";
+    HttpAsyncTask httpAsyncTask;
 
     NotificationManager manager; // FCM을 위한 NotificationManager
 
@@ -77,6 +70,8 @@ public class HomeActivity extends AppCompatActivity {
     public void setCar(CarVO car) {
         this.car = car;
     }
+    SharedPreferences sp;
+    String carnum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,9 +101,7 @@ public class HomeActivity extends AppCompatActivity {
         imageView_weather = findViewById(R.id.imageView_weather);
         imageView_starting = findViewById(R.id.imageView_starting);
         imageView_moving = findViewById(R.id.imageView_moving);
-
         getSupportActionBar().hide(); // 화면 확보를 위해 ActionBar 제거
-
 //         FCM사용 (앱이 중단되어 있을 때 기본적으로 title,body값으로 푸시!!)
         FirebaseMessaging.getInstance().subscribeToTopic("car"). //구독, 이거랑 토큰으로 원하는 기능 설정하기(파이널 때, db 활용)
                 addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -132,9 +125,9 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        getCarData();
-
+        sp = getSharedPreferences("token",MODE_PRIVATE);
+        carnum = sp.getString("num","");
+        Log.d("[Server]",carnum);
 } // end OnCreate
 
     public void startServer() throws Exception {
@@ -195,8 +188,20 @@ public class HomeActivity extends AppCompatActivity {
                     });
                     // 받은 DataFrame을 웹서버로 HTTP 전송
                     // call AsynTask to perform network operation on separate thread
-                    HttpAsyncTask httpTask = new HttpAsyncTask(HomeActivity.this);
-                    httpTask.execute("http://192.168.25.35/webServer/getTabletSensor.mc", car.getCarid()+"", input.getContents());
+
+                    String url = "http://192.168.25.35/webServer/getTabletSensor.mc";
+                    url += "?carnum=" + carnum + "&contents=" + input.getContents()+"";
+                    httpAsyncTask = new HttpAsyncTask();
+                    // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    final String finalUrl = url;
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                                httpAsyncTask.execute(finalUrl);
+                        }
+                    },1000); // 1000으로 해야 돌아간다...
+
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
                     Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
@@ -269,7 +274,6 @@ public class HomeActivity extends AppCompatActivity {
     /*
             Car Data
     */
-
     public void getCarData() {
         // URL 설정.
         String carUrl = "http://192.168.25.35/webServer/cardata.mc?carid=1";
@@ -329,162 +333,37 @@ public class HomeActivity extends AppCompatActivity {
         }
 
     } // Car Data End
-
     /*
-        HTTP 통신 Code
-     */
-    public String GET(String webUrl, String carid, String contents) {
-        URL url = null;
-        StringBuilder html = new StringBuilder();
-        webUrl += "?carid=" + carid + "&contents=" + contents;
-        try {
-            url = new URL(webUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            if (con != null) {
-                con.setConnectTimeout(10000);
-                con.setUseCaches(false);
-                if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(
-                            new InputStreamReader(con.getInputStream()));
-                    for (; ; ) {
-                        String line = br.readLine();
-                        if (line == null) break;
-                        html.append(line);
-                        html.append('\n');
-                    }
-                    br.close();
-                }
-                con.disconnect();
-            }
-        } catch (Exception ex) {
-            ;
-        }
+    HTTP 통신 Code
+    */
+    class HttpAsyncTask extends AsyncTask<String, String, String> {
+        ProgressDialog progressDialog;
 
-        return html.toString();
-    }
-
-    public static String POST(String url, DataFrame df, CarVO car) {
-        InputStream is = null;
-        String result = "";
-        try {
-            URL urlCon = new URL(url);
-            HttpURLConnection httpCon = (HttpURLConnection) urlCon.openConnection();
-
-            String json = "";
-
-            // build jsonObject
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("carid", car.getCarid()+"");
-            jsonObject.accumulate("contents", df.getContents());
-
-            // convert JSONObject to JSON to String
-            json = jsonObject.toString();
-            Log.d("[Server]", "HTTP JSON 생성 후 전송 " + json);
-
-            // Set some headers to inform server about the type of the content
-            httpCon.setRequestProperty("Accept", "application/json");
-            httpCon.setRequestProperty("Content-type", "application/json");
-            httpCon.setRequestMethod("POST");
-
-            // OutputStream으로 POST 데이터를 넘겨주겠다는 옵션.
-            httpCon.setDoOutput(true);
-            // InputStream으로 서버로 부터 응답을 받겠다는 옵션.
-            httpCon.setDoInput(true);
-
-            // JSON 전송
-            OutputStream os = httpCon.getOutputStream();
-            os.write(json.getBytes("utf-8"));
-            os.flush();
-            Log.d("[Server]", "HTTP JSON 전송");
-
-
-            // receive response as inputStream
-            try {
-                is = httpCon.getInputStream();
-                // convert inputstream to string
-                if (is != null) {
-                    result = convertInputStreamToString(is);
-                    Log.d("[Server]", "HTTP 통신 수신: " + result);
-                } else
-                    result = "Did not work!";
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                httpCon.disconnect();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            Log.d("[Server]", e.getLocalizedMessage());
-        }
-
-        return result;
-    }
-
-    public boolean isConnected() {
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected())
-            return true;
-        else
-            return false;
-    }
-
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-
-        private HomeActivity homeAct;
-
-        HttpAsyncTask(HomeActivity homeActivity) {
-            this.homeAct = homeActivity;
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(HomeActivity.this);
+            progressDialog.setTitle("Send Data ...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
-        protected String doInBackground(String... urls) {
-
-            dataF = new DataFrame();
-            car.getCarid(urls[1]); // CarVO에 public void get Carid(String url) 추가
-            dataF.setContents(urls[2]);
-            Log.d("[Server]", "[AsyncTask Background]" + urls[0] + urls[1] + urls);
-
-//            return POST(urls[0], dataF);
-            return GET(urls[0], urls[1], urls[2]);
+        protected String doInBackground(String... strings) {
+            String url = strings[0].toString();
+            String result = HttpConnect.getString(url);
+            return result;
         }
 
-        // onPostExecute displays the results of the AsyncTask.
         @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            strJson = result;
-            homeAct.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(homeAct, "Received!", Toast.LENGTH_LONG).show();
-                    try {
-                        JSONArray json = new JSONArray(strJson);
-//                        homeAct.tx_logCtl2.setText(json.toString(1)); // Semi 때, 제어한 것 log로 찍어줬던 기능
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
         }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialog.dismiss();
+        }// End HTTP 통신 Code
     }
-
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while ((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }// End HTTP 통신 Code
-
-
   /*
        FCM 통신
                     */

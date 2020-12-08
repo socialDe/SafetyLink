@@ -25,8 +25,6 @@
 	<tx:annotation-driven transaction-manager="txManager" />
 
 
-
-
 	<!-- ViewResolver -->
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -61,27 +59,14 @@
 	</mvc:interceptors>
 	
 	
-	
 	<!-- 1. Database Setting -->
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName"			
-			value="oracle.jdbc.driver.OracleDriver" />    <!-- Oracle -->
-			<!-- value="org.mariadb.jdbc.Driver" />          -->  <!-- MariaDB -->
-		<property name="url"		
-		 	value="jdbc:oracle:thin:@127.0.0.1:49999:xe" />     <!-- Oracle  -->
-		 	<!-- value="jdbc:mariadb://192.168.111.111:3306/shopdb" />  -->  <!-- MariaDB -->
-		<property name="username" value="system" />
-		<property name="password" value="db" />
-	</bean>
-<!-- AWS 원격
+
  	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
- 		<property name="url" value="jdbc:oracle:thin:@192.168.0.60:1521:xe"/>
+ 		<property name="url" value="jdbc:oracle:thin:@192.168.25.35:1521:xe"/>
  		<property name="username" value="userdb"/>
  		<property name="password" value="111111"/>
  	</bean>
--->
 
 
 	<!-- 2. Transaction Setting -->

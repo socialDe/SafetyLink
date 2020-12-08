@@ -17,12 +17,22 @@ public class CarVO {
 		super();
 	}
 	
+	public CarVO(String carnum) {
+		this.carnum = carnum;
+	}
+
+
+
 	public CarVO(String carnum, String tablettoken) {
 		this.carnum = carnum;
 		this.tablettoken = tablettoken;
 	}
 
-
+	public CarVO(int carid, String carnum) {
+		super();
+		this.carid = carid;
+		this.carnum = carnum;
+	}
 
 	public CarVO(String carnum, String cartype, String carmodel, int caryear, String caroiltype) {
 		super();

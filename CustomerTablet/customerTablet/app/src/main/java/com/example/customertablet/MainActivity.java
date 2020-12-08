@@ -15,14 +15,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 //
 public class MainActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
-    ActionBar actionBar;
     EditText editText_carNum, editText_carYear, editText_carModel;
     Button button_carRegister;
     Spinner spinner_carType, spinner_oilType;
@@ -134,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         // token 비교를 위한 SharedPreferences 사용 준비
         SharedPreferences pref = getSharedPreferences("token", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("num", num);
+        editor.putString("num", num+"");
         editor.putString("token", token);
         editor.commit();
 
@@ -193,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("차량 등록");
                 builder.setMessage("차량이 등록되었습니다.");
-
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
