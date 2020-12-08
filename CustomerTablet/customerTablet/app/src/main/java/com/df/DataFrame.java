@@ -47,5 +47,12 @@ public class DataFrame implements Serializable {
         this.contents = contents;
     }
 
-
+    @Override
+    public String toString() {
+        return "DataFrame{" +
+                "ip='" + ip + '\'' +
+                ", sender='" + sender + '\'' +
+                ", contents='" + contents + '\'' +
+                '}';
+    }
 }

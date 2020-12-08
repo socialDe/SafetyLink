@@ -12,6 +12,7 @@ import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,13 +31,15 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 public class HomeActivity extends AppCompatActivity {
 
     // TCP/IP Server
     ServerSocket serverSocket;
-    int serverPort = 5558;
+    Socket socket = null;
+    int serverPort = 5554;
     Sender sender;
     HashMap<String, ObjectOutputStream> maps = new HashMap<>();
 
@@ -46,6 +49,8 @@ public class HomeActivity extends AppCompatActivity {
     String timeNow = format.format(time);
 
     NotificationManager manager;
+
+    DataFrame df = new DataFrame();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +96,6 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 while (true) {
                     try {
-                        Socket socket = null;
                         Log.d("[Server]", "Server Ready..");
                         socket = serverSocket.accept();
                         Log.d("[Server]", "Connected:" + socket.getInetAddress() + " " + timeNow); // 연결된 IP표시
@@ -104,21 +108,32 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         };
+
         new Thread(r).start();
     }
 
     class Receiver extends Thread {
         Socket socket;
-        ObjectInputStream oi;
+        ObjectInputStream oi = null;
 
 
         public Receiver(Socket socket) throws IOException {
+            Log.d("[Server]","Reciver(socket)...");
             this.socket = socket;
             ObjectOutputStream oo;
             oi = new ObjectInputStream(this.socket.getInputStream());
             oo = new ObjectOutputStream(this.socket.getOutputStream());
 
             maps.put(socket.getInetAddress().toString(), oo);
+
+
+            Iterator<String> keys = maps.keySet().iterator();
+            while( keys.hasNext() ){
+                String key = keys.next();
+                ObjectOutputStream value = maps.get(key);
+                Log.d("[Server]","키 : "+key+", 값 : "+value.toString());
+            }
+
             Log.d("[Server]", "[Server]" + socket.getInetAddress() + "연결되었습니다.");
         }
 
@@ -127,12 +142,10 @@ public class HomeActivity extends AppCompatActivity {
         public void run() {
             while (oi != null) {
                 try {
-                    Log.d("[Server]","--------1---------");
                     DataFrame input = (DataFrame) oi.readObject();
                     Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
 
-//                  sendDataFrame(input);
-
+                    //sendDataFrame(df);
 
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
@@ -193,7 +206,8 @@ public class HomeActivity extends AppCompatActivity {
                 // dataFrame.setIp("192.168.35.149");
                 // dataFrame.setSender("[TabletServer]");
                 // Log.d("[Server]", "테스트 목적 Client로 목적지 재설정");
-
+                Log.d("[Server]", "[hh]"+dataFrame.toString());
+                Log.d("[Server]", maps.toString());
                 maps.get("/" + dataFrame.getIp()).writeObject(dataFrame);
                 Log.d("[Server]", "Sender 객체 전송.. " + dataFrame.getIp() + "주소로 " + dataFrame.getContents());
                 Log.d("[Server]", "Sender 객체 전송 성공");
@@ -207,45 +221,56 @@ public class HomeActivity extends AppCompatActivity {
 
 
 
-    // FCM 수신
+    // MyFService.java의 intent 정보를 BroadcastReceiver를 통해 받는다
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
+                String title = intent.getStringExtra("title");
                 String carid = intent.getStringExtra("carid");
                 String contents = intent.getStringExtra("contents");
+                Toast.makeText(HomeActivity.this, "차량 상태가 변경되었습니다.", Toast.LENGTH_SHORT).show();
 
+                // 연결된 IP로 df를 보낸다다
+                df.setIp(socket.getInetAddress().toString().substring(1));
+                df.setSender("Mobile");
+                df.setContents(contents);
+                Log.d("[Server]",df.toString());
+                sendDataFrame(df);
 
 
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 NotificationCompat.Builder builder = null;
                 if (Build.VERSION.SDK_INT >= 26) {
-                    if (manager.getNotificationChannel("ch1") == null) {
+                    if (manager.getNotificationChannel("ch2") == null) {
                         manager.createNotificationChannel(
-                                new NotificationChannel("ch1", "chname", NotificationManager.IMPORTANCE_HIGH));
+                                new NotificationChannel("ch2", "chname", NotificationManager.IMPORTANCE_DEFAULT));
                     }
-                    builder = new NotificationCompat.Builder(context, "ch1");
+                    builder = new NotificationCompat.Builder(context, "ch2");
                 } else {
                     builder = new NotificationCompat.Builder(context);
                 }
 
-                Intent intent1 = new Intent(context, HomeActivity.class);
+                Intent intent1 = new Intent(context, MainActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(
-                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
-                );
-                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
-
-                builder.setContentTitle(carid+" "+contents);
-
+                //상단바 타이틀 설정
+                builder.setContentTitle(title);
+                //상단바 내용 설정
+                builder.setContentText(carid+ " " + contents);
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
-                manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
+                manager.notify(1, noti);
             }
+
         }
+
     };
+
 
 
 }

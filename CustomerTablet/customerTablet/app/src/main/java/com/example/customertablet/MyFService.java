@@ -21,7 +21,7 @@ public class MyFService extends FirebaseMessagingService {
         String carid = remoteMessage.getData().get("carid");
         String contents = remoteMessage.getData().get("contents");
 
-        Log.d("[TAG]",title+" "+carid+" "+contents);
+        Log.d("[TAG]","[TAG====]"+title+" "+carid+" "+contents);
 
         Intent intent = new Intent("notification");
         intent.putExtra("carid",carid);

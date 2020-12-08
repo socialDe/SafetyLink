@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             editor.putString("token", token);// 새로운 토큰 받아와서 SharedPreference에 저장
             editor.commit();
 
-            String url = "http://192.168.0.37/webServer/tokenupdateimpl.mc";
+            String url = "http://192.168.0.103/webServer/tokenupdateimpl.mc";
             url += "?num=" + num + "&token=" + token;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("token", token);
         editor.commit();
 
-        String url = "http://192.168.0.37/webServer/carregisterimpl.mc";
+        String url = "http://192.168.0.103/webServer/carregisterimpl.mc";
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);

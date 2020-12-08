@@ -574,8 +574,7 @@ public class CarActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String carid = intent.getStringExtra("carid");
-                String type = intent.getStringExtra("type");
-                String control = intent.getStringExtra("control");
+                String contents = intent.getStringExtra("contents");
 
                 vibrate(300, 5);
 
@@ -600,7 +599,7 @@ public class CarActivity extends AppCompatActivity {
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
 
-                builder.setContentTitle(carid+" "+type+" "+control);
+                builder.setContentTitle(carid+" "+contents);
 
 
 //                // control이 temper면, data(온도값)을 set해라
@@ -626,7 +625,12 @@ public class CarActivity extends AppCompatActivity {
 
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
-                manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
+
+                // push알람 일 때만 상단푸쉬를 띄워라
+                if(contents.substring(0,1).equals("pu")){
+                    manager.notify(1, noti);
+                }
+
             }
         }
     };

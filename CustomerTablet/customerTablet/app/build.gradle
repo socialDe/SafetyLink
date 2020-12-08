@@ -6,7 +6,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.customertablet"
+        applicationId "com.example.myapplication"
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
@@ -26,22 +26,20 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    //cardview 추가
-    implementation 'androidx.cardview:cardview:1.0.0'
-    // DrawerLayout 추가
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    // firebase 추가
     implementation 'com.google.firebase:firebase-core:17.2.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-//    // FCM 추가
-//    implementation platform('com.google.firebase:firebase-bom:26.1.0')
-//    implementation 'com.google.firebase:firebase-analytics'
+    //cardview 추가
+    implementation 'androidx.cardview:cardview:1.0.0'
+    // DrawerLayout 추가
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.github.owl-93:DeterminateProgressView:v1.4.1'
-    implementation "com.github.skydoves:progressview:1.1.0"
-    implementation "com.github.skydoves:progressview:1.1.0"
 }
