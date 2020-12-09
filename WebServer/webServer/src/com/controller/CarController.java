@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,12 @@ public class CarController {
 	Biz<Integer,String,CarVO> cbiz;
 	@Resource(name="sbiz")
 	Biz<Integer,String,CarSensorVO> sbiz;
+	
+	// 현재 시간 계산
+	SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd/HH:mm:ss");
+	Calendar time = Calendar.getInstance();
+	String timenow = format.format(time.getTime());
+
 	
 	// 차량 데이터
 	@RequestMapping("/cardata.mc")
@@ -305,5 +312,11 @@ public class CarController {
 		}
 
 		out.close();
+		
+		
 	}
 }
+
+
+
+

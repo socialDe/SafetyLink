@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 <mapper namespace="com.dao.UsersDAO">
 	
 	<insert id="insert" parameterType="users">
-		INSERT INTO USERS VALUES (#{userid},#{userpwd},#{username},#{userphone},#{userbirth},#{usersex},SYSDATE,'f','car','o','o',#{mobiletoken})
+		INSERT INTO USERS VALUES (#{userid},#{userpwd},#{username},#{userphone},#{userbirth},#{usersex},SYSDATE,'f','car','o','o','o','o',#{mobiletoken})
 	</insert>
 	
 	<update id="update" parameterType="users">

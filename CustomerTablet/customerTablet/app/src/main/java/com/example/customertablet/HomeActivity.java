@@ -50,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {
 
     NotificationManager manager;
 
-    DataFrame df = new DataFrame();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -231,6 +230,7 @@ public class HomeActivity extends AppCompatActivity {
                 String contents = intent.getStringExtra("contents");
                 Toast.makeText(HomeActivity.this, "차량 상태가 변경되었습니다.", Toast.LENGTH_SHORT).show();
 
+                DataFrame df = new DataFrame();
                 // 연결된 IP로 df를 보낸다다
                 df.setIp(socket.getInetAddress().toString().substring(1));
                 df.setSender("Mobile");
