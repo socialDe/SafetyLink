@@ -52,9 +52,6 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // ActionBar Setting
-        actionBar = getSupportActionBar();
-        actionBar.hide();
 
         // 디바이스 토큰 정보 가져오기
         sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);

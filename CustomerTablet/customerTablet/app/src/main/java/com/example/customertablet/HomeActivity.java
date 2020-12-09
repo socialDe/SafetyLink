@@ -1,9 +1,19 @@
 package com.example.customertablet;
 
+import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +24,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.df.DataFrame;
 import com.example.customertablet.network.HttpConnect;
@@ -116,8 +128,8 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // 여기서 부터는 앱 실행상태에서 상태바 설정!!
-//        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
-//        lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
+        LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
+        lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
         // serverStart
         try {
@@ -125,7 +137,7 @@ public class HomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        sp = getSharedPreferences("token",MODE_PRIVATE);
+        sp = getSharedPreferences("token", MODE_PRIVATE);
         carnum = sp.getString("num","");
         Log.d("[Server]",carnum);
 } // end OnCreate
@@ -333,6 +345,8 @@ public class HomeActivity extends AppCompatActivity {
         }
 
     } // Car Data End
+
+
     /*
     HTTP 통신 Code
     */
@@ -367,90 +381,93 @@ public class HomeActivity extends AppCompatActivity {
   /*
        FCM 통신
                     */
-//    public final BroadcastReceiver receiver = new BroadcastReceiver() { // FCM 받는 부분
-//        public void onReceive(Context context, Intent intent) {
-//            if (intent != null) {
-//                String title = intent.getStringExtra("title");
-//                final String control = intent.getStringExtra("control");
-//                final String data = intent.getStringExtra("data");
-//                // 데이터를 보낼 때마다 새로운 값을 getString하므로 final을 써도 된다
-//
-//                Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); // 진동 없애려면 삭제
-//                if (Build.VERSION.SDK_INT >= 26) { //버전 체크를 해줘야 작동하도록 한다
-//                    vibrator.vibrate(VibrationEffect.createOneShot(1000, 10));
-//                } else {
-//                    vibrator.vibrate(1000);
-//                }
-//
-//                if (control.equals("temp")) { // 받은 FCM 데이터를 화면에 seekBar와 Switch로 보여줌
-//                    seekBar.setProgress(Integer.parseInt(data.toString()), true);
-//                    tx_logTemp2.append("목표 온도가 " + data + "℃로 변경되었습니다." + "\n");
-//                    // sendDataFrame을 이용해 FCM으로 받은 데이터를 Car Head로 전송
-//                    final Set<String> set = maps.keySet(); // maps.keySet()를 통해 키<>를 받아옴
-//                    DataFrame df = new DataFrame(); // 받은 데이터를 TCP/IP로 전송하는 부분
-//                    String ipp = "";
-//                    for (String key : set) { // key값이 1개이므로 for문으로 받아온다
-//                        ipp = key.substring(1); // 앞에 들어오는 / 를 지운다
-//                        Log.d("[Server]", ipp);
-//                    }
-//                    df.setIp(ipp);
-//                    df.setSender(control);
-//                    df.setContents(data);
-//                    sendDataFrame(df); // 데이터 프레임 send 함수를 통해 전송
-//                } else if (control.equals("door")) {
-//                    if (data.equals("0")) {
-//                        sw_door.setChecked(true);
-//                        tx_logCtl2.append("문이 잠겼습니다." + "\n");
-//                    } else if (data.equals("1")) {
-//                        sw_door.setChecked(false);
-//                        tx_logCtl2.append("문이 열렸습니다." + "\n");
-//                    }
-//                } else if (control.equals("power")) {
-//                    if (data.equals("s")) {
-//                        sw_power.setChecked(true);
-//                        tx_logCtl2.append("시동이 켜졌습니다." + "\n");
-//                    } else if (data.equals("t")) {
-//                        sw_power.setChecked(false);
-//                        tx_logCtl2.append("시동이 꺼졌습니다." + "\n");
-//                    }
-//                }
-//
-//                manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-//                NotificationCompat.Builder builder = null;
-//                if (Build.VERSION.SDK_INT >= 26) {
-//                    if (manager.getNotificationChannel("ch1") == null) {
-//                        manager.createNotificationChannel(
-//                                new NotificationChannel("ch1", "chname", NotificationManager.IMPORTANCE_DEFAULT));
-//                    }
-//                    builder = new NotificationCompat.Builder(context, "ch1");
-//                } else {
-//                    builder = new NotificationCompat.Builder(context);
-//                }
-//
-//                Intent intent1 = new Intent(context, MainActivity.class);
-//                PendingIntent pendingIntent = PendingIntent.getActivity(
-//                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
-//                );
-//                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                builder.setAutoCancel(true);
-//                builder.setContentIntent(pendingIntent);
-//
-//                builder.setContentTitle(title);
-//                if (data.equals("0")) {
-//                    builder.setContentText(control + " 이(가) ON/LOCK 상태로 변경되었습니다.");
-//                } else if (data.equals("1")) {
-//                    builder.setContentText(control + " 이(가) OFF/UNLOCK 상태로 변경되었습니다.");
-//                } else if (data.equals("s")){
-//                    builder.setContentText(control + " 이(가) ON 상태로 변경되었습니다.");
-//                } else if (data.equals("t")){
-//                    builder.setContentText(control + " 이(가) OFF 상태로 변경되었습니다.");
-//                } else {
-//                    builder.setContentText(control + " 이(가)" + data + " ℃로 변경되었습니다.");
-//                }
-//                builder.setSmallIcon(R.drawable.car);
-//                Notification noti = builder.build();
-//                manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
-//            }
-//        }
-//    };
+  public void tabletsendfcm(DataFrame dataF) {
+      String urlstr = "http://192.168.0.60/webServer/tabletsendfcm.mc";
+      String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + dataF.getContents();
+
+      Log.d("[TEST]", conrtolUrl);
+
+      // AsyncTask를 통해 HttpURLConnection 수행.
+      ControlAsync controlAsync = new ControlAsync();
+      controlAsync.execute(conrtolUrl);
+  }
+
+    class ControlAsync extends AsyncTask<String, Void, Void> {
+
+        public Void result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url = strings[0];
+            HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
+    }
+
+    // FCM 수신
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null) {
+                String title = intent.getStringExtra("title");
+                String carid = intent.getStringExtra("carid");
+                String contents = intent.getStringExtra("contents");
+
+                Log.d("[Server]",carid);
+                // 상단알람 사용
+                manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                NotificationCompat.Builder builder = null;
+                if (Build.VERSION.SDK_INT >= 26) {
+                    if (manager.getNotificationChannel("ch2") == null) {
+                        manager.createNotificationChannel(
+                                new NotificationChannel("ch2", "chname", NotificationManager.IMPORTANCE_HIGH));
+                    }
+                    builder = new NotificationCompat.Builder(context, "ch2");
+                } else {
+                    builder = new NotificationCompat.Builder(context);
+                }
+
+                Intent intent1 = new Intent(context, HomeActivity.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(
+                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
+                );
+                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                builder.setAutoCancel(true);
+                builder.setContentIntent(pendingIntent);
+
+                builder.setContentTitle(title);
+                builder.setContentText(carid+ " " + contents);
+
+
+                // control이 temper면, data(온도값)을 set해라
+                if (carid.equals("verify")) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+                    alertDialog.setTitle("인증번호")
+                            .setView(Integer.parseInt(contents))
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    }
+                            });
+                    alertDialog.create().show();
+                    builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
+                    Notification noti = builder.build();
+                } else {
+                    builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
+                    Notification noti = builder.build();
+                    // push알람 일 때만 상단푸쉬를 띄워라
+                    if (contents.substring(0, 1).equals("pu")) {
+                        manager.notify(1, noti);
+                    }
+                }
+
+            }
+        }
+    };
+
 }

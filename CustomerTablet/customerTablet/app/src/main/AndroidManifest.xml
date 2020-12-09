@@ -16,16 +16,11 @@
         android:usesCleartextTraffic="true">
 
         <!-- FService 추가-->
-        <service
-            android:name=".MyFirebaseMessagingService"
-            android:enabled="true"
-            android:exported="true"
-            android:stopWithTask="false">
+        <service android:name=".MyFService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <activity
             android:name=".HomeActivity"
             android:screenOrientation="landscape">

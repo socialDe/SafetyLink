@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     String[] oilType = {"휘발유", "경유", "전기차", "LPG", "수소차", "하이브리드"};
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+
+
+
     // Car Register
     public void clickbt(View v) {
         String userid = "unassigned";
@@ -136,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("token", token);
         editor.commit();
 
-        String url = "http://192.168.25.35/webServer/carregisterimpl.mc";
+        String url = "http://192.168.0.60/webServer/carregisterimpl.mc";
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
@@ -235,6 +241,6 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         }
-        // End HTTP 통신 Code
-    }
+    }// End HTTP 통신 Code
+
 }

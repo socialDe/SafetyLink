@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.frame.Biz;
+import com.google.cloud.Date;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -104,10 +105,11 @@ public class CarController {
 			data.put("temper", dbcarSensor.getTemper());
 			data.put("starting", dbcarSensor.getStarting());
 			data.put("moving", dbcarSensor.getMoving());
-			
-			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-			String movingstarttime = format.format(dbcarSensor.getMovingstarttime());
-			data.put("movingstarttime", movingstarttime);
+
+//			이 부분은 나중에 다시 손보자
+//			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+//			String movingstarttime = format.format(dbcarSensor.getMovingstarttime());
+//			data.put("movingstarttime", movingstarttime);
 			
 			data.put("aircon", dbcarSensor.getAircon());
 			data.put("crash", dbcarSensor.getCrash());
@@ -148,10 +150,9 @@ public class CarController {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
 
 		//String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
-		String token = "f-elHc_dSWmzNmggDPXniF:APA91bFau8uHurIBjjakAoY4s3MKbCV30sTx5B0rgm9mVde2eZDaLRMNAOlqUs5utK-NhBD7rG4qqQOLh2KYRlY-WXXJMpe-5g7IhA66YYo-T1bkhh_hlBHldvRA3Cmhnvh13dO7U9ZD";
+		String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
 		
 		
 		if(contents.equals("on")) {
@@ -243,16 +244,10 @@ public class CarController {
 			System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
 			e.printStackTrace();
 		}
-		
-	
-		
-		
 	}
-	
-		
 
 
-	// 차량 등록
+	// 차량과 센서(기본값) 등록
 	@RequestMapping("/carregisterimpl.mc")
 	public void carregisterimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		res.setCharacterEncoding("UTF-8");
@@ -274,18 +269,19 @@ public class CarController {
 
 		try {
 			cbiz.register(car);
-			System.out.println(cbiz.caridfromnumber(carnum));
-			System.out.println(cbiz.caridfromnumber(carnum).getCarid()); //Carid를 가져옴
 			out.print("success");
 		} catch (Exception e) {
 			out.print("fail");
 			throw e;
 		}
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		CarSensorVO carsensor = new CarSensorVO(carid,0,"0","0",0,0,50,0,"0","0","0","0","0",0,0);
+		sbiz.register(carsensor);
 		out.close();
 	}
 
 	// 토큰이 바꼈을 때 car number을 통해 token 업데이트
-	@RequestMapping("/tokenupdateimpl")
+	@RequestMapping("/tokenupdateimpl.mc")
 	public void tokenupdateimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -309,4 +305,131 @@ public class CarController {
 
 		out.close();
 	}
+	
+	
+	@RequestMapping("/carnumcheckimpl")
+	@ResponseBody
+	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
+
+		String carnum = request.getParameter("carnum");
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+
+		CarVO car = new CarVO();
+		car = cbiz.get(carid);
+		
+		JSONArray ja = new JSONArray();
+
+		JSONObject data = new JSONObject();
+			
+		data.put("carmodel", car.getCarmodel());
+		data.put("cartype", car.getCartype());
+		data.put("caryear", car.getCaryear());
+		data.put("fueltype", car.getCaroiltype());
+			
+		ja.add(data);
+		
+		System.out.println("---------test:"+ja.toJSONString());
+
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+
+		out.print(ja.toJSONString());
+		out.close();
+	}
+	
+	@RequestMapping("/sendnumberfcm.mc")
+	@ResponseBody
+	public void sendnumberfcm(HttpServletRequest request, HttpServletResponse res) throws Exception {
+
+		String carnum = request.getParameter("carnum");
+		String number = request.getParameter("number");
+		
+		System.out.println(carnum+" "+number);
+		
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		String token = cbiz.get(carid).getTablettoken();
+
+		// FCM으로 모바일 제어
+		URL url = null;
+		try {
+			url = new URL("https://fcm.googleapis.com/fcm/send");
+		} catch (MalformedURLException e) {
+			System.out.println("Error while creating Firebase URL | MalformedURLException");
+			e.printStackTrace();
+		}
+		HttpURLConnection conn = null;
+		try {
+			conn = (HttpURLConnection) url.openConnection();
+		} catch (IOException e) {
+			System.out.println("Error while createing connection with Firebase URL | IOException");
+			e.printStackTrace();
+		}
+		conn.setUseCaches(false);
+		conn.setDoInput(true);
+		conn.setDoOutput(true);
+		conn.setRequestProperty("Content-Type", "application/json");
+
+		// set my firebase server key
+		conn.setRequestProperty("Authorization", "key="
+				+ "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
+
+		// create notification message into JSON format
+		JSONObject message = new JSONObject();
+		
+		System.out.println(token);
+		
+		//message.put("to", token);
+		message.put("to", "/topics/car");
+		message.put("priority", "high");
+		
+		JSONObject notification = new JSONObject();
+		notification.put("title", "인증번호");
+		notification.put("body", number);
+		message.put("notification", notification);
+		
+		JSONObject data = new JSONObject();
+		data.put("carid","verify");
+		data.put("contents",number);
+		message.put("data", data);
+
+		try {
+			OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+			System.out.println("FCM 전송:"+message.toString());
+			out.write(message.toString());
+			out.flush();
+			conn.getInputStream();
+			System.out.println(" FCM OK...............");
+
+		} catch (IOException e) {
+			System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	@RequestMapping("/usercarregisterimpl.mc")
+	public void getTabletSensor(HttpServletRequest request) throws Exception {
+		String userid = request.getParameter("userid");
+		String carnum = request.getParameter("carnum");
+		String carmodel = request.getParameter("carmodel");
+		String cartype = request.getParameter("cartype");
+		String caryear = request.getParameter("caryear");
+		String fueltype = request.getParameter("fueltype");
+		System.out.println(userid+" "+carnum+" "+carmodel+" "+cartype+" "+caryear+" "+fueltype);
+		
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		
+		CarVO dbcar = null;
+		try {
+			dbcar = cbiz.get(carid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		dbcar.setUserid(userid);
+		System.out.println(dbcar);
+		
+		cbiz.modify(dbcar);
+	}
+		
 }

@@ -17,8 +17,8 @@ public class CarVO {
 		super();
 	}
 	
-	public CarVO(String carnum) {
-		this.carnum = carnum;
+	public CarVO(String userid) {
+		this.userid = userid;
 	}
 
 

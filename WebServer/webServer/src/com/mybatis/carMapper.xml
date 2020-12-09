@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 	</insert>
 	
 	<update id="update" parameterType="car">
-		UPDATE CAR SET CARNUM=#{carnum}, CARNAME=#{carname}, CARIMG=#{carimg}, TABLETTOKEN=#{tablettoken} WHERE CARID=#{carid}
+		UPDATE CAR SET USERID=#{userid}, CARNUM=#{carnum}, CARNAME=#{carname}, CARIMG=#{carimg}, TABLETTOKEN=#{tablettoken} WHERE CARID=#{carid}
 	</update>
 	
 	<delete id="delete" parameterType="Integer">

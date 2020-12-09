@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/imageView_logo"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:background="@mipmap/saftylink1_logo_round"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,11 +31,23 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView_logo">
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-smallcaps"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:paddingBottom="10dp"
+                android:shadowColor="#2196F3"
+                android:text="Safty Link"
+                android:textColor="#2196F3"
+                android:textSize="45sp" />
 
             <EditText
                 android:id="@+id/editText_loginId"
@@ -120,7 +132,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="clickbt"
-                android:text="아이디 /" />
+                android:text="아이디 찾기 /" />
 
             <TextView
                 android:id="@+id/textView_findPwd"

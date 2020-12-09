@@ -1,4 +1,4 @@
-package com.example.customermobile;
+package com.example.customermobile.activity;
 
 import android.content.Intent;
 import android.util.Log;

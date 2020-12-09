@@ -24,6 +24,14 @@ public class CarSensorVO {
 		super();
 	}
 	
+	public CarSensorVO(int carid, int fuelmax) {
+		super();
+		this.carid = carid;
+		this.fuelmax = fuelmax;
+	}
+
+
+
 	public CarSensorVO(int carid, int temper, String starting, String moving) {
 		super();
 		this.carid = carid;
@@ -110,6 +118,27 @@ public class CarSensorVO {
 		this.starting = starting;
 		this.moving = moving;
 		this.movingstarttime = movingstarttime;
+		this.aircon = aircon;
+		this.crash = crash;
+		this.door = door;
+		this.lat = lat;
+		this.lng = lng;
+	}
+
+	public CarSensorVO(int carid, int heartbeat, String pirfront, String pirrear, int freight, int fuel, int fuelmax,
+			int temper, String starting, String moving, String aircon, String crash, String door, double lat,
+			double lng) {
+		super();
+		this.carid = carid;
+		this.heartbeat = heartbeat;
+		this.pirfront = pirfront;
+		this.pirrear = pirrear;
+		this.freight = freight;
+		this.fuel = fuel;
+		this.fuelmax = fuelmax;
+		this.temper = temper;
+		this.starting = starting;
+		this.moving = moving;
 		this.aircon = aircon;
 		this.crash = crash;
 		this.door = door;

@@ -167,10 +167,11 @@ public class CarActivity extends AppCompatActivity {
 
         // tcpip 설정
         port = 5558;
-        address = ip;
-        id = "MobileJH";
+        address = "192.168.0.109";
+        id = "Mobile";
 
-        //new Thread(con).start(); // 풀면 tcpip 사용
+        new Thread(con).start(); // 풀면 tcpip 사용
+        Log.d("[TAG]","TAG00----------");
 
 
         // 상단 바 설정
@@ -251,7 +252,7 @@ public class CarActivity extends AppCompatActivity {
 
         getCarData();
 
-    }// end onCreat
+    }// end onCreate
 
 
     public void getCarData() {
@@ -273,9 +274,9 @@ public class CarActivity extends AppCompatActivity {
         carSensorAsync.execute(carSensorUrl);
     }
 
-    public void control(String type, String control) {
-        String urlstr = "http://" + ip + "/webServer/control.mc";
-        String conrtolUrl = urlstr + "?carid=" + nowcarid + "&type=" + type + "&control=" + control;
+    public void sendfcm(String contents) {
+        String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
+        String conrtolUrl = urlstr + "?carid=" + nowcarid +"&contents=" + contents;
 
         Log.d("[TEST]", conrtolUrl);
 
@@ -511,7 +512,9 @@ public class CarActivity extends AppCompatActivity {
         public void run() {
             try {
                 connect();
+                Log.d("[TAG]","TAG-0----------");
             } catch (IOException e) {
+                Log.d("[TAG]","TAG-err----------");
                 e.printStackTrace();
             }
         }
@@ -522,11 +525,13 @@ public class CarActivity extends AppCompatActivity {
         // 소켓이 만들어지는 구간
         try {
             socket = new Socket(address, port);
+            Log.d("[TAG]","TAG-1----------");
         } catch (Exception e) {
             while (true) {
                 try {
                     Thread.sleep(2000);
                     socket = new Socket(address, port);
+                    Log.d("[TAG]","TAG-11----------");
                     break;
                 } catch (Exception e1) {
                     System.out.println("Retry...");
@@ -534,7 +539,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("Connected Server:" + address);
+        Log.d("[TAG]","Connected Server:" + address);
 
         sender = new Sender(socket);
         new Receiver(socket).start();
@@ -569,8 +574,7 @@ public class CarActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String carid = intent.getStringExtra("carid");
-                String type = intent.getStringExtra("type");
-                String control = intent.getStringExtra("control");
+                String contents = intent.getStringExtra("contents");
 
                 vibrate(300, 5);
 
@@ -595,7 +599,7 @@ public class CarActivity extends AppCompatActivity {
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
 
-                builder.setContentTitle(carid+" "+type+" "+control);
+                builder.setContentTitle(carid+" "+contents);
 
 
 //                // control이 temper면, data(온도값)을 set해라
@@ -621,7 +625,12 @@ public class CarActivity extends AppCompatActivity {
 
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
-                manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
+
+                // push알람 일 때만 상단푸쉬를 띄워라
+                if(contents.substring(0,1).equals("pu")){
+                    manager.notify(1, noti);
+                }
+
             }
         }
     };
