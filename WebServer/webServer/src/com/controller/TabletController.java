@@ -98,7 +98,6 @@ public class TabletController {
 	
 	@RequestMapping("/getTabletSensor.mc")
 	public void androidWithRequest(HttpServletRequest request, HttpServletResponse res) throws Exception {
-		System.out.println("Tablet에서 연결");
 		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
 		System.out.println(carnum+" "+contents);

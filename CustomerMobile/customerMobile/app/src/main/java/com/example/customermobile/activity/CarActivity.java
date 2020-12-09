@@ -93,7 +93,8 @@ public class CarActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
     int carlistnum = 0;
-    int nowcarid = 0; // 현재 차 아이디
+    int nowcarid; // 현재 차 번호판 번호
+    String nowcarnum = ""; // 현재 차 번호판 번호
 
     ArrayList<CarVO> carlist = null;
     ArrayList<CarSensorVO> carsensorlist = null;
@@ -305,13 +306,13 @@ public class CarActivity extends AppCompatActivity {
 
     public void sendfcm(String contents) {
         String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
-        String conrtolUrl = urlstr + "?carid=" + nowcarid +"&contents=" + contents;
+        String conrtolUrl = urlstr + "?carnum=" + nowcarnum +"&contents=" + contents;
 
         Log.d("[TEST]", conrtolUrl);
 
         // AsyncTask를 통해 HttpURLConnection 수행.
-        ControlAsync controlAsync = new ControlAsync();
-        controlAsync.execute(conrtolUrl);
+        SendFcmAsync sendFcmAsync = new SendFcmAsync();
+        sendFcmAsync.execute(conrtolUrl);
     }
 
 
@@ -386,6 +387,7 @@ public class CarActivity extends AppCompatActivity {
                 fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
 
                 nowcarid = carlist.get(0).getCarid();
+                nowcarnum = carlist.get(0).getCarnum();
 
                 //차 정보를 가져온 이후 차센서 정보를 가져온다
                 getCarSensorData();
@@ -474,7 +476,7 @@ public class CarActivity extends AppCompatActivity {
     }
 
 
-    class ControlAsync extends AsyncTask<String, Void, Void> {
+    class SendFcmAsync extends AsyncTask<String, Void, Void> {
 
         public Void result;
 

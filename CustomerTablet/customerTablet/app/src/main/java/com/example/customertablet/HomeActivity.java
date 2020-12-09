@@ -149,6 +149,34 @@ public class HomeActivity extends AppCompatActivity {
 } // end OnCreate
 
 
+    public void sendfcm(String contents) {
+        String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
+        String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + contents;
+
+        Log.d("[TEST]", conrtolUrl);
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        SendFcmAsync sendFcmAsync = new SendFcmAsync();
+        sendFcmAsync.execute(conrtolUrl);
+    }
+
+    class SendFcmAsync extends AsyncTask<String, Void, Void> {
+
+        public Void result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url = strings[0];
+            HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
+    }
+
     class Receiver extends Thread {
         Socket socket;
         ObjectInputStream oi;
@@ -174,6 +202,8 @@ public class HomeActivity extends AppCompatActivity {
 
 
                     setUi(input.getContents());
+
+                    sendfcm(input.getContents());
 
                     //--------setui되면 아래 runon 제거!-------------
 //                    runOnUiThread(new Runnable() {

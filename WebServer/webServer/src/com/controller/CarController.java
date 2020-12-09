@@ -33,8 +33,8 @@ import com.vo.UsersVO;
 @Controller
 public class CarController {
 
-	// @Resource(name="ubiz")
-	// Biz<String,String,UsersVO> ubiz;
+	 @Resource(name="ubiz")
+	 Biz<String,String,UsersVO> ubiz;
 	@Resource(name = "cbiz")
 	Biz<Integer, String, CarVO> cbiz;
 	@Resource(name = "sbiz")
@@ -104,7 +104,8 @@ public class CarController {
 			data.put("moving", dbcarSensor.getMoving());
 
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-			String movingstarttime = format.format(dbcarSensor.getMovingstarttime());
+			//String movingstarttime = format.format(dbcarSensor.getMovingstarttime());
+			String movingstarttime = null;
 			data.put("movingstarttime", movingstarttime);
 
 			data.put("aircon", dbcarSensor.getAircon());
@@ -131,27 +132,50 @@ public class CarController {
 	@ResponseBody
 	public void sendfcm(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
-		String carid = request.getParameter("carid");
+		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
+		
+		String contentsSensor = contents.substring(0,4);
+		int contentsData = Integer.parseInt(contents.substring(4));
 
-		System.out.println(carid + " " + contents);
+		System.out.println("carnum:"+carnum + " " + "contents:"+contents);
 
 		// DB에 control 변경값 저장
 		CarSensorVO dbcarsensor = null;
+		
+		System.out.println(cbiz.caridfromnumber(carnum));
+		
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		
+		System.out.println("carid:"+carid);
+		
+		String userid = cbiz.get(carid).getUserid();
 
+		System.out.println("==================");
+		
 		try {
-			dbcarsensor = sbiz.get(Integer.parseInt(carid));
+			dbcarsensor = sbiz.get(carid);
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
 
-		// String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
+		
+		String token = "";
+		
+		// 차량에서 모바일로 보내는 푸쉬
+        if(contentsSensor.equals("0002") || contentsSensor.equals("0003") || contentsSensor.equals("0004")) {
+        	token = ubiz.get(userid).getMobiletoken();
+        }
+        // 모바일에서 차량제어
+        else {
+        	token = cbiz.get(carid).getTablettoken();
+        }
+		
 
-		String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
+		//String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
 
 		
-		String contentsSensor = contents.substring(0,4);
-		int contentsData = Integer.parseInt(contents.substring(4));
+
 
 		
 		System.out.println("contentsSensor:"+contentsSensor);
@@ -170,6 +194,8 @@ public class CarController {
         }
         // pir
         else if(contentsSensor.equals("0004")) {
+        	dbcarsensor.setPirfront(String.valueOf(contentsData));
+        	dbcarsensor.setPirrear(String.valueOf(contentsData));
            //String.valueOf(contentsData) 영유아감지여부 ex)1,0
         }
         // 무게
@@ -244,10 +270,10 @@ public class CarController {
 		// create notification message into JSON format
 		JSONObject message = new JSONObject();
 
-		System.out.println(token);
+		System.out.println("token:"+token);
 
-		// message.put("to", token);
-		message.put("to", "/topics/car");
+		message.put("to", token);
+		//message.put("to", "/topics/car");
 		message.put("priority", "high");
 
 		JSONObject notification = new JSONObject();
