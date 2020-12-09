@@ -191,33 +191,6 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 
 	}
 
-	public void sendIoT(String cmd) {
-		Thread t1 = new Thread(new sendIoT(cmd));
-		t1.start();
-	}
-
-	class sendIoT implements Runnable {
-
-		String cmd;
-
-		public sendIoT(String cmd) {
-			this.cmd = cmd;
-		}
-
-		@Override
-		public void run() {
-			byte[] datas = cmd.getBytes();
-			try {
-				out.write(datas);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}
-
-	}
-
 	public static void main(String args[]) throws IOException {
 		SendAndReceiveSerial mcu = new SendAndReceiveSerial("COM5", true);
 		SendAndReceiveSerialCan ss = new SendAndReceiveSerialCan("COM9", true);
