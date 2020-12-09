@@ -72,14 +72,22 @@ public class Client {
 	}
 	
 	public void sendCan(DataFrame df) {
-		String id = df.getContents().substring(0,  4);
-		String data = df.getContents().substring(4);
-		String sensorId = "";
-		String sensorData = "";
+		// df contents = receiveID + sensorID + sensorData
+		String canId = "";
 		
-		// 수신 위치 코드 필요
-		// 수신: IoT 기기 전체 코드를 임시로 사용
-		can.sendSerial("W28" + df.getSender() + "CA00"/*df.getReceive()*/ + df.getContents(), df.getSender());
+		// can ID 설정
+		if(df.getSender().equals("Tablet")) {
+			canId = "0420AD01";
+		}else if(df.getSender().equals("Mobile")) {
+			canId = "0420AD02";
+		}
+		
+		if(df.getContents().substring(0, 4).equals("0021")) {
+			// 에어컨
+			
+		}
+		
+		can.sendSerial("W28" + canId + df.getContents(), canId);
 	}
 	
 	class Sender implements Runnable{

@@ -8,7 +8,7 @@ import com.tcpip.Client;
 public class MainController {
 
 	public static void main(String[] args) {
-		SendAndReceiveSerialCan can = new SendAndReceiveSerialCan("COM4", true);
+		SendAndReceiveSerialCan can = new SendAndReceiveSerialCan("COM6", true);
 		Client client = new Client("192.168.0.123",5558);
 		can.setClient(client);
 		client.setCan(can);

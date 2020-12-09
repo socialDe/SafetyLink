@@ -92,18 +92,11 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 			// 온도센서
 			// send data(Sensor+value) can
 			double value = Double.parseDouble(sensorValue);
-			String strV = (int)(value * 100) + "";
 			if (value < 0) {
-				// 두자리 음수
-				sensorData = "1000" + strV;
-			}else if (value < -10) {
 				// 음수
-				sensorData = "10000" + strV;
-			}else if(value < 10) {
-				// 한자리 수
-				sensorData = "00000" + strV;
+				sensorData = "1" + String.format("%07d", (int)(value * 100));
 			}else {
-				sensorData = "0000" + strV;
+				sensorData = String.format("%08d", (int)(value * 100));
 			}
 		}
 

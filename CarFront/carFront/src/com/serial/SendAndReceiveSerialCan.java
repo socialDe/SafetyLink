@@ -89,50 +89,7 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 
 		// can 데이터를 확인, 수신 기기가 차량 전체(CA00)이거나 carFront(CA02)인 경우
 		if (receiveID.equals("CA00") || receiveID.equals("CA02")) {
-			switch (sensorID) {
-			case "0021":
-				// 서보모터 (에어컨)
-
-				break;
-			case "0022":
-				// 서보모터 (히터)
-
-				break;
-			case "0031":
-				// LED (시동 상태)
-				// 00000000: LED off(LOW)
-				// 00000001: LED on(HIGH)
-				if(sensorData.equals("00000000")) {
-					mcu.sendArduino("start LED OFF");
-				}else if(sensorData.equals("00000001")) {
-					mcu.sendArduino("start LED ON");
-				}
-				break;
-			case "0032":
-				// LED (도어 상태)
-				// 00000000: LED off(LOW)
-				// 00000001: LED on(HIGH)
-				if(sensorData.equals("00000000")) {
-					mcu.sendArduino("door LED OFF");
-				}else if(sensorData.equals("00000001")) {
-					mcu.sendArduino("door LED ON");
-				}
-				break;
-			case "0033":
-				// LED (주행 상태)
-				// 00000000: LED off(LOW)
-				// 00000001: LED on(HIGH)
-				if(sensorData.equals("00000000")) {
-					mcu.sendArduino("drive LED OFF");
-				}else if(sensorData.equals("00000001")) {
-					mcu.sendArduino("drive LED ON");
-				}
-				break;
-
-			default:
-
-				break;
-			}
+			mcu.sendIoT(sensorID + sensorData);
 		}
 	}
 
@@ -226,34 +183,6 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 		}
 		if (commPort != null) {
 			commPort.close();
-		}
-
-	}
-
-	public void sendArduino(String cmd) {
-
-		Thread t1 = new Thread(new sendArduino(cmd));
-		t1.start();
-	}
-
-	class sendArduino implements Runnable {
-
-		String cmd;
-
-		public sendArduino(String cmd) {
-			this.cmd = cmd;
-		}
-
-		@Override
-		public void run() {
-			byte[] datas = cmd.getBytes();
-			try {
-				out.write(datas);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
 		}
 
 	}

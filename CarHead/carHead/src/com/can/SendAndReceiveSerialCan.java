@@ -87,8 +87,8 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 		String code = can.substring(0, 1); // 명령 코드
 		String type = can.substring(1, 3); // 데이터 특성 코드
 		String sendId = can.substring(3, 11); // 송신 ID (can id)
-		String receiveID = can.substring(11, 15); // 수신 ID
-		String data = can.substring(15); // 데이터 정보: SensorID + SensorData
+//		String receiveID = can.substring(11, 15); // 수신 ID
+		String data = can.substring(11); // 데이터 정보: 수신 ID + SensorID + SensorData
 		
 		DataFrame df = new DataFrame();
 		if(sendId.equals("0420CA01")) {
@@ -103,31 +103,10 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 			df.setSender("CustomerMobile");
 		}
 		
-		// DataFrame에 수신 ID를 받는 변수 필요
-		if(receiveID.equals("0000")) {
-			//df.setReceive("all");
-		}else if(receiveID.equals("CA00")) {
-			
-		}else if(receiveID.equals("CA01")) {
-			
-		}else if(receiveID.equals("CA02")) {
-			
-		}else if(receiveID.equals("CA03")) {
-			
-		}else if(receiveID.equals("AD00")) {
-			
-		}else if(receiveID.equals("AD01")) {
-			
-		}else if(receiveID.equals("AD02")) {
-			
-		}
-		
 		if (code.equals("U")) {
 			df.setContents(data);
 			client.sendData(df);
 		}
-		
-
 	}
 
 	private class SerialWriter implements Runnable {
@@ -227,19 +206,19 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 	}
 
 	public static void main(String args[]) throws IOException {
-		SendAndReceiveSerialCan ss = new SendAndReceiveSerialCan("COM6", true);
+		SendAndReceiveSerialCan can = new SendAndReceiveSerialCan("COM6", true);
 		Scanner scan = new Scanner(System.in);
+//		can.sendSerial("W2810003B010000000000005011", "10003B01");
+		
 		while (true) {	
 			String str = scan.nextLine();
-			if (str.equals("s")) {
-				ss.sendSerial("W2810003B010000000000005011", "10003B01");
-			}else if (str.equals("t")) {
-				ss.sendSerial("W2810003B010000000000005010", "10003B01");
-			} else if (str.equals("q")) {
+			
+			if (str.equals("q")) {
 				break;
 			}
+			can.sendSerial(str, str.substring(0, 4));
 		}
 
-		// ss.close();
+		 scan.close();
 	}
 }

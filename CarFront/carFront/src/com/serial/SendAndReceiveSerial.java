@@ -81,40 +81,21 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 	}
 
 	public void checkserial(String data) {
-		String receiveID = data.substring(0, 4);
-		String sensorID = data.substring(4, 8);
-		String sensorValue = data.substring(8);
+		String receiveID = "AD00";
+		String sensorID = data.substring(0, 4);
+		String sensorValue = data.substring(4);
 		String sensorData = "";
 
 		// sensorValue: Arduino에서 보낸 값
 		// 센서값을 데이터프레임 문자열에 맞게 변환
-		if (sensorID.equals("0001")) {
-			// 온도 센서
-			double value = Double.parseDouble(sensorValue);
-			if (value < 10) {
-				// 정수가 한자리
-				sensorData = "00000" + (int) (value * 100);
-			} else if (value < 100) {
-				// 정수가 두자리
-				sensorData = "0000" + (int) (value * 100);
-			} else {
-				// 정수가 세자리
-				sensorData = "000" + (int) (value * 100);
-			}
-		} else if (sensorID.equals("0002")) {
+		if (sensorID.equals("0002")) {
 			// 충돌 센서
-			// 기본값 1023, 충돌시 숫자가 작게, 큰 충격의 경우 0
-			int value = Integer.parseInt(sensorValue);
-			if (value < 10) {
-				// 정수가 한자리
-				sensorData = "0000000" + value;
-			} else if (value < 100) {
-				// 정수가 두자리
-				sensorData = "0000" + (int) (value * 100);
-			}
+			double value = Double.parseDouble(sensorValue);
+			sensorData = String.format("%08d", (int)value);
 		} else if (sensorID.equals("0003")) {
 			// 진동 센서
-
+			double value = Double.parseDouble(sensorValue);
+			sensorData = String.format("%08d", (int)value);
 		} else if (sensorID.equals("0004")) {
 			// 적외선 센서
 
@@ -127,45 +108,21 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 		} else if (sensorID.equals("0007")) {
 			// 가상데이터 - 연료
 
-		} else if (sensorID.equals("0011")) {
-			// 버튼 (주행)
-
-		} else if (sensorID.equals("0012")) {
-			// 버튼 (시동)
-
-		} else if (sensorID.equals("0021")) {
-			// 서보모터 (에어컨)
-
-		} else if (sensorID.equals("0022")) {
-			// 서보모터 (히터)
-
 		} else if (sensorID.equals("0031")) {
 			// LED (시동 상태)
 			// 00000000: LED off(LOW)
 			// 00000001: LED on(HIGH)
-			if (sensorValue.equals("0")) {
-				sensorData = "00000000";
-			} else if (sensorValue.equals("1")) {
-				sensorData = "00000001";
-			}
+			sensorData = sensorValue;
 		} else if (sensorID.equals("0032")) {
-			// LED (도어 상태)
-			// 00000000: LED off(LOW)
-			// 00000001: LED on(HIGH)
-			if (sensorValue.equals("0")) {
-				sensorData = "00000000";
-			} else if (sensorValue.equals("1")) {
-				sensorData = "00000001";
-			}
-		} else if (sensorID.equals("0033")) {
 			// LED (주행 상태)
 			// 00000000: LED off(LOW)
 			// 00000001: LED on(HIGH)
-			if (sensorValue.equals("0")) {
-				sensorData = "00000000";
-			} else if (sensorValue.equals("1")) {
-				sensorData = "00000001";
-			}
+			sensorData = sensorValue;
+		} else if (sensorID.equals("0033")) {
+			// LED (도어 상태)
+			// 00000000: LED off(LOW)
+			// 00000001: LED on(HIGH)
+			sensorData = sensorValue;
 		}
 
 		System.out.println("send can: " + receiveID + sensorID + sensorData);
@@ -266,16 +223,16 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 
 	}
 
-	public void sendArduino(String cmd) {
-		Thread t1 = new Thread(new sendArduino(cmd));
+	public void sendIoT(String cmd) {
+		Thread t1 = new Thread(new sendIoT(cmd));
 		t1.start();
 	}
 
-	class sendArduino implements Runnable {
+	class sendIoT implements Runnable {
 
 		String cmd;
 
-		public sendArduino(String cmd) {
+		public sendIoT(String cmd) {
 			this.cmd = cmd;
 		}
 
@@ -298,10 +255,10 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 		Scanner scan = new Scanner(System.in);
 		while (true) {
 			String str = scan.nextLine();
-			ss.sendArduino(str);
+			ss.sendIoT(str);
 		}
 		// ss.sendSerial("W2810003B010000000000005011", "10"+ "003B01");
-		// ss.sendArduino("s");
+		// ss.sendIoT("s");
 		// ss.close();
 	}
 }
