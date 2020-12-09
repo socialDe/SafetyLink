@@ -81,19 +81,30 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 	}
 	
 	public void checkserial(String data) {
-		String receiveID = data.substring(0, 4);
-		String sensorID = data.substring(4, 8);
-		String sensorData = data.substring(8);
+		String receiveID = "AD01";
+		String sensorID = data.substring(0, 4);
+		String sensorValue = data.substring(4);
+		String sensorData = "";
 		
 		// data: Arduino에서 보낸 값
 		// check data
-		if(data.equals("stop")) {
-			
-		}else if(sensorID.equals("0001")) {
+		if(sensorID.equals("0001")) {
 			// 온도센서
 			// send data(Sensor+value) can
-			double value = Double.parseDouble(sensorData);
+			double value = Double.parseDouble(sensorValue);
 			String strV = (int)(value * 100) + "";
+			if (value < 0) {
+				// 두자리 음수
+				sensorData = "1000" + strV;
+			}else if (value < -10) {
+				// 음수
+				sensorData = "10000" + strV;
+			}else if(value < 10) {
+				// 한자리 수
+				sensorData = "00000" + strV;
+			}else {
+				sensorData = "0000" + strV;
+			}
 		}
 
 		System.out.println("sendSerial-can: " + receiveID + sensorID + sensorData);
@@ -194,15 +205,15 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 
 	}
 
-	public void sendArduino(String cmd) {
-		Thread t1 = new Thread (new sendArduino(cmd));
+	public void sendIoT(String cmd) {
+		Thread t1 = new Thread (new sendIoT(cmd));
 		t1.start();
 	}
 	
-	class sendArduino implements Runnable{
+	class sendIoT implements Runnable{
 
 		String cmd;
-		public sendArduino(String cmd) {
+		public sendIoT(String cmd) {
 			this.cmd = cmd;
 		}
 
@@ -226,10 +237,10 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 		Scanner scan = new Scanner(System.in);
 		while(true) {
 			String str = scan.nextLine();
-			ss.sendArduino(str);
+			ss.sendIoT(str);
 		}
 		//ss.sendSerial("W2810003B010000000000005011", "10"+ "003B01");
-		//ss.sendArduino("s");
+		//ss.sendIoT("s");
 		//ss.close();
 	}
 }
