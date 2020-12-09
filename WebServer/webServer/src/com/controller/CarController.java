@@ -32,34 +32,27 @@ import com.vo.UsersVO;
 
 @Controller
 public class CarController {
-	
+
 	// @Resource(name="ubiz")
 	// Biz<String,String,UsersVO> ubiz;
-	@Resource(name="cbiz")
-	Biz<Integer,String,CarVO> cbiz;
-	@Resource(name="sbiz")
-	Biz<Integer,String,CarSensorVO> sbiz;
-	
-	// 현재 시간 계산
-	SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd/HH:mm:ss");
-	Calendar time = Calendar.getInstance();
-	String timenow = format.format(time.getTime());
+	@Resource(name = "cbiz")
+	Biz<Integer, String, CarVO> cbiz;
+	@Resource(name = "sbiz")
+	Biz<Integer, String, CarSensorVO> sbiz;
 
-	
 	// 차량 데이터
 	@RequestMapping("/cardata.mc")
 	@ResponseBody
 	public void cardata(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
 		String userid = request.getParameter("userid");
-		
+
 		ArrayList<CarVO> dbcarlist = new ArrayList<>();
-		
+
 		dbcarlist = cbiz.getcarsfromuser(userid);
-		
+
 		JSONArray ja = new JSONArray();
 
-		
 		for (CarVO dbcar : dbcarlist) {
 			JSONObject data = new JSONObject();
 			data.put("carid", dbcar.getCarid());
@@ -74,8 +67,6 @@ public class CarController {
 			data.put("tablettoken", dbcar.getTablettoken());
 			ja.add(data);
 		}
-		
-		
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -92,11 +83,11 @@ public class CarController {
 	public void carsensordata(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
 		String userid = request.getParameter("userid");
-		
+
 		ArrayList<CarSensorVO> dbcarSensorlist = new ArrayList<>();
-		
+
 		dbcarSensorlist = sbiz.getcarsfromuser(userid);
-		
+
 		JSONArray ja = new JSONArray();
 
 		for (CarSensorVO dbcarSensor : dbcarSensorlist) {
@@ -111,11 +102,11 @@ public class CarController {
 			data.put("temper", dbcarSensor.getTemper());
 			data.put("starting", dbcarSensor.getStarting());
 			data.put("moving", dbcarSensor.getMoving());
-			
+
 			SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
 			String movingstarttime = format.format(dbcarSensor.getMovingstarttime());
 			data.put("movingstarttime", movingstarttime);
-			
+
 			data.put("aircon", dbcarSensor.getAircon());
 			data.put("crash", dbcarSensor.getCrash());
 			data.put("door", dbcarSensor.getDoor());
@@ -123,8 +114,8 @@ public class CarController {
 			data.put("lng", dbcarSensor.getLng());
 			ja.add(data);
 		}
-		
-		System.out.println("---------test:"+ja.toJSONString());
+
+		//System.out.println("---------test:" + ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -132,10 +123,9 @@ public class CarController {
 
 		out.print(ja.toJSONString());
 		out.close();
-		
+
 	}
-	
-	
+
 	// FCM전송 함수
 	@RequestMapping("/sendfcm.mc")
 	@ResponseBody
@@ -143,10 +133,9 @@ public class CarController {
 
 		String carid = request.getParameter("carid");
 		String contents = request.getParameter("contents");
-		
-		System.out.println(carid+" "+contents);
-		
-		
+
+		System.out.println(carid + " " + contents);
+
 		// DB에 control 변경값 저장
 		CarSensorVO dbcarsensor = null;
 
@@ -155,35 +144,69 @@ public class CarController {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
 
-		//String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
+		// String token = cbiz.get(Integer.parseInt(carid)).getTablettoken();
+
 		String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
+
 		
+		String contentsSensor = contents.substring(0,4);
+		int contentsData = Integer.parseInt(contents.substring(4));
+
 		
-		if(contents.equals("on")) {
-			
-			dbcarsensor.setStarting("o");
-			
-		}else if(contents.equals("off")) {
-			
-			dbcarsensor.setStarting("f");
-			
-		}else if(contents.equals("open")) {
-			
-			dbcarsensor.setDoor("o");
-			
-		}else if(contents.equals("close")) {
-			
-			dbcarsensor.setDoor("f");
-			
-		}else if(contents.charAt(0) =='T') {
-			
-			dbcarsensor.setTemper(Integer.parseInt(contents.substring(1)));
-			
-		}
+		System.out.println("contentsSensor:"+contentsSensor);
 		
-	
+		 // 온도
+        if(contentsSensor.equals("0001")) {
+        	//contentsData/100  온도값 ex)15
+        }
+        // 충돌
+        else if(contentsSensor.equals("0002")) {
+            //String.valueOf(contentsData) 충돌여부 ex)1,0
+        }
+        // 진동
+        else if(contentsSensor.equals("0003")) {
+            //String.valueOf(contentsData) 충돌세기 ex)2(small),3(big)
+        }
+        // pir
+        else if(contentsSensor.equals("0004")) {
+           //String.valueOf(contentsData) 영유아감지여부 ex)1,0
+        }
+        // 무게
+        else if(contentsSensor.equals("0005")) {
+            //contentsData 무게 ex)30
+        }
+        // 심박수
+        else if(contentsSensor.equals("0006")) {
+            //contentsData 심박수 ex) 80
+        }
+        // 연료
+        else if(contentsSensor.equals("0007")) {
+            //contentsData 현재연료량 ex) 40
+        }
+        // 에어컨
+        else if(contentsSensor.equals("0021")) {
+        	dbcarsensor.setAircon(String.valueOf(contentsData));
+            //String.valueOf(contentsData) 에어컨목표온도값 ex) 25
+        }
+        // 시동
+        else if(contentsSensor.equals("0031")) {
+        	dbcarsensor.setStarting(String.valueOf(contentsData));
+            //String.valueOf(contentsData) 시동여부 ex)1,0
+        }
+        // 주행
+        else if(contentsSensor.equals("0032")) {
+            //String.valueOf(contentsData) 주행여부 ex)1,0
+            //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
+        }
+        // 문
+        else if(contentsSensor.equals("0033")) {
+        	dbcarsensor.setDoor(String.valueOf(contentsData));
+            //String.valueOf(contentsData) 문  ex)1,0
+        }
+		System.out.println("-------"+dbcarsensor.toString());
+
+        
 		try {
 			sbiz.modify(dbcarsensor);
 			System.out.println("Modify OK..");
@@ -191,10 +214,9 @@ public class CarController {
 			e.printStackTrace();
 		}
 		
+		
+		
 
-		
-		
-		
 		// FCM으로 차량 제어
 		URL url = null;
 		try {
@@ -221,27 +243,26 @@ public class CarController {
 
 		// create notification message into JSON format
 		JSONObject message = new JSONObject();
-		
+
 		System.out.println(token);
-		
-		//message.put("to", token);
+
+		// message.put("to", token);
 		message.put("to", "/topics/car");
 		message.put("priority", "high");
-		
+
 		JSONObject notification = new JSONObject();
 		notification.put("title", "차 제어");
-		notification.put("body", "test:"+carid+" "+contents);
+		notification.put("body", "test:" + carid + " " + contents);
 		message.put("notification", notification);
-		
-		JSONObject data = new JSONObject();
-		data.put("carid",carid);
-		data.put("contents",contents);
-		message.put("data", data);
 
+		JSONObject data = new JSONObject();
+		data.put("carid", carid);
+		data.put("contents", contents);
+		message.put("data", data);
 
 		try {
 			OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-			System.out.println("FCM 전송:"+message.toString());
+			System.out.println("FCM 전송:" + message.toString());
 			out.write(message.toString());
 			out.flush();
 			conn.getInputStream();
@@ -251,16 +272,10 @@ public class CarController {
 			System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
 			e.printStackTrace();
 		}
-		
-	
-		
-		
+
 	}
-	
-		
 
-
-	// 차량 등록
+	// 차량과 센서(기본값) 등록
 	@RequestMapping("/carregisterimpl.mc")
 	public void carregisterimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		res.setCharacterEncoding("UTF-8");
@@ -280,6 +295,7 @@ public class CarController {
 		CarVO car = new CarVO(userid, carnum, cartype, carmodel, caryear, carimg, caroiltype, tablettoken);
 		System.out.println(car);
 
+
 		try {
 			cbiz.register(car);
 			out.print("success");
@@ -287,7 +303,12 @@ public class CarController {
 			out.print("fail");
 			throw e;
 		}
-
+		
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		
+		CarSensorVO carsensor = new CarSensorVO(carid, 0, "0", "0", 0, 0, 50, 0, "0", "0", "0", "0", "0", 0, 0);
+		sbiz.register(carsensor);
+		
 		out.close();
 	}
 
@@ -300,7 +321,10 @@ public class CarController {
 
 		String carnum = request.getParameter("num");
 		String tablettoken = request.getParameter("token");
-		CarVO car = new CarVO(carnum, tablettoken);
+
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+
+		CarVO car = new CarVO(carid, tablettoken);
 		System.out.println(car);
 
 		try {
@@ -312,11 +336,6 @@ public class CarController {
 		}
 
 		out.close();
-		
-		
+
 	}
 }
-
-
-
-

@@ -9,25 +9,19 @@ PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
     <setting name="jdbcTypeForNull" value="NULL" />
 </settings>
 
-	<typeAliases>
-		<typeAlias type="com.vo.AdminVO" alias="admin"/>
-		<typeAlias type="com.vo.CarVO" alias="car"/>
-		<typeAlias type="com.vo.CarSensorVO" alias="carsensor"/>
-		<typeAlias type="com.vo.UsersVO" alias="users"/>
-	</typeAliases>
-	
-	<mappers>
-		<mapper resource="com/mybatis/adminmapper.xml"/>
-        <mapper resource="com/mybatis/carmapper.xml"/>
-        <mapper resource="com/mybatis/carsensormapper.xml"/>
-        <mapper resource="com/mybatis/usersmapper.xml"/>
-	</mappers>
+        <typeAliases>
+                <typeAlias type="com.vo.AdminVO" alias="admin"/>
+                <typeAlias type="com.vo.UsersVO" alias="users"/>
+                <typeAlias type="com.vo.CarVO" alias="car"/>
+                <typeAlias type="com.vo.CarSensorVO" alias="carSensor"/>
+        </typeAliases>
+        
+        <mappers>
+                <mapper resource="com/mybatis/adminMapper.xml"/>
+                <mapper resource="com/mybatis/usersMapper.xml"/>
+                <mapper resource="com/mybatis/carMapper.xml"/>
+                <mapper resource="com/mybatis/carSensorMapper.xml"/>
+        </mappers>
+        
+
 </configuration>
-
-
-
-
-
-
-
-

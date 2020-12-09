@@ -25,11 +25,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.customermobile.Fragment1;
 import com.example.customermobile.Fragment2;
@@ -107,6 +109,8 @@ public class CarActivity extends AppCompatActivity {
     String id;
     Socket socket;
     Sender sender;
+
+    CarDataTimer carDataTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,7 +256,32 @@ public class CarActivity extends AppCompatActivity {
 
         getCarData();
 
+
+        carDataTimer = new CarDataTimer(5000, 1000);
+        carDataTimer.start();
+
+
     }// end onCreat
+
+    // 차정보르 가져오는 설정을 위한 타이머
+    class CarDataTimer extends CountDownTimer
+    {
+        public CarDataTimer(long millisInFuture, long countDownInterval)
+        {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            getCarData();
+            carDataTimer.start();
+        }
+    }
 
 
     public void getCarData() {
@@ -369,14 +398,14 @@ public class CarActivity extends AppCompatActivity {
 
     class CarSensorAsync extends AsyncTask<String, Void, String> {
 
-        ProgressDialog progressDialog;
+        //ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(CarActivity.this);
-            progressDialog.setTitle("Get Data ...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(CarActivity.this);
+//            progressDialog.setTitle("Get Data ...");
+//            progressDialog.setCancelable(false);
+//            progressDialog.show();
         }
 
         @Override
@@ -389,7 +418,7 @@ public class CarActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
 
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
             JSONArray ja = null;
             try {
                 ja = new JSONArray(s);

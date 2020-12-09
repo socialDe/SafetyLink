@@ -25,8 +25,6 @@
 	<tx:annotation-driven transaction-manager="txManager" />
 
 
-
-
 	<!-- ViewResolver -->
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -61,15 +59,17 @@
 	</mvc:interceptors>
 	
 	
-	
 	<!-- 1. Database Setting -->
+
  	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
  		<!-- <property name="url" value="jdbc:oracle:thin:@192.168.0.60:1521:xe"/> -->
  		<property name="url" value="jdbc:oracle:thin:@database-1.clfethz48cd4.ap-northeast-2.rds.amazonaws.com:1521:ORCL"/>
  		<property name="username" value="admin"/>
  		<property name="password" value="11111111"/>
+
  	</bean>
+
 
 	<!-- 2. Transaction Setting -->
 	<bean id="txManager"
@@ -98,12 +98,3 @@
 
 
 </beans>
-
-
-
-
-
-
-
-
-

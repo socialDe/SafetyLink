@@ -87,7 +87,7 @@
                             android:background="#FFFFFF"
                             android:ems="10"
                             android:hint="연식"
-                            android:inputType="textPersonName"
+                            android:inputType="number"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"

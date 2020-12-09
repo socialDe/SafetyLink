@@ -15,14 +15,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.iid.FirebaseInstanceId;
-
+//
 public class MainActivity extends AppCompatActivity {
+
+    public static String ip = "192.168.0.37";
+
     HttpAsyncTask httpAsyncTask;
-    ActionBar actionBar;
     EditText editText_carNum, editText_carYear, editText_carModel;
     Button button_carRegister;
     Spinner spinner_carType, spinner_oilType;
@@ -49,14 +50,15 @@ public class MainActivity extends AppCompatActivity {
             finish();
         } else if (pref.getString("token", "").equals("") || pref.getString("token", "") == null) {
             // token이 null이면 그대로 차량 등록을 진행한다
-        } else {
+        } else{
             // 토큰이 바꼈다면 url 연결해서 token값을 update 해줘야 함
             String num = pref.getString("num", "");
             String token = FirebaseInstanceId.getInstance().getToken();
             editor.putString("token", token);// 새로운 토큰 받아와서 SharedPreference에 저장
             editor.commit();
 
-            String url = "http://192.168.0.37/webServer/tokenupdateimpl.mc";
+            String url = "http://"+ip+"/webServer/tokenupdateimpl.mc";
+
             url += "?num=" + num + "&token=" + token;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -140,11 +142,12 @@ public class MainActivity extends AppCompatActivity {
         // token 비교를 위한 SharedPreferences 사용 준비
         SharedPreferences pref = getSharedPreferences("token", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("num", num);
+        editor.putString("num", num+"");
         editor.putString("token", token);
         editor.commit();
 
-        String url = "http://192.168.0.37/webServer/carregisterimpl.mc";
+        String url = "http://"+ip+"/webServer/carregisterimpl.mc";
+
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
@@ -199,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("차량 등록");
                 builder.setMessage("차량이 등록되었습니다.");
-
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
