@@ -143,15 +143,9 @@ public class CarController {
 		// DB에 control 변경값 저장
 		CarSensorVO dbcarsensor = null;
 		
-		System.out.println(cbiz.caridfromnumber(carnum));
-		
 		int carid = cbiz.caridfromnumber(carnum).getCarid();
-		
-		System.out.println("carid:"+carid);
-		
 		String userid = cbiz.get(carid).getUserid();
 
-		System.out.println("==================");
 		
 		try {
 			dbcarsensor = sbiz.get(carid);
@@ -162,24 +156,35 @@ public class CarController {
 		
 		String token = "";
 		
-		// 차량에서 모바일로 보내는 푸쉬
-        if(contentsSensor.equals("0002") || contentsSensor.equals("0003") || contentsSensor.equals("0004")) {
-        	token = ubiz.get(userid).getMobiletoken();
+		// 차량에서 모바일로 보내는 푸쉬(영유아)
+        if(contentsSensor.equals("0004")) {
+        	// 영유아 푸쉬 받기로 설정
+        	if(ubiz.get(userid).getBabypushcheck().equals("o")) {
+        		token = ubiz.get(userid).getMobiletoken();
+        	}
+        	// 안받기로 설정
+        	else if(ubiz.get(userid).getBabypushcheck().equals("f")) {
+        		return;
+        	}      	
+        }
+        // 차량에서 모바일로 보내는 푸쉬(충돌)
+        else if(contentsSensor.equals("0002") || contentsSensor.equals("0003")){
+        	if(ubiz.get(userid).getAccpushcheck().equals("o")) {
+        		token = ubiz.get(userid).getMobiletoken();
+        	}
+        	// 안받기로 설정
+        	else if(ubiz.get(userid).getAccpushcheck().equals("f")) {
+        		return;
+        	}  
         }
         // 모바일에서 차량제어
-        else {
+        else{
         	token = cbiz.get(carid).getTablettoken();
         }
 		
 
-		//String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
 
-		
-
-
-		
-		System.out.println("contentsSensor:"+contentsSensor);
-		
+        
 		 // 온도
         if(contentsSensor.equals("0001")) {
         	//contentsData/100  온도값 ex)15
@@ -230,7 +235,6 @@ public class CarController {
         	dbcarsensor.setDoor(String.valueOf(contentsData));
             //String.valueOf(contentsData) 문  ex)1,0
         }
-		System.out.println("-------"+dbcarsensor.toString());
 
         
 		try {

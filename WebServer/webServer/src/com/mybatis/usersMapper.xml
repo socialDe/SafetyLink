@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 	</insert>
 	
 	<update id="update" parameterType="users">
-		UPDATE USERS SET USERPWD=#{userpwd}, USERPHONE=#{userphone}, USERBIRTH=#{userbirth}, USERSEX=#{usersex}, USERSTATE=#{userstate}, USERSUBJECT=#{usersubject}, BABYPUSHCHECK=#{babypushcheck}, ACCPUSHCHECK=#{accpushcheck} WHERE USERID=#{userid}
+		UPDATE USERS SET USERPWD=#{userpwd}, USERPHONE=#{userphone}, USERBIRTH=#{userbirth}, USERSEX=#{usersex}, USERSTATE=#{userstate}, USERSUBJECT=#{usersubject}, BABYPUSHCHECK=#{babypushcheck}, ACCPUSHCHECK=#{accpushcheck}, SLEEPPUSHCHECK=#{sleeppushcheck}, DROPPUSHCHECK=#{droppushcheck} WHERE USERID=#{userid}
 	</update>
 	
 	<delete id="delete" parameterType="String">

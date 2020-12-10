@@ -93,8 +93,10 @@ public class CarActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
     int carlistnum = 0;
-    int nowcarid; // 현재 차 번호판 번호
+    int nowcarid;
     String nowcarnum = ""; // 현재 차 번호판 번호
+    CarVO nowCar = new CarVO();
+
 
     ArrayList<CarVO> carlist = null;
     ArrayList<CarSensorVO> carsensorlist = null;
@@ -149,6 +151,8 @@ public class CarActivity extends AppCompatActivity {
             String usersubject = sp.getString("usersubject", "");
             String babypushcheck = sp.getString("babypushcheck", "");
             String accpushcheck = sp.getString("accpushcheck", "");
+            String sleeppushcheck = sp.getString("sleeppushcheck","");
+            String droppushcheck = sp.getString("droppushcheck","");
             String mobiletoken = sp.getString("mobiletoken", "");
 
             // String 변수를 Date로 변환
@@ -163,7 +167,7 @@ public class CarActivity extends AppCompatActivity {
             }
 
             // sp 정보로 회원 객체 생성
-            user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
+            user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, sleeppushcheck, droppushcheck, mobiletoken);
 
 
         }
@@ -256,14 +260,30 @@ public class CarActivity extends AppCompatActivity {
 
         getCarData();
 
-
         carDataTimer = new CarDataTimer(5000, 1000);
         carDataTimer.start();
 
-
     }// end onCreat
 
-    // 차정보르 가져오는 설정을 위한 타이머
+
+    public UsersVO getNowUser(){
+        return user;
+    }
+
+    // 현재 선택된 차량ID를 Fragment로 제공
+    public int getNowCarId(){
+        System.out.println("nowcarID: "+nowcarid);
+        return nowcarid;
+    }
+
+    // 현재 선택된 차량데이터를 Fragment로 제공
+    public CarVO getNowCar(){
+        System.out.println("nowcar: "+nowCar);
+        return nowCar;
+    }
+
+
+    // 차정보를 가져오는 설정을 위한 타이머
     class CarDataTimer extends CountDownTimer {
         public CarDataTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -383,8 +403,11 @@ public class CarActivity extends AppCompatActivity {
 
                 fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
 
+
                 nowcarid = carlist.get(carlistnum).getCarid();
                 nowcarnum = carlist.get(carlistnum).getCarnum();
+
+                nowCar = carlist.get(0);
 
                 //차 정보를 가져온 이후 차센서 정보를 가져온다
                 getCarSensorData();
@@ -498,12 +521,14 @@ public class CarActivity extends AppCompatActivity {
             fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper());
             nowcarid = carlist.get(carlistnum).getCarid();
+            nowCar = carlist.get(carlistnum);
         } else {
             carlistnum = maxnum;
             fragment1.setCarData(carlist.get(maxnum).getCarname(), carlist.get(maxnum).getCarmodel(), carlist.get(maxnum).getCarnum(), carlist.get(maxnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(), carsensorlist.get(maxnum).getFuel(), carsensorlist.get(maxnum).getStarting(), carsensorlist.get(maxnum).getDoor(), carsensorlist.get(maxnum).getTemper());
             nowcarid = carlist.get(maxnum).getCarid();
-            ;
+            nowCar = carlist.get(maxnum);
+
         }
 
 
@@ -519,12 +544,14 @@ public class CarActivity extends AppCompatActivity {
             fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper());
             nowcarid = carlist.get(carlistnum).getCarid();
+            nowCar = carlist.get(carlistnum);
 
         } else {
             carlistnum = 0;
             fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper());
             nowcarid = carlist.get(0).getCarid();
+            nowCar = carlist.get(0);
 
         }
 
@@ -603,6 +630,8 @@ public class CarActivity extends AppCompatActivity {
                 String carid = intent.getStringExtra("carid");
                 String contents = intent.getStringExtra("contents");
 
+                Log.d("[FCM]","carid:"+carid+" contents:"+ contents);
+
                 vibrate(300, 5);
 
                 // 상단알람 사용
@@ -634,10 +663,15 @@ public class CarActivity extends AppCompatActivity {
                 }
 
                 // FCM 분기
-                if(contents.equals("0004")){
-                    builder.setContentTitle(whereFcmCarName + "에서" + "영유아가 확인되었습니다:"+carid+" "+contents);
-                } else if(contents.equals("0002") || contents.equals("0003")){
-                    builder.setContentTitle(whereFcmCarName + "에서" + "충돌이 발생했습니다:"+carid+" "+contents);
+                if(contents.substring(0,4).equals("0004")){
+                    if(contents.substring(contents.length()-1,contents.length()).equals("1")){
+                        builder.setContentTitle(whereFcmCarName + "에서" + "영유아가 확인되었습니다");
+                    }
+                } else if(contents.substring(0,4).equals("0002") || contents.equals("0003")){
+                    if(contents.substring(contents.length()-1,contents.length()).equals("1") ||
+                            contents.substring(contents.length()-1,contents.length()).equals("3")){
+                        builder.setContentTitle(whereFcmCarName + "에서" + "충돌이 발생했습니다");
+                    }
                 }
 
 

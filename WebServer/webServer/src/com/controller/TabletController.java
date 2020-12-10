@@ -100,8 +100,7 @@ public class TabletController {
 	public void androidWithRequest(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
-		System.out.println(carnum+" "+contents);
-		// 
+
 		int carid = cbiz.caridfromnumber(carnum).getCarid();
 		
 		CarSensorVO cs = null;

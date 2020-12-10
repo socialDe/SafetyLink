@@ -71,6 +71,8 @@ public class UserController {
 					jo.put("usersubject", user.getUsersubject());
 					jo.put("babypushcheck", user.getBabypushcheck());
 					jo.put("accpushcheck", user.getAccpushcheck());
+					jo.put("sleeppushcheck", user.getSleeppushcheck());
+					jo.put("droppushcheck", user.getDroppushcheck());
 					jo.put("mobiletoken", user.getMobiletoken());
 					out.print(jo.toJSONString());
 //				}
@@ -281,5 +283,76 @@ public class UserController {
 		} finally {
 			out.close();
 		}
+	}
+	
+	// 사용자 정보 전송(2020.12.08) : CustomerMobile에서 유저안전기능 설정 화면에서 사용
+	@RequestMapping("/getUserInfo.mc")
+	public void sendUserInfo(HttpServletRequest request, HttpServletResponse res) throws Exception{
+		String id = request.getParameter("id");
+		
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		
+		PrintWriter out;
+		out = res.getWriter();
+
+		try {
+			UsersVO user = ubiz.get(id);
+			System.out.println(user);
+			JSONObject jo = new JSONObject();
+			jo.put("userid", user.getUserid());
+			jo.put("usersubject", user.getUsersubject());
+			jo.put("babypushcheck", user.getBabypushcheck());
+			jo.put("accpushcheck", user.getAccpushcheck());
+			jo.put("sleeppushcheck", user.getSleeppushcheck());
+			jo.put("droppushcheck", user.getDroppushcheck());
+			out.print(jo.toJSONString());
+
+		} catch (Exception e) {
+			out.print("fail");
+			throw e;
+		} finally {
+			out.close();
+		}
+		
+	}
+	
+	// 사용자 안전 기능 변경(2020.12.08)
+	@RequestMapping("/safetyFuncSet.mc")
+	public void safetyFuncSet(HttpServletRequest request, HttpServletResponse res) throws Exception {
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+		
+		String userid = request.getParameter("userid");
+		String func = request.getParameter("func");
+		String value = request.getParameter("value");
+		
+		System.out.println("사용자 안전 기능 변경:"+userid+"님의"+func+"기능"+value+" set 요청");
+		
+		try {
+			UsersVO user = ubiz.get(userid);
+			
+			if(func.equals("fcm")) {
+				user.setUsersubject(value);
+			}else if(func.equals("acc")) {
+				user.setAccpushcheck(value);
+			}else if(func.equals("sleep")){
+				user.setSleeppushcheck(value);
+			}else if(func.equals("baby")){
+				user.setBabypushcheck(value);
+			}else if(func.equals("drop")){
+				user.setBabypushcheck(value);
+			}
+			ubiz.modify(user);
+		}catch(Exception e){
+			System.out.println("사용자 안전 기능 변경 실패");
+			throw e;
+		}finally {
+			System.out.println("사용자 안전 기능 변경:"+userid+"님의"+func+"기능"+value+" set Completed.");
+			out.close();
+		}
+		
+		
 	}
 }
