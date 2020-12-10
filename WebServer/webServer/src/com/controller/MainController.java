@@ -1,6 +1,7 @@
 package com.controller;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.annotation.Resource;
 
@@ -64,4 +65,5 @@ public class MainController {
             mv.setViewName("table");  
             return mv;
     }
+    
 }

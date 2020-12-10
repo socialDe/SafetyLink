@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
@@ -38,6 +37,29 @@ function logTableCreate(){
 </script>
 
 
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Safety Link</title> 
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link rel="stylesheet" href="view/assets/materialize/css/materialize.min.css" media="screen,projection" />
+    <!-- Bootstrap Styles-->
+    <link href="view/assets/css/bootstrap.css" rel="stylesheet" />
+    <!-- FontAwesome Styles-->
+    <link href="view/assets/css/font-awesome.css" rel="stylesheet" />
+    <!-- Morris Chart Styles-->
+    <link href="view/assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <!-- Custom Styles-->
+    <link href="view/assets/css/custom-styles.css" rel="stylesheet" />
+    <!-- Google Fonts-->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="view/assets/js/Lightweight-Chart/cssCharts.css"> 
+</head>
+
+<body>
+
 <div id="wrapper">
 	<nav class="navbar navbar-default top-navbar" role="navigation">
 		<div class="navbar-header">
@@ -48,7 +70,7 @@ function logTableCreate(){
 					class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand waves-effect waves-dark" href="index.html"><i
-				class="large material-icons">track_changes</i> <strong>target</strong></a>
+				class="large material-icons">track_changes</i> <strong>SafetyLink</strong></a>
 
 			<div id="sideNav" href="">
 				<i class="material-icons dp48">toc</i>
@@ -226,21 +248,14 @@ function logTableCreate(){
 		<div class="sidebar-collapse">
 			<ul class="nav" id="main-menu">
 
-				<li><a class="active-menu waves-effect waves-dark"
-					href="index.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-				<li><a href="ui-elements.mc" class="waves-effect waves-dark"><i
-						class="fa fa-desktop"></i> UI Elements</a></li>
-				<li><a href="chart.mc" class="waves-effect waves-dark"><i
-						class="fa fa-bar-chart-o"></i> Charts</a></li>
-				<li><a href="tab-panel.html" class="waves-effect waves-dark"><i
-						class="fa fa-qrcode"></i> Tabs & Panels</a></li>
-				<li><a href="table.mc" class="waves-effect waves-dark"><i
-						class="fa fa-table"></i> Responsive Tables</a></li>
-				<li><a href="form.html" class="waves-effect waves-dark"><i
-						class="fa fa-edit"></i> Forms </a></li>
-				<li><a href="#" class="waves-effect waves-dark"><i
-						class="fa fa-sitemap"></i> Multi-Level Dropdown<span
-						class="fa arrow"></span></a>
+				<li><a class="active-menu waves-effect waves-dark" href="dashboard.mc"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+				<li><a href="ui-elements.mc" class="waves-effect waves-dark"><i class="fa fa-desktop"></i> UI Elements</a></li>
+				<li><a href="chart.mc" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
+				<li><a href="tab-panel.html" class="waves-effect waves-dark"><i class="fa fa-qrcode"></i> Tabs & Panels</a></li>
+				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a></li>
+				<li><a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a></li>
+				<li><a href="#" class="waves-effect waves-dark"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+
 					<ul class="nav nav-second-level">
 						<li><a href="#">Second Level Link</a></li>
 						<li><a href="#">Second Level Link</a></li>
@@ -279,14 +294,14 @@ function logTableCreate(){
 
 						<div class="card horizontal cardIcon waves-effect waves-dark">
 							<div class="card-image red">
-								<i class="material-icons dp48">import_export</i>
+								<i class="material-icons dp48">drive_eta</i>
 							</div>
 							<div class="card-stacked red">
 								<div class="card-content">
-									<h3>84,198</h3>
+									<h3>${drive }</h3>
 								</div>
 								<div class="card-action">
-									<strong>REVENUE</strong>
+									<strong>운행중</strong>
 								</div>
 							</div>
 						</div>
@@ -296,14 +311,14 @@ function logTableCreate(){
 
 						<div class="card horizontal cardIcon waves-effect waves-dark">
 							<div class="card-image orange">
-								<i class="material-icons dp48">shopping_cart</i>
+								<i class="material-icons dp48">notifications_active</i>
 							</div>
 							<div class="card-stacked orange">
 								<div class="card-content">
-									<h3>36,540</h3>
+									<h3>${sleep }</h3>
 								</div>
 								<div class="card-action">
-									<strong>SALES</strong>
+									<strong>졸음 경보</strong>
 								</div>
 							</div>
 						</div>
@@ -312,14 +327,14 @@ function logTableCreate(){
 
 						<div class="card horizontal cardIcon waves-effect waves-dark">
 							<div class="card-image blue">
-								<i class="material-icons dp48">equalizer</i>
+								<i class="material-icons dp48">local_shipping</i>
 							</div>
 							<div class="card-stacked blue">
 								<div class="card-content">
-									<h3>24,225</h3>
+									<h3>${freight }</h3>
 								</div>
 								<div class="card-action">
-									<strong>PRODUCTS</strong>
+									<strong>적재물 경보</strong>
 								</div>
 							</div>
 						</div>
@@ -329,14 +344,14 @@ function logTableCreate(){
 
 						<div class="card horizontal cardIcon waves-effect waves-dark">
 							<div class="card-image green">
-								<i class="material-icons dp48">supervisor_account</i>
+								<i class="material-icons dp48">warning</i>
 							</div>
 							<div class="card-stacked green">
 								<div class="card-content">
-									<h3>88,658</h3>
+									<h3>${accident }</h3>
 								</div>
 								<div class="card-action">
-									<strong>VISITS</strong>
+									<strong>일간 교통 사고</strong>
 								</div>
 							</div>
 						</div>
@@ -351,37 +366,33 @@ function logTableCreate(){
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
-									<h4>Profit</h4>
-									<div class="easypiechart" id="easypiechart-blue"
-										data-percent="82">
-										<span class="percent">82%</span>
+									<h4>일간 주행유저</h4>
+									<div class="easypiechart" id="easypiechart-blue" data-percent="${driver }">
+										<span class="percent">${driver }%</span>
 									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
-									<h4>No. of Visits</h4>
-									<div class="easypiechart" id="easypiechart-red"
-										data-percent="46">
-										<span class="percent">46%</span>
+									<h4>일간 경보비율</h4>
+									<div class="easypiechart" id="easypiechart-red" data-percent="${alarmRate }">
+										<span class="percent">${alarmRate }%</span>
 									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
-									<h4>Customers</h4>
-									<div class="easypiechart" id="easypiechart-teal"
-										data-percent="84">
-										<span class="percent">84%</span>
+									<h4>전월대비 경보 증감률</h4>
+									<div class="easypiechart" id="easypiechart-teal" data-percent="${monthAlarmRate }">
+										<span class="percent">${monthAlarmRate }%</span>
 									</div>
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
-									<h4>Sales</h4>
-									<div class="easypiechart" id="easypiechart-orange"
-										data-percent="55">
-										<span class="percent">55%</span>
+									<h4>전일대비 경보 증감률</h4>
+									<div class="easypiechart" id="easypiechart-orange" data-percent="${dayAlarmRate }">
+										<span class="percent">${dayAlarmRate }%</span>
 									</div>
 								</div>
 							</div>
@@ -427,7 +438,62 @@ function logTableCreate(){
 				</div>
 			
 			<!-- /. PAGE WRAPPER  -->
+
+			</div>
+
+
+
+			<!-- /. ROW  -->
+			<div class="fixed-action-btn horizontal click-to-toggle">
+				<a class="btn-floating btn-large red"> <i class="material-icons">menu</i>
+				</a>
+				<ul>
+					<li><a class="btn-floating red"><i class="material-icons">track_changes</i></a></li>
+					<li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
+					<li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
+					<li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
+				</ul>
+			</div>
+
+			<footer>
+				<p>
+					Shared by <i class="fa fa-love"></i><a
+						href="https://bootstrapthemes.co">BootstrapThemes</a>
+				</p>
+
+
+			</footer>
 		</div>
 		<!-- /. WRAPPER  -->
 	</div>
 </div>
+<!-- /. WRAPPER  -->
+
+	<!-- JS Scripts-->
+    <!-- jQuery Js -->
+    <script src="view/assets/js/jquery-1.10.2.js"></script>
+	
+	<!-- Bootstrap Js -->
+    <script src="view/assets/js/bootstrap.min.js"></script>
+	
+	<script src="view/assets/materialize/js/materialize.min.js"></script>
+	
+    <!-- Metis Menu Js -->
+    <script src="view/assets/js/jquery.metisMenu.js"></script>
+    <!-- Morris Chart Js -->
+    <script src="view/assets/js/morris/raphael-2.1.0.min.js"></script>
+    <script src="view/assets/js/morris/morris.js"></script>
+	
+	
+	<script src="view/assets/js/easypiechart.js"></script>
+	<script src="view/assets/js/easypiechart-data.js"></script>
+	
+	 <script src="view/assets/js/Lightweight-Chart/jquery.chart.js"></script>
+	
+    <!-- Custom Js -->
+    <script src="view/assets/js/dashboardscripts.js"></script> 
+ 
+
+</body>
+
+</html>
