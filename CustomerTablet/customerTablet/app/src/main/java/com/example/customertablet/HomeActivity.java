@@ -21,6 +21,7 @@ import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,7 +45,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -75,6 +78,11 @@ public class HomeActivity extends AppCompatActivity {
     CarSensorVO carsensor;
     CarVO car;
 
+    // 무게 관련 변수
+    int initialLoad; //초기 무게
+    ArrayList<Integer> loadDatas = new ArrayList<>(); // 주행중 데이터 저장 ArrayLis
+    double avgLoad; // 평균 무게
+
     public CarVO getCar() {
         return car;
     }
@@ -84,11 +92,13 @@ public class HomeActivity extends AppCompatActivity {
     }
     SharedPreferences sp;
     String carnum;
+    Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         textView_velocity = findViewById(R.id.textView_velocity);
         textView_oil = findViewById(R.id.textView_oil);
         textView_heartbeat = findViewById(R.id.textView_heartbeat);
@@ -126,6 +136,8 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d("[TAG]", msg);
             }
         });
+
+        handler = new Handler();
 
         // 여기서 부터는 앱 실행상태에서 상태바 설정!!
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
@@ -192,28 +204,106 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
                     //TCPIP로 받은 값을 다시 TCPIP로 전송할 일은 없으므로 사용 X
 //                  sendDataFrame(input);
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            textView_temp.setText(input.getContents());
-                        }
-                    });
-                    // 받은 DataFrame을 웹서버로 HTTP 전송
-                    // call AsynTask to perform network operation on separate thread
 
-                    String url = "http://192.168.25.35/webServer/getTabletSensor.mc";
-                    url += "?carnum=" + carnum + "&contents=" + input.getContents()+"";
-                    httpAsyncTask = new HttpAsyncTask();
-                    // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
-                    Handler mHandler = new Handler(Looper.getMainLooper());
-                    final String finalUrl = url;
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
+                    // 받은 데이터가 무게 데이터인 경우 수행
+                    if(input.getContents().substring(15,19).equals("0005")){
+                        Log.d("[Load]", "[Load]: "+input.getContents().substring(19));
+                        String loadData = input.getContents().substring(19);
+
+
+                        // 주행 시작시 전송하는 무게 데이터
+                        if(loadData.substring(0,1).equals("9")){
+                            initialLoad = Integer.parseInt(loadData.substring(1));
+                            Log.d("[Load]", "[Load]: 초기 무게 데이터 "+initialLoad+" 설정되었습니다.");
+                        }else {
+                            if (loadDatas.size() <= 5) {
+                                if (loadDatas.size() == 5) {
+                                    Log.d("[Load]", "[LoadDatas]: " + loadDatas.get(0) + "삭제");
+                                    loadDatas.remove(0);
+                                    loadDatas.add(Integer.parseInt(loadData));
+                                    Log.d("[Load]", "[LoadDatas]: " + loadData + "추가");
+                                } else if (loadDatas.size() <= 4) {
+                                    loadDatas.add(Integer.parseInt(loadData));
+                                    Log.d("[Load]", "[LoadDatas]: " + loadData + "추가");
+                                }
+
+                                Log.d("[Load]", "[LoadDatas]: " + loadDatas.toString());
+
+                            }
+
+                            if (loadDatas.size() == 5) {
+                                avgLoad = 0;
+                                for (int data : loadDatas) {
+                                    avgLoad += data;
+                                }
+                                avgLoad /= 5;
+                                Log.d("[Load]", "[avgLoad]: " + avgLoad + " // " + "[initial Load]: " + initialLoad);
+
+                                if (initialLoad > avgLoad + 500) {
+                                    Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
+                                    _runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
+                                            builder.setTitle("Alert!!");
+                                            builder.setMessage("적재물 낙하 사고가 감지되었습니다.");
+                                            builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Toast.makeText(getApplicationContext(), "신고 완료!", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    Toast.makeText(getApplicationContext(), "취소!", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                            builder.show();
+
+
+                                        }
+                                    });
+                                }
+                            }
+
+                            // if(주행 -> 정차로 바뀌면){
+                            // loadDatas.clear, initialData 초기화 필요! ++ 주행 정차에 따른 아두이노 제어도 필요함
+                            // }
+                        }
+                    }
+
+
+
+                    if(input.getContents().equals("온도데이터 코드")) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                textView_temp.setText(input.getContents());
+                            }
+                        });
+                    }
+
+                    // 받은 DataFrame 중 HTTP로 전송해야 하는 데이터
+                    if(input.getContents().equals("전송해야 하는 데이터")) {
+
+                        // 받은 DataFrame을 웹서버로 HTTP 전송
+                        // call AsynTask to perform network operation on separate thread
+
+                        String url = "http://192.168.10.100/webServer/getTabletSensor.mc";
+                        url += "?carnum=" + carnum + "&contents=" + input.getContents() + "";
+                        httpAsyncTask = new HttpAsyncTask();
+                        // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
+                        Handler mHandler = new Handler(Looper.getMainLooper());
+                        final String finalUrl = url;
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
                                 httpAsyncTask.execute(finalUrl);
-                        }
-                    },1000); // 1000으로 해야 돌아간다...
+                            }
+                        }, 1000); // 1000으로 해야 돌아간다...
 
+                    }
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
                     Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
@@ -288,7 +378,7 @@ public class HomeActivity extends AppCompatActivity {
     */
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.25.35/webServer/cardata.mc?carid=1";
+        String carUrl = "http://192.168.10.100/webServer/cardata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -346,6 +436,9 @@ public class HomeActivity extends AppCompatActivity {
 
     } // Car Data End
 
+    private void _runOnUiThread(Runnable runnable){
+        handler.post(runnable);
+    }
 
     /*
     HTTP 통신 Code
@@ -382,7 +475,7 @@ public class HomeActivity extends AppCompatActivity {
        FCM 통신
                     */
   public void tabletsendfcm(DataFrame dataF) {
-      String urlstr = "http://192.168.0.60/webServer/tabletsendfcm.mc";
+      String urlstr = "http://192.168.10.100/webServer/tabletsendfcm.mc";
       String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + dataF.getContents();
 
       Log.d("[TEST]", conrtolUrl);
