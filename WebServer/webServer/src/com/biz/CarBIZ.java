@@ -59,4 +59,10 @@ public class CarBIZ implements Biz<Integer,String,CarVO> {
 		return null;
 	}
 
+	@Override
+	public ArrayList<CarVO> getdrivingcars(String k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

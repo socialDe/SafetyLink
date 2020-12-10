@@ -49,8 +49,9 @@
 					<script>location.href = 'login.mc';</script>
 				</c:when>
 				<c:otherwise>
-					<!-- 센터 페이지 설정 -->
-					<jsp:include page="${centerpage}.jsp"></jsp:include>
+					<!-- 로그인시 대시보드 페이지로 이동 -->
+					<script>location.href = 'dashboard.mc';</script>
+					<!-- <jsp:include page="${centerpage}.mc"></jsp:include> -->
 				</c:otherwise>
 			</c:choose>
 		</c:when>

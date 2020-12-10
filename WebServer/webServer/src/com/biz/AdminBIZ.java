@@ -62,4 +62,10 @@ public class AdminBIZ implements Biz<String,Integer,AdminVO> {
 		return null;
 	}
 
+	@Override
+	public ArrayList<AdminVO> getdrivingcars(Integer k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

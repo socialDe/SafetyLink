@@ -59,4 +59,9 @@ public class CarSensorBIZ implements Biz<Integer,String,CarSensorVO> {
 		return null;
 	}
 
+	@Override
+	public ArrayList<CarSensorVO> getdrivingcars(String k) throws Exception {
+		return dao.selectdrivingcars(k);
+	}
+
 }
