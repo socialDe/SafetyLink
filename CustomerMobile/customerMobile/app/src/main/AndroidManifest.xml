@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.customermobile">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -13,22 +18,32 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-
-<!--    FService 추가-->
+        <activity android:name=".activity.TruckFuncSetActivity"></activity>
+        <activity android:name=".activity.CarRegisterActivity" /> <!-- FService 추가 -->
         <service android:name=".MyFService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
+        <activity android:name=".activity.CarActivity" />
+        <activity android:name=".activity.ResultPwdActivity" />
+        <activity android:name=".activity.ResultIdActivity" />
+        <activity android:name=".activity.FindPwdActivity" />
+        <activity android:name=".activity.FindIdActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.SocialRegisterActivity" />
+        <activity android:name=".activity.NonTruckFuncSetActivity" />
         <activity
-            android:name=".MainActivity">
+            android:name=".activity.LoginActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>

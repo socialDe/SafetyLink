@@ -25,6 +25,8 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 	SendAndReceiveSerialCan can;
 	// private boolean start = false;
 
+	private int isRunOrStop = 0;
+
 	public void setCan(SendAndReceiveSerialCan can) {
 		this.can = can;
 	}
@@ -86,17 +88,27 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 		String sensorValue = data.substring(4);
 		String sensorData = "";
 		
+		
+		
 		// data: Arduino에서 보낸 값
 		// check data
 		if(sensorID.equals("0001")) {
 			// 온도센서
 			// send data(Sensor+value) can
 			double value = Double.parseDouble(sensorValue);
-			if (value < 0) {
-				// 음수
-				sensorData = "1" + String.format("%07d", (int)(value * 100));
-			}else {
-				sensorData = String.format("%08d", (int)(value * 100));
+			sensorData = String.format("%08d", (int)(value * 100));
+			
+		}else if(sensorID.equals("0005")) {
+			// 무게 센서
+			double value = Double.parseDouble(sensorValue);
+
+			// 주행 시작의 경우 반드시 한 번만 시행
+			if(isRunOrStop == 0){
+				sensorData = String.format("%07d", value*10);
+				sensorData = "9"+sensorData;
+				isRunOrStop ++; // 시작 데이터 여부 flag (0 -> 시작데이터, 1 -> Non시작데이터)
+			}else{
+				sensorData = String.format("%08d", (int)(value * 10));
 			}
 		}
 
@@ -237,8 +249,5 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 		//ss.close();
 	}
 }
-
-
-
 
 

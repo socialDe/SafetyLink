@@ -18,40 +18,85 @@ public class App3 {
 		System.out.println("Spring Started .......");
 		// IoC
 		
-		Biz<Integer, CarVO> cbiz = (Biz)factory.getBean("cbiz");
-		Biz<Integer, CarSensorVO> sbiz = (Biz)factory.getBean("sbiz");
+		Biz<Integer,String,CarVO> cbiz = (Biz)factory.getBean("cbiz");
+		Biz<Integer,String,CarSensorVO> sbiz = (Biz)factory.getBean("sbiz");
 		
-//		ShopVO s = new ShopVO("����", 10000,"pants.jpg");
+
+		
+		
+//		ArrayList<CarVO> clist;
+//		
 //		try {
-//			biz.register(s);
-//			System.out.println("OK");
+//			clist = cbiz.get();
+//			for(CarVO c:clist) {
+//				System.out.println(c);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		ArrayList<CarSensorVO> slist;
+//		
+//		try {
+//			slist = sbiz.get();
+//			for(CarSensorVO s:slist) {
+//				System.out.println(s);
+//			}
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
 		
+//		ArrayList<CarVO> clist;
+//		
+//		try {
+//			clist = cbiz.getcarsfromuser("id01");
+//			for(CarVO c:clist) {
+//				System.out.println(c);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		
+//		ArrayList<CarSensorVO> slist;
+//		
+//		try {
+//			slist = sbiz.getcarsfromuser("id01");
+//			for(CarSensorVO s:slist) {
+//				System.out.println(s);
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		
+//		
 		
-		ArrayList<CarVO> clist;
+		CarSensorVO dbcarsensor = null;
 		
 		try {
-			clist = cbiz.get();
-			for(CarVO c:clist) {
-				System.out.println(c);
-			}
+			dbcarsensor = sbiz.get(1);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		dbcarsensor.setStarting("o");
+		dbcarsensor.setDoor("o");
+		dbcarsensor.setTemper(18);
+		
+		
+		
+		try {
+			sbiz.modify(dbcarsensor);
+			System.out.println("Modify OK..");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		
-		ArrayList<CarSensorVO> slist;
 		
-		try {
-			slist = sbiz.get();
-			for(CarSensorVO s:slist) {
-				System.out.println(s);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		
 		factory.close();

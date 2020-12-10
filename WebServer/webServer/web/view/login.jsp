@@ -9,18 +9,18 @@
     <title>Safety Link</title>
 	
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link rel="stylesheet" href="assets/materialize/css/materialize.min.css" media="screen,projection" />
+	<link rel="stylesheet" href="view/assets/materialize/css/materialize.min.css" media="screen,projection" />
     <!-- Bootstrap Styles-->
-    <link href="assets/css/bootstrap.css" rel="stylesheet" />
+    <link href="view/assets/css/bootstrap.css" rel="stylesheet" />
     <!-- FontAwesome Styles-->
-    <link href="assets/css/font-awesome.css" rel="stylesheet" />
+    <link href="view/assets/css/font-awesome.css" rel="stylesheet" />
     <!-- Morris Chart Styles-->
-    <link href="assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <link href="view/assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
     <!-- Login Styles-->
-    <link href="assets/css/login-style.css" rel="stylesheet" />
+    <link href="view/assets/css/login-style.css" rel="stylesheet" />
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
-    <link rel="stylesheet" href="assets/js/Lightweight-Chart/cssCharts.css"> 
+    <link rel="stylesheet" href="view/assets/js/Lightweight-Chart/cssCharts.css"> 
 </head>
 <body>
 	<div id="wrapper">
@@ -51,13 +51,13 @@
 							<form id="loginform" action="loginimpl.mc" method="post">
 								<div class="row">
 									<div class="input-field col s12">
-										<input id="id" name="id" type="text" class="validate">
+										<input id="id" name="id" type="text" class="validate" value="aid01">
 										<label for="Administrator ID">Administrator ID</label>
 									</div>
 								</div>
 								<div class="row">
 									<div class="input-field col s12">
-										<input id="password" name="password" type="password" class="validate">
+										<input id="password" name="password" type="password" class="validate" value="pwd01">
 										<label for="Administrator ID">Administrator Password</label>
 									</div>
 								</div>
@@ -84,17 +84,17 @@
 			<!-- /. WRAPPER  -->
 			<!-- JS Scripts-->
 			<!-- jQuery Js -->
-			<script src="assets/js/jquery-1.10.2.js"></script>
+			<script src="view/assets/js/jquery-1.10.2.js"></script>
 
 			<!-- Bootstrap Js -->
-			<script src="assets/js/bootstrap.min.js"></script>
+			<script src="view/assets/js/bootstrap.min.js"></script>
 
-			<script src="assets/materialize/js/materialize.min.js"></script>
+			<script src="view/assets/materialize/js/materialize.min.js"></script>
 
 			<!-- Metis Menu Js -->
-			<script src="assets/js/jquery.metisMenu.js"></script>
+			<script src="view/assets/js/jquery.metisMenu.js"></script>
 			<!-- Custom Js -->
-			<script src="assets/js/custom-scripts.js"></script>
+			<script src="view/assets/js/custom-scripts.js"></script>
 </body>
 
 </html>
