@@ -105,8 +105,9 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 		
 		if (code.equals("U")) {
 			df.setContents(data);
-			client.sendData(df);
+//			client.sendData(df);
 		}
+		System.out.println("sensor: " + df.getSender() + "/ data: " + df.getContents());
 	}
 
 	private class SerialWriter implements Runnable {
@@ -216,7 +217,7 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 			if (str.equals("q")) {
 				break;
 			}
-			can.sendSerial(str, str.substring(0, 4));
+			can.sendSerial(str, str.substring(3, 7));
 		}
 
 		 scan.close();
