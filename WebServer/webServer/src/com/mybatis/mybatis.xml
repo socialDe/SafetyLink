@@ -3,13 +3,17 @@
 PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+<!-- 이게 있어야 NULL값이 들어갈 수 있다 -->
+<settings> 
+    <setting name="cacheEnabled" value="false" />
+    <setting name="jdbcTypeForNull" value="NULL" />
+</settings>
 
         <typeAliases>
                 <typeAlias type="com.vo.AdminVO" alias="admin"/>
                 <typeAlias type="com.vo.UsersVO" alias="users"/>
                 <typeAlias type="com.vo.CarVO" alias="car"/>
                 <typeAlias type="com.vo.CarSensorVO" alias="carSensor"/>
-                
         </typeAliases>
         
         <mappers>
@@ -18,7 +22,6 @@ PUBLIC "-//mybatis.org/DTD Config 3.0//EN"
                 <mapper resource="com/mybatis/carMapper.xml"/>
                 <mapper resource="com/mybatis/carSensorMapper.xml"/>
         </mappers>
-        
         
 
 </configuration>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,8 @@ public class Fragment2 extends Fragment {
         user = ((CarActivity)getActivity()).getNowUser();
         userId = user.getUserid();
 
+        Log.d("[now]","1:"+nowCar+" 2:"+nowCarId+" 3:"+user);
+
         textView_safetyFuncSet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +53,6 @@ public class Fragment2 extends Fragment {
                     intent.putExtra("userId",userId);
                     intent.putExtra("nowCarId", nowCarId);
                     intent.putExtra("nowCar", nowCar);
-                    intent.putExtra("user", user);
                     System.out.println("Intent putExtra: "+nowCarId);
                     startActivity(intent);
 
@@ -58,10 +60,10 @@ public class Fragment2 extends Fragment {
                     // 현재 선택된 차량이 트럭인 경우
                     Intent intent = new Intent(getActivity(), TruckFuncSetActivity.class);
                     intent.putExtra("userId",userId);
+                    intent.putExtra("nowCar", nowCar);
                     intent.putExtra("nowCarId", nowCarId);
                     System.out.println("Intent putExtra: "+nowCarId);
                     startActivity(intent);
-
                 }
 
 

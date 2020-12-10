@@ -99,7 +99,7 @@ public class Fragment1 extends Fragment {
                 if(startingSW == 0){
                     startingSW = 1;
 
-                    ((CarActivity)getActivity()).control("starting","o");
+                    ((CarActivity)getActivity()).sendfcm("003100000001");
 
                     imageButton_startingOn.setImageResource(R.drawable.startingon1);
                     imageButton_startingOff.setImageResource(R.drawable.startingoff);
@@ -116,7 +116,7 @@ public class Fragment1 extends Fragment {
                 if(startingSW == 1){
                     startingSW = 0;
 
-                    ((CarActivity)getActivity()).control("starting","f");
+                    ((CarActivity)getActivity()).sendfcm("003100000000");
 
                     imageButton_startingOff.setImageResource(R.drawable.startingoff1);
                     imageButton_startingOn.setImageResource(R.drawable.startingon);
@@ -133,7 +133,7 @@ public class Fragment1 extends Fragment {
                 if(doorSW == 0) {
                     doorSW = 1;
 
-                    ((CarActivity) getActivity()).control("door", "o");
+                    ((CarActivity) getActivity()).sendfcm("003300000001");
 
                     imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
                     imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
@@ -150,7 +150,7 @@ public class Fragment1 extends Fragment {
                 if(doorSW == 1) {
                     doorSW = 0;
 
-                    ((CarActivity)getActivity()).control("starting","f");
+                    ((CarActivity)getActivity()).sendfcm("003300000000");
 
                     imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
                     imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
@@ -226,7 +226,7 @@ public class Fragment1 extends Fragment {
 
         @Override
         public void onFinish() {
-            ((CarActivity)getActivity()).control("temper",String.valueOf(targetTemper));
+            ((CarActivity)getActivity()).sendfcm("0021000000"+String.valueOf(targetTemper));;
 
             Toast t = Toast.makeText(getActivity(),"차량온도가 "+targetTemper+"로 세팅합니다!",Toast.LENGTH_SHORT);
             t.show();
@@ -244,13 +244,15 @@ public class Fragment1 extends Fragment {
         textView_carModel.setText(carmodel);
         textView_carNum.setText(carnum);
 
-        int[] imglist = {R.drawable.car1,R.drawable.car2};
+        int[] imglist = {R.drawable.car1,R.drawable.car2, R.drawable.car3};
 
 
         if(carimg.equals("car1.jpg")){
             imageView_car.setImageResource(imglist[0]);
         }else if(carimg.equals("car2.jpg")){
             imageView_car.setImageResource(imglist[1]);
+        }else if(carimg.equals("car3.jpg")){
+            imageView_car.setImageResource(imglist[2]);
         }
 
 
@@ -261,7 +263,7 @@ public class Fragment1 extends Fragment {
     // 차센서 정보를 세팅하는 함수
     public void setCarSensorData(String moving, int fuel, String starting, String door, int temper){
 
-        if(moving.equals("o")){
+        if(moving.equals("1")){
             textView_moving.setText("주행중");
             textView_moving.setTextColor(Color.GREEN);
         }else{
@@ -271,7 +273,7 @@ public class Fragment1 extends Fragment {
         textView_fuel.setText(String.valueOf(fuel));
         textView_possibleDistance.setText(String.valueOf(fuel*12));
         Log.d("[TAG]","Here:"+fuel+" "+starting+" "+door+" "+temper);
-        if(starting.equals("o")){
+        if(starting.equals("1")){
             startingSW = 1;
             imageButton_startingOn.setImageResource(R.drawable.startingon1);
             imageButton_startingOff.setImageResource(R.drawable.startingoff);
@@ -280,7 +282,7 @@ public class Fragment1 extends Fragment {
             imageButton_startingOff.setImageResource(R.drawable.startingoff1);
             imageButton_startingOn.setImageResource(R.drawable.startingon);
         }
-        if(door.equals("o")){
+        if(door.equals("1")){
             doorSW = 1;
             imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
             imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);

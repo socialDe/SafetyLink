@@ -16,6 +16,23 @@ public class CarVO {
 	public CarVO() {
 		super();
 	}
+	
+	public CarVO(String carnum) {
+		this.carnum = carnum;
+	}
+
+
+
+	public CarVO(String carnum, String tablettoken) {
+		this.carnum = carnum;
+		this.tablettoken = tablettoken;
+	}
+
+	public CarVO(int carid, String carnum) {
+		super();
+		this.carid = carid;
+		this.carnum = carnum;
+	}
 
 	public CarVO(String carnum, String cartype, String carmodel, int caryear, String caroiltype) {
 		super();
@@ -70,10 +87,39 @@ public class CarVO {
 		this.tablettoken = tablettoken;
 	}
 
-	public CarVO(String userid, String carname, String cartype, String carmodel, int caryear, String carimg,
+	public CarVO(int carid, String userid, String carnum, String carname, String cartype, String carmodel, int caryear,
+			String carimg, String caroiltype, String tablettoken) {
+		super();
+		this.carid = carid;
+		this.userid = userid;
+		this.carnum = carnum;
+		this.carname = carname;
+		this.cartype = cartype;
+		this.carmodel = carmodel;
+		this.caryear = caryear;
+		this.carimg = carimg;
+		this.caroiltype = caroiltype;
+		this.tablettoken = tablettoken;
+	}
+	
+	// 차량 등록
+	public CarVO(String userid, String carnum, String cartype, String carmodel, int caryear, String carimg,
 			String caroiltype, String tablettoken) {
+		this.userid = userid;
+		this.carnum = carnum;
+		this.cartype = cartype;
+		this.carmodel = carmodel;
+		this.caryear = caryear;
+		this.carimg = carimg;
+		this.caroiltype = caroiltype;
+		this.tablettoken = tablettoken;
+	}
+
+	public CarVO(String userid, String carnum, String carname, String cartype, String carmodel, int caryear,
+			String carimg, String caroiltype, String tablettoken) {
 		super();
 		this.userid = userid;
+		this.carnum = carnum;
 		this.carname = carname;
 		this.cartype = cartype;
 		this.carmodel = carmodel;
@@ -83,13 +129,12 @@ public class CarVO {
 		this.tablettoken = tablettoken;
 	}
 
-	public CarVO(int carid, String userid, String carnum, String carname, String cartype, String carmodel, int caryear,
-			String carimg, String caroiltype, String tablettoken) {
+	public CarVO(int carid, String userid, String carnum, String cartype, String carmodel, int caryear, String carimg,
+			String caroiltype, String tablettoken) {
 		super();
 		this.carid = carid;
 		this.userid = userid;
 		this.carnum = carnum;
-		this.carname = carname;
 		this.cartype = cartype;
 		this.carmodel = carmodel;
 		this.caryear = caryear;

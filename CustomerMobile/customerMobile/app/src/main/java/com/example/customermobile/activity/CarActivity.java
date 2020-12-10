@@ -25,11 +25,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.customermobile.Fragment1;
 import com.example.customermobile.Fragment2;
@@ -91,8 +93,10 @@ public class CarActivity extends AppCompatActivity {
     HttpAsyncTask httpAsyncTask;
 
     int carlistnum = 0;
-    int nowcarid = 0; // 현재 차 아이디
+    int nowcarid;
+    String nowcarnum = ""; // 현재 차 번호판 번호
     CarVO nowCar = new CarVO();
+
 
     ArrayList<CarVO> carlist = null;
     ArrayList<CarSensorVO> carsensorlist = null;
@@ -108,6 +112,8 @@ public class CarActivity extends AppCompatActivity {
     String id;
     Socket socket;
     Sender sender;
+
+    CarDataTimer carDataTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,16 +170,16 @@ public class CarActivity extends AppCompatActivity {
             user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, sleeppushcheck, droppushcheck, mobiletoken);
 
 
-
         }
 
 
         // tcpip 설정
         port = 5558;
-        address = ip;
-        id = "MobileJH";
+        address = "192.168.0.109";
+        id = "Mobile";
 
-        //new Thread(con).start(); // 풀면 tcpip 사용
+        new Thread(con).start(); // 풀면 tcpip 사용
+        Log.d("[TAG]", "TAG00----------");
 
 
         // 상단 바 설정
@@ -254,14 +260,15 @@ public class CarActivity extends AppCompatActivity {
 
         getCarData();
 
+        carDataTimer = new CarDataTimer(5000, 1000);
+        carDataTimer.start();
 
+    }// end onCreat
 
-    }// end onCreate
 
     public UsersVO getNowUser(){
         return user;
     }
-
 
     // 현재 선택된 차량ID를 Fragment로 제공
     public int getNowCarId(){
@@ -273,6 +280,25 @@ public class CarActivity extends AppCompatActivity {
     public CarVO getNowCar(){
         System.out.println("nowcar: "+nowCar);
         return nowCar;
+    }
+
+
+    // 차정보를 가져오는 설정을 위한 타이머
+    class CarDataTimer extends CountDownTimer {
+        public CarDataTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            getCarData();
+            carDataTimer.start();
+        }
     }
 
 
@@ -295,15 +321,15 @@ public class CarActivity extends AppCompatActivity {
         carSensorAsync.execute(carSensorUrl);
     }
 
-    public void control(String type, String control) {
-        String urlstr = "http://" + ip + "/webServer/control.mc";
-        String conrtolUrl = urlstr + "?carid=" + nowcarid + "&type=" + type + "&control=" + control;
+    public void sendfcm(String contents) {
+        String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
+        String conrtolUrl = urlstr + "?carnum=" + nowcarnum + "&contents=" + contents;
 
         Log.d("[TEST]", conrtolUrl);
 
         // AsyncTask를 통해 HttpURLConnection 수행.
-        ControlAsync controlAsync = new ControlAsync();
-        controlAsync.execute(conrtolUrl);
+        SendFcmAsync sendFcmAsync = new SendFcmAsync();
+        sendFcmAsync.execute(conrtolUrl);
     }
 
 
@@ -375,9 +401,12 @@ public class CarActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
+                fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
 
-                nowcarid = carlist.get(0).getCarid();
+
+                nowcarid = carlist.get(carlistnum).getCarid();
+                nowcarnum = carlist.get(carlistnum).getCarnum();
+
                 nowCar = carlist.get(0);
 
                 //차 정보를 가져온 이후 차센서 정보를 가져온다
@@ -391,14 +420,14 @@ public class CarActivity extends AppCompatActivity {
 
     class CarSensorAsync extends AsyncTask<String, Void, String> {
 
-        ProgressDialog progressDialog;
+        //ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(CarActivity.this);
-            progressDialog.setTitle("Get Data ...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+//            progressDialog = new ProgressDialog(CarActivity.this);
+//            progressDialog.setTitle("Get Data ...");
+//            progressDialog.setCancelable(false);
+//            progressDialog.show();
         }
 
         @Override
@@ -411,7 +440,7 @@ public class CarActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
 
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
             JSONArray ja = null;
             try {
                 ja = new JSONArray(s);
@@ -455,19 +484,18 @@ public class CarActivity extends AppCompatActivity {
 
                     carsensorlist.add(carsensor);
 
-                    fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper());
-
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(0).getTemper());
+
         }
     }
 
 
-    class ControlAsync extends AsyncTask<String, Void, Void> {
+    class SendFcmAsync extends AsyncTask<String, Void, Void> {
 
         public Void result;
 
@@ -538,7 +566,9 @@ public class CarActivity extends AppCompatActivity {
         public void run() {
             try {
                 connect();
+                Log.d("[TAG]", "TAG-0----------");
             } catch (IOException e) {
+                Log.d("[TAG]", "TAG-err----------");
                 e.printStackTrace();
             }
         }
@@ -549,11 +579,13 @@ public class CarActivity extends AppCompatActivity {
         // 소켓이 만들어지는 구간
         try {
             socket = new Socket(address, port);
+            Log.d("[TAG]", "TAG-1----------");
         } catch (Exception e) {
             while (true) {
                 try {
                     Thread.sleep(2000);
                     socket = new Socket(address, port);
+                    Log.d("[TAG]", "TAG-11----------");
                     break;
                 } catch (Exception e1) {
                     System.out.println("Retry...");
@@ -561,7 +593,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }
 
-        System.out.println("Connected Server:" + address);
+        Log.d("[TAG]", "Connected Server:" + address);
 
         sender = new Sender(socket);
         new Receiver(socket).start();
@@ -596,8 +628,9 @@ public class CarActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (intent != null) {
                 String carid = intent.getStringExtra("carid");
-                String type = intent.getStringExtra("type");
-                String control = intent.getStringExtra("control");
+                String contents = intent.getStringExtra("contents");
+
+                Log.d("[FCM]","carid:"+carid+" contents:"+ contents);
 
                 vibrate(300, 5);
 
@@ -622,7 +655,25 @@ public class CarActivity extends AppCompatActivity {
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
 
-                builder.setContentTitle(carid+" "+type+" "+control);
+                String whereFcmCarName = "";
+                for(CarVO car: carlist){
+                    if(car.getCarid() == Integer.parseInt(carid)){
+                        whereFcmCarName = car.getCarname();
+                    }
+                }
+
+                // FCM 분기
+                if(contents.substring(0,4).equals("0004")){
+                    if(contents.substring(contents.length()-1,contents.length()).equals("1")){
+                        builder.setContentTitle(whereFcmCarName + "에서" + "영유아가 확인되었습니다");
+                    }
+                } else if(contents.substring(0,4).equals("0002") || contents.equals("0003")){
+                    if(contents.substring(contents.length()-1,contents.length()).equals("1") ||
+                            contents.substring(contents.length()-1,contents.length()).equals("3")){
+                        builder.setContentTitle(whereFcmCarName + "에서" + "충돌이 발생했습니다");
+                    }
+                }
+
 
 
 //                // control이 temper면, data(온도값)을 set해라
@@ -648,7 +699,9 @@ public class CarActivity extends AppCompatActivity {
 
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
-                manager.notify(1, noti); // 상단 알림을 없애려면 이곳 주석 처리
+
+                manager.notify(1, noti);
+
             }
         }
     };
