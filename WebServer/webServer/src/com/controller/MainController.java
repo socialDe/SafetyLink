@@ -24,7 +24,6 @@ public class MainController {
 		mv.setViewName("main");
 		return mv;
 	}
-	
 
 	@RequestMapping("/login.mc")
 	public ModelAndView login() {

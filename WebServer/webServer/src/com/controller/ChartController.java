@@ -1,17 +1,27 @@
 package com.controller;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.frame.Biz;
+import com.vo.CarVO;
 import com.vo.UsersVO;
 
 @Controller
@@ -19,6 +29,18 @@ public class ChartController {
 	
 	@Resource(name = "ubiz")
     Biz<String, String, UsersVO> ubiz;
+	
+	String url = "jdbc:hive2://192.168.111.120:10000/default";
+	String id = "root";
+	String password = "111111";
+
+//	public ChartController() {
+//		try {
+//			Class.forName("org.apache.hive.jdbc.HiveDriver");
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	
 	// Chart Search
@@ -2279,6 +2301,84 @@ public class ChartController {
 		}
 	}
 		
+	
+	@RequestMapping("/getFcmLog.mc")
+	@ResponseBody
+	public void getFcmLog(HttpServletResponse res) throws IOException, SQLException {
+		
+		Connection con = null;
+		JSONArray ja = new JSONArray();
+		
+		try {
+//			con = DriverManager.getConnection(url,id,password);
+//			PreparedStatement pstmt = con.prepareStatement("SELECT * FROM hdi LIMIT 10");
+//			ResultSet rset = pstmt.executeQuery();
+//	
+//			// [ {name: '' , data:[ , , ]} ,{}]
+//			
+//			while(rset.next()) {
+					
+
+				JSONObject data;
+				data = new JSONObject();
+				data.put("fcmnum", "1");
+				data.put("fcmtype", "적재물 낙하 경보");
+				data.put("carnum", "12가1234");
+				data.put("date", "2020-12-10");
+				data.put("time", "21:23:15");
+				ja.add(data);
+				
+				data = new JSONObject();
+				data.put("fcmnum", "2");
+				data.put("fcmtype", "졸음 경보");
+				data.put("carnum", "23가1454");
+				data.put("date", "2020-12-11");
+				data.put("time", "22:23:15");
+				ja.add(data);
+				
+				data = new JSONObject();
+				data.put("fcmnum", "3");
+				data.put("fcmtype", "영유아 경보");
+				data.put("carnum", "13나1334");
+				data.put("date", "2020-12-13");
+				data.put("time", "23:23:15");
+				ja.add(data);
+				
+				data = new JSONObject();
+				data.put("fcmnum", "4");
+				data.put("fcmtype", "충돌 낙하 경보");
+				data.put("carnum", "54다1234");
+				data.put("date", "2020-12-14");
+				data.put("time", "04:23:15");
+				ja.add(data);
+				
+				data = new JSONObject();
+				data.put("fcmnum", "5");
+				data.put("fcmtype", "영유아 낙하 경보");
+				data.put("carnum", "89라1234");
+				data.put("date", "2020-12-15");
+				data.put("time", "20:23:15");
+				ja.add(data);
+
+				
+//			}
+			
+		}catch(Exception e) {
+			throw e;
+		}finally {
+//			con.close();
+		}
+		
+
+		
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+		out.print(ja.toJSONString());
+		out.close();
+
+	}
+	
 	
 
 }

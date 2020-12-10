@@ -407,7 +407,7 @@ public class CarActivity extends AppCompatActivity {
                 nowcarid = carlist.get(carlistnum).getCarid();
                 nowcarnum = carlist.get(carlistnum).getCarnum();
 
-                nowCar = carlist.get(0);
+                nowCar = carlist.get(carlistnum);
 
                 //차 정보를 가져온 이후 차센서 정보를 가져온다
                 getCarSensorData();
@@ -534,7 +534,7 @@ public class CarActivity extends AppCompatActivity {
 
     }
 
-    ;
+
 
     public void clickcarright() {
         int maxnum = carlist.size() - 1;
@@ -558,7 +558,6 @@ public class CarActivity extends AppCompatActivity {
 
     }
 
-    ;
 
 
     Runnable con = new Runnable() {

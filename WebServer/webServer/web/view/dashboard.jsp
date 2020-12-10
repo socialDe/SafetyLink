@@ -1,6 +1,42 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+<script>
+
+$(document).ready(function (){
+	logTableCreate();
+});
+
+function logTableCreate(){
+	
+		$.ajax({			
+			url : "getFcmLog.mc",
+			success:function(data){					
+				for(key in data){
+					var html = '';	
+					html += '<tr>';
+					html += '<td>'+data[key].fcmnum+'</td>';
+					html += '<td>'+data[key].fcmtype+'</td>';
+					html += '<td>'+data[key].carnum+'</td>';
+					html += '<td>'+data[key].date+'</td>';
+					html += '<td>'+data[key].time+'</td>';
+					html += '</tr>';	
+					
+					$("#table").prepend(html);
+				}
+				
+			},	
+			error:function(){
+				alert("getFcmLog Fail..");
+			}
+		})
+	}
+
+</script>
+
 
 <div id="wrapper">
 	<nav class="navbar navbar-default top-navbar" role="navigation">
@@ -20,10 +56,19 @@
 		</div>
 
 		<ul class="nav navbar-top-links navbar-right">
-			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown4"><i class="fa fa-envelope fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown3"><i class="fa fa-tasks fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown2"><i class="fa fa-bell fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1"><i class="fa fa-user fa-fw"></i> <b>${admin.adminname }</b><i class="material-icons right">arrow_drop_down</i></a></li>
+			<li><a class="dropdown-button waves-effect waves-dark"
+				href="#!" data-activates="dropdown4"><i
+					class="fa fa-envelope fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
+			<li><a class="dropdown-button waves-effect waves-dark"
+				href="#!" data-activates="dropdown3"><i
+					class="fa fa-tasks fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
+			<li><a class="dropdown-button waves-effect waves-dark"
+				href="#!" data-activates="dropdown2"><i
+					class="fa fa-bell fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
+			<li><a class="dropdown-button waves-effect waves-dark"
+				href="#!" data-activates="dropdown1"><i
+					class="fa fa-user fa-fw"></i> <b>${admin.adminname }</b><i
+					class="material-icons right">arrow_drop_down</i></a></li>
 		</ul>
 	</nav>
 	<!-- Dropdown Structure -->
@@ -37,36 +82,41 @@
 	<ul id="dropdown2" class="dropdown-content w250">
 		<li>
 			<div>
-				<i class="fa fa-comment fa-fw"></i> New Comment <span class="pull-right text-muted small">4 min</span>
+				<i class="fa fa-comment fa-fw"></i> New Comment <span
+					class="pull-right text-muted small">4 min</span>
 			</div> </a>
 		</li>
 		<li class="divider"></li>
 		<li>
 			<div>
-				<i class="fa fa-twitter fa-fw"></i> 3 New Followers <span class="pull-right text-muted small">12 min</span>
+				<i class="fa fa-twitter fa-fw"></i> 3 New Followers <span
+					class="pull-right text-muted small">12 min</span>
 			</div> </a>
 		</li>
 		<li class="divider"></li>
 		<li>
 			<div>
-				<i class="fa fa-envelope fa-fw"></i> Message Sent <span class="pull-right text-muted small">4 min</span>
+				<i class="fa fa-envelope fa-fw"></i> Message Sent <span
+					class="pull-right text-muted small">4 min</span>
 			</div> </a>
 		</li>
 		<li class="divider"></li>
 		<li>
 			<div>
-				<i class="fa fa-tasks fa-fw"></i> New Task <span class="pull-right text-muted small">4 min</span>
+				<i class="fa fa-tasks fa-fw"></i> New Task <span
+					class="pull-right text-muted small">4 min</span>
 			</div> </a>
 		</li>
 		<li class="divider"></li>
 		<li>
 			<div>
-				<i class="fa fa-upload fa-fw"></i> Server Rebooted <span class="pull-right text-muted small">4 min</span>
+				<i class="fa fa-upload fa-fw"></i> Server Rebooted <span
+					class="pull-right text-muted small">4 min</span>
 			</div> </a>
 		</li>
 		<li class="divider"></li>
-		<li><a class="text-center" href="#"> <strong>See All Alerts</strong> <i class="fa fa-angle-right"></i></a>
-		</li>
+		<li><a class="text-center" href="#"> <strong>See
+					All Alerts</strong> <i class="fa fa-angle-right"></i></a></li>
 	</ul>
 	<ul id="dropdown3" class="dropdown-content dropdown-tasks w250">
 		<li><a href="#">
@@ -176,13 +226,21 @@
 		<div class="sidebar-collapse">
 			<ul class="nav" id="main-menu">
 
-				<li><a class="active-menu waves-effect waves-dark" href="index.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-				<li><a href="ui-elements.mc" class="waves-effect waves-dark"><i class="fa fa-desktop"></i> UI Elements</a></li>
-				<li><a href="chart.mc" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
-				<li><a href="tab-panel.html" class="waves-effect waves-dark"><i class="fa fa-qrcode"></i> Tabs & Panels</a></li>
-				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a></li>
-				<li><a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a></li>
-				<li><a href="#" class="waves-effect waves-dark"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
+				<li><a class="active-menu waves-effect waves-dark"
+					href="index.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+				<li><a href="ui-elements.mc" class="waves-effect waves-dark"><i
+						class="fa fa-desktop"></i> UI Elements</a></li>
+				<li><a href="chart.mc" class="waves-effect waves-dark"><i
+						class="fa fa-bar-chart-o"></i> Charts</a></li>
+				<li><a href="tab-panel.html" class="waves-effect waves-dark"><i
+						class="fa fa-qrcode"></i> Tabs & Panels</a></li>
+				<li><a href="table.mc" class="waves-effect waves-dark"><i
+						class="fa fa-table"></i> Responsive Tables</a></li>
+				<li><a href="form.html" class="waves-effect waves-dark"><i
+						class="fa fa-edit"></i> Forms </a></li>
+				<li><a href="#" class="waves-effect waves-dark"><i
+						class="fa fa-sitemap"></i> Multi-Level Dropdown<span
+						class="fa arrow"></span></a>
 					<ul class="nav nav-second-level">
 						<li><a href="#">Second Level Link</a></li>
 						<li><a href="#">Second Level Link</a></li>
@@ -294,7 +352,8 @@
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
 									<h4>Profit</h4>
-									<div class="easypiechart" id="easypiechart-blue" data-percent="82">
+									<div class="easypiechart" id="easypiechart-blue"
+										data-percent="82">
 										<span class="percent">82%</span>
 									</div>
 								</div>
@@ -302,7 +361,8 @@
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
 									<h4>No. of Visits</h4>
-									<div class="easypiechart" id="easypiechart-red" data-percent="46">
+									<div class="easypiechart" id="easypiechart-red"
+										data-percent="46">
 										<span class="percent">46%</span>
 									</div>
 								</div>
@@ -310,7 +370,8 @@
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
 									<h4>Customers</h4>
-									<div class="easypiechart" id="easypiechart-teal" data-percent="84">
+									<div class="easypiechart" id="easypiechart-teal"
+										data-percent="84">
 										<span class="percent">84%</span>
 									</div>
 								</div>
@@ -318,7 +379,8 @@
 							<div class="col-xs-12 col-sm-6 col-md-6">
 								<div class="card-panel text-center">
 									<h4>Sales</h4>
-									<div class="easypiechart" id="easypiechart-orange" data-percent="55">
+									<div class="easypiechart" id="easypiechart-orange"
+										data-percent="55">
 										<span class="percent">55%</span>
 									</div>
 								</div>
@@ -342,139 +404,30 @@
 					</div>
 				</div>
 				<!--/.row-->
+
+
+				<!-- /. PAGE INNER  -->
 			</div>
-
-
-			<div class="row">
-				<div class="col-md-5">
-					<div class="card">
-						<div class="card-image">
-							<div id="morris-line-chart"></div>
-						</div>
-						<div class="card-action">
-							<b>Line Chart</b>
-						</div>
-					</div>
-
+				
+				<div class="card-panel text-center">
+					<h3 style="font-weight:bolder;">최신 경보</h3><br>
+					<!-- LOG TABLE 생성 -->
+					<table class="table log" style="text-align: center;">
+						<tr>
+							<th>번호</th>
+							<th>경보 유형</th>
+							<th>차량 번호</th>
+							<th>날짜</th>
+							<th>시각</th>
+						</tr>
+						<tbody id="table" style="text-align: center;">
+							<!-- <tr><th>1</th><th>재물 낙하 경보</th><th>12가1234</th><th>2020-12-10</th><th>21:23:15</th></tr> -->
+						</tbody>
+					</table>
 				</div>
-
-				<div class="col-md-7">
-					<div class="card">
-						<div class="card-image">
-							<div id="morris-bar-chart"></div>
-						</div>
-						<div class="card-action">
-							<b> Bar Chart Example</b>
-						</div>
-					</div>
-				</div>
-
-			</div>
-
-
-
-			<div class="row">
-				<div class="col-xs-12">
-					<div class="card">
-						<div class="card-image">
-							<div id="morris-area-chart"></div>
-						</div>
-						<div class="card-action">
-							<b>Area Chart</b>
-						</div>
-					</div>
-				</div>
-
-			</div>
-			<div class="row">
-				<div class="col-md-12"></div>
-			</div>
-			<!-- /. ROW  -->
-
-
-
-
-
-			<div class="row">
-				<div class="col-md-4 col-sm-12 col-xs-12">
-					<div class="card">
-						<div class="card-action">
-							<b>Tasks Panel</b>
-						</div>
-						<div class="card-image">
-							<div class="collection">
-								<a href="#!" class="collection-item">Red<span class="new badge red" data-badge-caption="red">4</span></a>
-								<a href="#!" class="collection-item">Blue<span class="new badge blue" data-badge-caption="blue">4</span></a>
-								<a href="#!" class="collection-item"><span class="badge">1</span>Alan</a>
-								<a href="#!" class="collection-item"><span class="new badge">4</span>Alan</a>
-								<a href="#!" class="collection-item">Alan<span class="new badge blue" data-badge-caption="blue">4</span></a>
-								<a href="#!" class="collection-item"><span class="badge">14</span>Alan</a>
-								<a href="#!" class="collection-item">Custom Badge Captions<span class="new badge" data-badge-caption="custom caption">4</span></a>
-								<a href="#!" class="collection-item">Custom Badge Captions<span class="badge" data-badge-caption="custom caption">4</span></a>
-							</div>
-						</div>
-
-					</div>
-
-				</div>
-				<div class="col-md-8 col-sm-12 col-xs-12">
-					<div class="card">
-						<div class="card-action">
-							<b>User List</b>
-						</div>
-						<div class="card-image">
-							<ul class="collection">
-								<li class="collection-item avatar">
-								<i class="material-icons circle green">track_changes</i>
-								<span class="title">Title</span>
-									<p>First Line <br> Second Line</p>
-									<a href="#!" class="secondary-content">
-									<i class="material-icons">grade</i></a></li>
-								<li class="collection-item avatar">
-								<i class="material-icons circle">folder</i>
-								<span class="title">Title</span>
-									<p>First Line <br> Second Line</p>
-									<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a></li>
-								<li class="collection-item avatar">
-								<i class="material-icons circle green">track_changes</i>
-								<span class="title">Title</span>
-									<p> First Line <br> Second Line </p>
-									<a href="#!" class="secondary-content"><i class="material-icons">grade</i></a></li>
-								<li class="collection-item avatar"><i class="material-icons circle red">play_arrow</i>
-								<span class="title">Title</span>
-									<p> First Line <br> Second Line
-									</p> <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a></li>
-							</ul>
-						</div>
-					</div>
-
-
-
-				</div>
-			</div>
-			<!-- /. ROW  -->
-			<div class="fixed-action-btn horizontal click-to-toggle">
-				<a class="btn-floating btn-large red"> <i class="material-icons">menu</i>
-				</a>
-				<ul>
-					<li><a class="btn-floating red"><i class="material-icons">track_changes</i></a></li>
-					<li><a class="btn-floating yellow darken-1"><i class="material-icons">format_quote</i></a></li>
-					<li><a class="btn-floating green"><i class="material-icons">publish</i></a></li>
-					<li><a class="btn-floating blue"><i class="material-icons">attach_file</i></a></li>
-				</ul>
-			</div>
-
-			<footer>
-				<p>
-					Shared by <i class="fa fa-love"></i><a
-						href="https://bootstrapthemes.co">BootstrapThemes</a>
-				</p>
-
-
-			</footer>
+			
+			<!-- /. PAGE WRAPPER  -->
 		</div>
-		<!-- /. PAGE INNER  -->
+		<!-- /. WRAPPER  -->
 	</div>
-	<!-- /. PAGE WRAPPER  -->
 </div>
-<!-- /. WRAPPER  -->
