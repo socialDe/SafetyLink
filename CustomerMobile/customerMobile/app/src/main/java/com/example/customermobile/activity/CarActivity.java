@@ -166,7 +166,6 @@ public class CarActivity extends AppCompatActivity {
             user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
 
 
-
         }
 
 
@@ -176,7 +175,7 @@ public class CarActivity extends AppCompatActivity {
         id = "Mobile";
 
         new Thread(con).start(); // 풀면 tcpip 사용
-        Log.d("[TAG]","TAG00----------");
+        Log.d("[TAG]", "TAG00----------");
 
 
         // 상단 바 설정
@@ -265,10 +264,8 @@ public class CarActivity extends AppCompatActivity {
     }// end onCreat
 
     // 차정보르 가져오는 설정을 위한 타이머
-    class CarDataTimer extends CountDownTimer
-    {
-        public CarDataTimer(long millisInFuture, long countDownInterval)
-        {
+    class CarDataTimer extends CountDownTimer {
+        public CarDataTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -306,7 +303,7 @@ public class CarActivity extends AppCompatActivity {
 
     public void sendfcm(String contents) {
         String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
-        String conrtolUrl = urlstr + "?carnum=" + nowcarnum +"&contents=" + contents;
+        String conrtolUrl = urlstr + "?carnum=" + nowcarnum + "&contents=" + contents;
 
         Log.d("[TEST]", conrtolUrl);
 
@@ -384,10 +381,10 @@ public class CarActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
+                fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
 
-                nowcarid = carlist.get(0).getCarid();
-                nowcarnum = carlist.get(0).getCarnum();
+                nowcarid = carlist.get(carlistnum).getCarid();
+                nowcarnum = carlist.get(carlistnum).getCarnum();
 
                 //차 정보를 가져온 이후 차센서 정보를 가져온다
                 getCarSensorData();
@@ -464,13 +461,12 @@ public class CarActivity extends AppCompatActivity {
 
                     carsensorlist.add(carsensor);
 
-                    fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper());
-
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(0).getTemper());
 
         }
     }
@@ -543,9 +539,9 @@ public class CarActivity extends AppCompatActivity {
         public void run() {
             try {
                 connect();
-                Log.d("[TAG]","TAG-0----------");
+                Log.d("[TAG]", "TAG-0----------");
             } catch (IOException e) {
-                Log.d("[TAG]","TAG-err----------");
+                Log.d("[TAG]", "TAG-err----------");
                 e.printStackTrace();
             }
         }
@@ -556,13 +552,13 @@ public class CarActivity extends AppCompatActivity {
         // 소켓이 만들어지는 구간
         try {
             socket = new Socket(address, port);
-            Log.d("[TAG]","TAG-1----------");
+            Log.d("[TAG]", "TAG-1----------");
         } catch (Exception e) {
             while (true) {
                 try {
                     Thread.sleep(2000);
                     socket = new Socket(address, port);
-                    Log.d("[TAG]","TAG-11----------");
+                    Log.d("[TAG]", "TAG-11----------");
                     break;
                 } catch (Exception e1) {
                     System.out.println("Retry...");
@@ -570,7 +566,7 @@ public class CarActivity extends AppCompatActivity {
             }
         }
 
-        Log.d("[TAG]","Connected Server:" + address);
+        Log.d("[TAG]", "Connected Server:" + address);
 
         sender = new Sender(socket);
         new Receiver(socket).start();
@@ -630,7 +626,20 @@ public class CarActivity extends AppCompatActivity {
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
 
-                builder.setContentTitle(carid+" "+contents);
+                String whereFcmCarName = "";
+                for(CarVO car: carlist){
+                    if(car.getCarid() == Integer.parseInt(carid)){
+                        whereFcmCarName = car.getCarname();
+                    }
+                }
+
+                // FCM 분기
+                if(contents.equals("0004")){
+                    builder.setContentTitle(whereFcmCarName + "에서" + "영유아가 확인되었습니다:"+carid+" "+contents);
+                } else if(contents.equals("0002") || contents.equals("0003")){
+                    builder.setContentTitle(whereFcmCarName + "에서" + "충돌이 발생했습니다:"+carid+" "+contents);
+                }
+
 
 
 //                // control이 temper면, data(온도값)을 set해라
@@ -657,10 +666,7 @@ public class CarActivity extends AppCompatActivity {
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
 
-                // push알람 일 때만 상단푸쉬를 띄워라
-                if(contents.substring(0,1).equals("pu")){
-                    manager.notify(1, noti);
-                }
+                manager.notify(1, noti);
 
             }
         }
