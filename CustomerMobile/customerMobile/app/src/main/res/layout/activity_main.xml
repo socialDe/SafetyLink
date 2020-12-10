@@ -68,11 +68,45 @@
         android:onClick="clickbt"
         android:text="progress" />
 
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/etx_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="ID"
+            android:inputType="textPersonName"
+            android:text="uid01" />
+
+        <EditText
+            android:id="@+id/etx_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="PASSWORD"
+            android:inputType="textPassword"
+            android:text="pwd01" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LOGIN" />
+
     <Button
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="clickbt"
         android:text="로그아웃" />
+
 
 </LinearLayout>

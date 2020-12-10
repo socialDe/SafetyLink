@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.customermobile">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -17,8 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.CarRegisterActivity"></activity>
-        <!-- FService 추가 -->
+        <activity android:name=".activity.TruckFuncSetActivity"></activity>
+        <activity android:name=".activity.CarRegisterActivity" /> <!-- FService 추가 -->
         <service android:name=".MyFService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -32,6 +33,7 @@
         <activity android:name=".activity.FindIdActivity" />
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.SocialRegisterActivity" />
+        <activity android:name=".activity.NonTruckFuncSetActivity" />
         <activity
             android:name=".activity.LoginActivity"
             android:windowSoftInputMode="adjustResize">
@@ -41,7 +43,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"></activity>
+        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>
