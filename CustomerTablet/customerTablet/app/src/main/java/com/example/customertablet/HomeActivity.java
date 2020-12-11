@@ -223,12 +223,12 @@ public class HomeActivity extends AppCompatActivity {
                     // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
                     Handler mHandler = new Handler(Looper.getMainLooper());
                     final String finalUrl = url;
-                    mHandler.postDelayed(new Runnable() {
+                    mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                                 httpAsyncTask.execute(finalUrl);
                         }
-                    },1000); // 1000으로 해야 돌아간다...
+                    }); // 1000으로 해야 돌아간다...
 
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
