@@ -1,6 +1,9 @@
 package com.example.customermobile.vo;
 
-public class CarVO {
+
+import java.io.Serializable;
+
+public class CarVO implements Serializable {
 
 	private int carid;
 	private String userid;

@@ -5,11 +5,11 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 <mapper namespace="com.dao.UsersDAO">
 	
 	<insert id="insert" parameterType="users">
-		INSERT INTO USERS VALUES (#{userid},#{userpwd},#{username},#{userphone},#{userbirth},#{usersex},SYSDATE,'f','car','o','o',#{mobiletoken})
+		INSERT INTO USERS VALUES (#{userid},#{userpwd},#{username},#{userphone},#{userbirth},#{usersex},SYSDATE,'f','car','o','o','o','o',#{mobiletoken})
 	</insert>
 	
 	<update id="update" parameterType="users">
-		UPDATE USERS SET USERPWD=#{userpwd}, USERPHONE=#{userphone}, USERBIRTH=#{userbirth}, USERSEX=#{usersex}, USERSTATE=#{userstate}, USERSUBJECT=#{usersubject}, BABYPUSHCHECK=#{babypushcheck}, ACCPUSHCHECK=#{accpushcheck} WHERE USERID=#{userid}
+		UPDATE USERS SET USERPWD=#{userpwd}, USERPHONE=#{userphone}, USERBIRTH=#{userbirth}, USERSEX=#{usersex}, USERSTATE=#{userstate}, USERSUBJECT=#{usersubject}, BABYPUSHCHECK=#{babypushcheck}, ACCPUSHCHECK=#{accpushcheck}, SLEEPPUSHCHECK=#{sleeppushcheck}, DROPPUSHCHECK=#{droppushcheck} WHERE USERID=#{userid}
 	</update>
 	
 	<delete id="delete" parameterType="String">
