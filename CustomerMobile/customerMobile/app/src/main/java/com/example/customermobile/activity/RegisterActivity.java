@@ -94,8 +94,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void clickbt(View v) {
         // 버튼 클릭시 키보드 숨김
-        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        //InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        //manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         if(v.getId() == R.id.button_registerOk) {
             // 아이디 중복 확인을 하였을 경우에만 회원가입 가능

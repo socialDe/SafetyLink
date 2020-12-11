@@ -327,7 +327,7 @@ public class LoginActivity extends AppCompatActivity {
                 AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
                 dailog.setTitle("다른 기기에서 로그인 중입니다.");
                 dailog.setMessage("로그아웃 후 사용해 주세요.");
-                dailog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                dailog.setPositiveButton("확인",  new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         return;

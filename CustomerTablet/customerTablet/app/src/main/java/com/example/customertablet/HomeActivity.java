@@ -1,12 +1,14 @@
 package com.example.customertablet;
 
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -56,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
     // TCP/IP Server
     ServerSocket serverSocket;
     Socket socket = null;
-    int serverPort = 5554;
+    int serverPort = 5557;
 
     Sender sender;
     HashMap<String, ObjectOutputStream> maps = new HashMap<>();
@@ -203,7 +205,14 @@ public class HomeActivity extends AppCompatActivity {
 
                     setUi(input.getContents());
 
-                    sendfcm(input.getContents());
+                    if(input.getContents().substring(0,4).equals("0002")
+                          ||  input.getContents().substring(0,4).equals("0003")
+                            ||  input.getContents().substring(0,4).equals("0004"))  {
+
+                        sendfcm(input.getContents());
+
+                    }
+
 
                     //--------setui되면 아래 runon 제거!-------------
 //                    runOnUiThread(new Runnable() {
@@ -439,7 +448,6 @@ public class HomeActivity extends AppCompatActivity {
             super.onProgressUpdate(values);
         }
 
-
         @Override
         protected void onPostExecute(String s) {
             //progressDialog.dismiss();
@@ -580,10 +588,38 @@ public class HomeActivity extends AppCompatActivity {
 //
 //        }
 //    }
+  /*
+       FCM 통신
+                    */
+  public void tabletsendfcm(DataFrame dataF) {
+      String urlstr = "http://"+ip+"/webServer/tabletsendfcm.mc";
+      String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + dataF.getContents();
 
+      Log.d("[TEST]", conrtolUrl);
 
+      // AsyncTask를 통해 HttpURLConnection 수행.
+      ControlAsync controlAsync = new ControlAsync();
+      controlAsync.execute(conrtolUrl);
+  }
 
-    // MyFService.java의 intent 정보를 BroadcastReceiver를 통해 받는다
+    class ControlAsync extends AsyncTask<String, Void, Void> {
+
+        public Void result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url = strings[0];
+            HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
+    }
+
+    // FCM 수신
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -593,51 +629,71 @@ public class HomeActivity extends AppCompatActivity {
                 String contents = intent.getStringExtra("contents");
                 Toast.makeText(HomeActivity.this, "차량 상태가 변경되었습니다.", Toast.LENGTH_SHORT).show();
 
-                DataFrame df = new DataFrame();
-                // 연결된 IP로 df를 보낸다
-                df.setIp(socket.getInetAddress().toString().substring(1));
-                df.setSender("Mobile");
-                df.setContents(contents);
-                Log.d("[Server]",df.toString());
-                sendDataFrame(df);
+                if(contents.length() != 4){
+                    DataFrame df = new DataFrame();
+                    // 연결된 IP로 df를 보낸다
+                    df.setIp(socket.getInetAddress().toString().substring(1));
+                    df.setSender("Mobile");
+                    df.setContents(contents);
+                    Log.d("[Server]",df.toString());
+                    sendDataFrame(df);
+                }
+
 
                 //여기를 풀어서 모바일에서 제어시 UI변경
                 //setUi(contents);
 
 
+                Log.d("[Server]",carid);
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 NotificationCompat.Builder builder = null;
                 if (Build.VERSION.SDK_INT >= 26) {
                     if (manager.getNotificationChannel("ch2") == null) {
                         manager.createNotificationChannel(
-                                new NotificationChannel("ch2", "chname", NotificationManager.IMPORTANCE_DEFAULT));
+                                new NotificationChannel("ch2", "chname", NotificationManager.IMPORTANCE_HIGH));
                     }
                     builder = new NotificationCompat.Builder(context, "ch2");
                 } else {
                     builder = new NotificationCompat.Builder(context);
                 }
 
-                Intent intent1 = new Intent(context, MainActivity.class);
+                Intent intent1 = new Intent(context, HomeActivity.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(
-                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
-
+                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
+                );
+                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 builder.setAutoCancel(true);
                 builder.setContentIntent(pendingIntent);
-                //상단바 타이틀 설정
+
                 builder.setContentTitle(title);
-                //상단바 내용 설정
                 builder.setContentText(carid+ " " + contents);
-                builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
-                Notification noti = builder.build();
-                //manager.notify(1, noti);
+
+
+                // control이 temper면, data(온도값)을 set해라
+                if (carid.equals("verify")) {
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+                    alertDialog.setTitle(Integer.parseInt(contents)+"")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    }
+                            });
+                    alertDialog.create().show();
+                    builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
+                    Notification noti = builder.build();
+                } else {
+                    builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
+                    Notification noti = builder.build();
+                    // push알람 일 때만 상단푸쉬를 띄워라
+                    if (contents.substring(0, 1).equals("pu")) {
+                        manager.notify(1, noti);
+                    }
+                }
+
             }
-
         }
-
     };
-
-
 
 }
 

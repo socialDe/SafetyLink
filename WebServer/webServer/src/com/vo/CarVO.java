@@ -12,16 +12,14 @@ public class CarVO {
 	private String carimg;
 	private String caroiltype;
 	private String tablettoken;
-	
+
 	public CarVO() {
 		super();
 	}
-	
-	public CarVO(String carnum) {
-		this.carnum = carnum;
+
+	public CarVO(String userid) {
+		this.userid = userid;
 	}
-
-
 
 	public CarVO(String carnum, String tablettoken) {
 		this.carnum = carnum;
@@ -101,7 +99,7 @@ public class CarVO {
 		this.caroiltype = caroiltype;
 		this.tablettoken = tablettoken;
 	}
-	
+
 	// 차량 등록
 	public CarVO(String userid, String carnum, String cartype, String carmodel, int caryear, String carimg,
 			String caroiltype, String tablettoken) {
@@ -229,6 +227,5 @@ public class CarVO {
 				+ ", cartype=" + cartype + ", carmodel=" + carmodel + ", caryear=" + caryear + ", carimg=" + carimg
 				+ ", caroiltype=" + caroiltype + ", tablettoken=" + tablettoken + "]";
 	}
-	
-	
+
 }

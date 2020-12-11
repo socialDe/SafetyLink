@@ -56,9 +56,9 @@ public class SocialRegisterActivity extends AppCompatActivity {
         Intent intent = getIntent();
         googleEmail = intent.getStringExtra("email");
 
-        // ActionBar Setting
-        actionBar = getSupportActionBar();
-        actionBar.hide();
+//        // ActionBar Setting
+//        actionBar = getSupportActionBar();
+//        actionBar.hide();
 
         // 디바이스 토큰 정보 가져오기
         sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
@@ -76,8 +76,8 @@ public class SocialRegisterActivity extends AppCompatActivity {
 
     public void clickbt(View v) {
         // 버튼 클릭시 키보드 숨김
-        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        //InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        //manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         if (v.getId() == R.id.button_registerOk) {
 

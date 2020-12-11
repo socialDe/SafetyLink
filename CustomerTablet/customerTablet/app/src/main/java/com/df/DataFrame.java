@@ -47,7 +47,6 @@ public class DataFrame implements Serializable {
         this.contents = contents;
     }
 
-
     @Override
     public String toString() {
         return "DataFrame{" +
@@ -56,5 +55,4 @@ public class DataFrame implements Serializable {
                 ", contents='" + contents + '\'' +
                 '}';
     }
-
 }

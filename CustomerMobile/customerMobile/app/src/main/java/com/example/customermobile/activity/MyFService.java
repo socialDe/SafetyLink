@@ -13,6 +13,8 @@ public class MyFService extends FirebaseMessagingService {
     public MyFService() {
     }
 
+
+
 //    생성
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {

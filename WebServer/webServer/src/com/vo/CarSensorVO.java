@@ -24,6 +24,14 @@ public class CarSensorVO {
 		super();
 	}
 	
+	public CarSensorVO(int carid, int fuelmax) {
+		super();
+		this.carid = carid;
+		this.fuelmax = fuelmax;
+	}
+
+
+
 	public CarSensorVO(int carid, int temper, String starting, String moving) {
 		super();
 		this.carid = carid;
@@ -137,6 +145,7 @@ public class CarSensorVO {
 		this.lat = lat;
 		this.lng = lng;
 	}
+
 
 	public int getCarid() {
 		return carid;

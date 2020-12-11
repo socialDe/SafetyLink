@@ -56,9 +56,7 @@ public class MainActivity extends AppCompatActivity {
             String token = FirebaseInstanceId.getInstance().getToken();
             editor.putString("token", token);// 새로운 토큰 받아와서 SharedPreference에 저장
             editor.commit();
-
             String url = "http://"+ip+"/webServer/tokenupdateimpl.mc";
-
             url += "?num=" + num + "&token=" + token;
             httpAsyncTask = new HttpAsyncTask();
             httpAsyncTask.execute(url);
@@ -123,11 +121,11 @@ public class MainActivity extends AppCompatActivity {
         String num = editText_carNum.getText().toString();
         String carType = textView_carType.getText().toString();
         if (carType.equals("승용차")) {
-            carType = "1";
+            carType = "p";
         } else if (carType.equals("승합차")) {
-            carType = "2";
+            carType = "v";
         } else if (carType.equals("트럭")) {
-            carType = "3";
+            carType = "t";
         }
         String model = editText_carModel.getText().toString();
         String year = editText_carYear.getText().toString();
@@ -145,9 +143,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("num", num+"");
         editor.putString("token", token);
         editor.commit();
-
         String url = "http://"+ip+"/webServer/carregisterimpl.mc";
-
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
@@ -246,6 +242,6 @@ public class MainActivity extends AppCompatActivity {
                 builder.show();
             }
         }
-        // End HTTP 통신 Code
-    }
+    }// End HTTP 통신 Code
+
 }

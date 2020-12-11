@@ -106,7 +106,6 @@ public class Fragment1 extends Fragment {
 
                     ((CarActivity)getActivity()).vibrate(300,3);
                 }
-
             }
         }) ;
 
