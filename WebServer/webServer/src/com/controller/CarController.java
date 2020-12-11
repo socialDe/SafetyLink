@@ -372,7 +372,7 @@ public class CarController {
 
 	}
 	
-	
+	// 인증번호 입력 후 '확인' 버튼 누르면 Car 정보를 띄워줌
 	@RequestMapping("/carnumcheckimpl")
 	@ResponseBody
 	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
@@ -404,6 +404,7 @@ public class CarController {
 		out.close();
 	}
 	
+	// '등록 확인' 버튼 누르면 Tablet로 인증번호 전송
 	@RequestMapping("/sendnumberfcm.mc")
 	@ResponseBody
 	public void sendnumberfcm(HttpServletRequest request, HttpServletResponse res) throws Exception {
@@ -474,6 +475,7 @@ public class CarController {
 		
 	}
 	
+	// 차량 검색 후 user와 연동하는 확인 버튼
 	@RequestMapping("/usercarregisterimpl.mc")
 	public void getTabletSensor(HttpServletRequest request) throws Exception {
 		String userid = request.getParameter("userid");
@@ -491,6 +493,7 @@ public class CarController {
 		}
 		dbcar.setCarname(carname);
 		dbcar.setUserid(userid);
+		dbcar.setCarname(carname);
 		System.out.println(dbcar);
 		
 		cbiz.modify(dbcar);

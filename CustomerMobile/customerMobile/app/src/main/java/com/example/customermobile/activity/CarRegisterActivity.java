@@ -185,7 +185,7 @@ public class CarRegisterActivity extends AppCompatActivity {
 
     // 인증번호 보내는 fcm
     public void SendNumberFcm(String carnum, int number) {
-        String urlstr = "http://"+ip+"/webServer/sendnumberfcm.mc";
+        String urlstr = "http://" + ip + "/webServer/sendnumberfcm.mc";
         String conrtolUrl = urlstr + "?carnum=" + carnum +"&number=" + number;
 
         Log.d("[TEST]", conrtolUrl);
@@ -368,6 +368,11 @@ public class CarRegisterActivity extends AppCompatActivity {
                     layout_carInfo.setVisibility(View.VISIBLE);
 
                 }
+                textView_carName.setVisibility(View.VISIBLE);
+                textView_carModel.setVisibility(View.VISIBLE);
+                textView_carYear.setVisibility(View.VISIBLE);
+                textView_carType.setVisibility(View.VISIBLE);
+                textView_fuelType.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
