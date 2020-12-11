@@ -1,6 +1,7 @@
 package com.example.customertablet;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -82,6 +84,8 @@ public class HomeActivity extends AppCompatActivity {
     int initialLoad; //초기 무게
     ArrayList<Integer> loadDatas = new ArrayList<>(); // 주행중 데이터 저장 ArrayLis
     double avgLoad; // 평균 무게
+    private int dialogLoad = 1; // 적재물 낙하 AlertDialog의 flag
+
 
     public CarVO getCar() {
         return car;
@@ -206,9 +210,9 @@ public class HomeActivity extends AppCompatActivity {
 //                  sendDataFrame(input);
 
                     // 받은 데이터가 무게 데이터인 경우 수행
-                    if(input.getContents().substring(15,19).equals("0005")){
-                        Log.d("[Load]", "[Load]: "+input.getContents().substring(19));
-                        String loadData = input.getContents().substring(19);
+                    if(input.getContents().substring(4,8).equals("0005")){
+                        Log.d("[Load]", "[Load]: "+input.getContents().substring(8));
+                        String loadData = input.getContents().substring(8);
 
 
                         // 주행 시작시 전송하는 무게 데이터
@@ -241,35 +245,33 @@ public class HomeActivity extends AppCompatActivity {
 
                                 if (initialLoad > avgLoad + 500) {
                                     Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
-                                    _runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
-                                            builder.setTitle("Alert!!");
-                                            builder.setMessage("적재물 낙하 사고가 감지되었습니다.");
-                                            builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Toast.makeText(getApplicationContext(), "신고 완료!", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    Toast.makeText(getApplicationContext(), "취소!", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                            builder.show();
 
+                                    if(dialogLoad == 1){
+                                        _runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
+                                                builder.setTitle("Alert!!");
+                                                builder.setMessage("적재물 낙하 사고가 감지되었습니다.");
+                                                builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Toast.makeText(getApplicationContext(), "신고 완료!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        Toast.makeText(getApplicationContext(), "취소!", Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                                builder.show();
+                                            }
+                                        });
+                                    }
 
-                                        }
-                                    });
                                 }
                             }
-
-                            // if(주행 -> 정차로 바뀌면){
-                            // loadDatas.clear, initialData 초기화 필요! ++ 주행 정차에 따른 아두이노 제어도 필요함
-                            // }
                         }
                     }
 
