@@ -203,7 +203,7 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
 
 
-                    setUi(input.getContents());
+                    //setUi(input.getContents());
 
                     if(input.getContents().substring(0,4).equals("0002")
                           ||  input.getContents().substring(0,4).equals("0003")
@@ -359,70 +359,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
     /*
-            Car Data
-    */
-//    public void getCarData() {
-//        // URL 설정.
-//        String carUrl = "http://"+ip+"/webServer/cardata.mc?carid=1";
-//
-//        // AsyncTask를 통해 HttpURLConnection 수행.
-//        CarAsync carAsync = new CarAsync();
-//        carAsync.execute(carUrl);
-//    }
-
-//    class CarAsync extends AsyncTask<String, Void, String> {
-//
-//        ProgressDialog progressDialog;
-//
-//        @Override
-//        protected void onPreExecute() {
-////            progressDialog = new ProgressDialog(MainActivity.this);
-////            progressDialog.setTitle("Get Data ...");
-////            progressDialog.setCancelable(false);
-////            progressDialog.show();
-//        }
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            String url = strings[0];
-//            String result = HttpConnect.getString(url); //result는 JSON
-//            Log.d("[TAG]", result);
-//            return result;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-////            progressDialog.dismiss();
-//            JSONArray ja = null;
-//            try {
-//                Log.d("[TAG]","0");
-//                ja = new JSONArray(s);
-//                Log.d("[TAG]","00");
-//                for(int i=0; i<ja.length(); i++){
-//                    JSONObject jo = ja.getJSONObject(i);
-//
-//                    int carid = jo.getInt("carid");
-//                    String userid = jo.getString("userid");
-//                    String carnum = jo.getString("carnum");
-//                    String carname = jo.getString("carname");
-//                    String cartype = jo.getString("cartype");
-//                    String carmodel = jo.getString("carmodel");
-//                    int caryear = jo.getInt("caryear");
-//                    String carimg = jo.getString("carimg");
-//                    String caroiltype = jo.getString("caroiltype");
-//                    String tablettoken = jo.getString("tablettoken");
-//
-//                    car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
-//
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//
-//    } // Car Data End
-
-    /*
     HTTP 통신 Code
     */
     class HttpAsyncTask extends AsyncTask<String, String, String> {
@@ -482,66 +418,7 @@ public class HomeActivity extends AppCompatActivity {
         new Thread(r).start();
     }
 
-//    class Receiver extends Thread {
-//        Socket socket;
-//        ObjectInputStream oi = null;
-//
-//
-//        public Receiver(Socket socket) throws IOException {
-//            Log.d("[Server]","Reciver(socket)...");
-//            this.socket = socket;
-//            ObjectOutputStream oo;
-//            oi = new ObjectInputStream(this.socket.getInputStream());
-//            oo = new ObjectOutputStream(this.socket.getOutputStream());
-//
-//            maps.put(socket.getInetAddress().toString(), oo);
-//
-//
-//            Iterator<String> keys = maps.keySet().iterator();
-//            while( keys.hasNext() ){
-//                String key = keys.next();
-//                ObjectOutputStream value = maps.get(key);
-//                Log.d("[Server]","키 : "+key+", 값 : "+value.toString());
-//            }
-//
-//            Log.d("[Server]", "[Server]" + socket.getInetAddress() + "연결되었습니다.");
-//        }
-//
-//
-//        @Override
-//        public void run() {
-//            while (oi != null) {
-//                try {
-//                    DataFrame input = (DataFrame) oi.readObject();
-//                    Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
-//
-//                    //sendDataFrame(df);
-//
-//                } catch (Exception e) {
-//                    maps.remove(socket.getInetAddress().toString());
-//                    Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
-//                    e.printStackTrace();
-//                    Log.d("[Server]", socket.getInetAddress() + " :Receiver 객체 수신 실패 ");
-//
-//                    break;
-//                }
-//            } // end while
-//
-//            try {
-//                if (oi != null) {
-//                    Log.d("[Server]", "ObjectInputStream Closed ..");
-//                    oi.close();
-//                }
-//                if (socket != null) {
-//                    Log.d("[Server]", "Socket Closed ..");
-//                    socket.close();
-//                }
-//            } catch (Exception e) {
-//                Log.d("[Server]", "객체 수신 실패 후 InputStream, socket 닫기 실패");
-//            }
-//
-//        }
-//    }// End Receiver
+
 
     public void sendDataFrame(DataFrame df) {
         try {
@@ -556,68 +433,10 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-//    class Sender extends Thread {
-//        DataFrame dataFrame;
-//        Socket socket;
-//
-//        public Sender() {
-//
-//        }
-//
-//        public void setDataFrame(DataFrame df) {
-//            this.dataFrame = df;
-//            Log.d("[Server]", "setDataFrame 완료");
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//                Log.d("[Server]", "Sender Thread 실행");
-//                // dataFrame.setIp("192.168.35.149");
-//                // dataFrame.setSender("[TabletServer]");
-//                // Log.d("[Server]", "테스트 목적 Client로 목적지 재설정");
-//                Log.d("[Server]", "[hh]"+dataFrame.toString());
-//                Log.d("[Server]", maps.toString());
-//                maps.get("/" + dataFrame.getIp()).writeObject(dataFrame);
-//                Log.d("[Server]", "Sender 객체 전송.. " + dataFrame.getIp() + "주소로 " + dataFrame.getContents());
-//                Log.d("[Server]", "Sender 객체 전송 성공");
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
   /*
        FCM 통신
                     */
-  public void tabletsendfcm(DataFrame dataF) {
-      String urlstr = "http://"+ip+"/webServer/tabletsendfcm.mc";
-      String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + dataF.getContents();
 
-      Log.d("[TEST]", conrtolUrl);
-
-      // AsyncTask를 통해 HttpURLConnection 수행.
-      ControlAsync controlAsync = new ControlAsync();
-      controlAsync.execute(conrtolUrl);
-  }
-
-    class ControlAsync extends AsyncTask<String, Void, Void> {
-
-        public Void result;
-
-        @Override
-        protected Void doInBackground(String... strings) {
-            String url = strings[0];
-            HttpConnect.getString(url); //result는 JSON
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-
-        }
-    }
 
     // FCM 수신
     public BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -670,7 +489,6 @@ public class HomeActivity extends AppCompatActivity {
                 builder.setContentText(carid+ " " + contents);
 
 
-                // control이 temper면, data(온도값)을 set해라
                 if (carid.equals("verify")) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
                     alertDialog.setTitle(Integer.parseInt(contents)+"")
@@ -685,10 +503,7 @@ public class HomeActivity extends AppCompatActivity {
                 } else {
                     builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                     Notification noti = builder.build();
-                    // push알람 일 때만 상단푸쉬를 띄워라
-                    if (contents.substring(0, 1).equals("pu")) {
-                        manager.notify(1, noti);
-                    }
+                    manager.notify(1, noti);
                 }
 
             }

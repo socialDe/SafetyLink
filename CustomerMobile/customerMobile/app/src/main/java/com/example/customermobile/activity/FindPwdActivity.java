@@ -132,11 +132,11 @@ public class FindPwdActivity extends AppCompatActivity {
 
     public void clickbt(View v){
         // 버튼 클릭시 키보드 숨김
-        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        //InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        //manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         if(v.getId() == R.id.button_pwdFindOk){
-            if(findnumber){
+//            if(findnumber){
                 // editText -> String
                 String id = edit_pwdFindId.getText().toString();
                 String name = edit_pwdFIndName.getText().toString();
@@ -147,19 +147,19 @@ public class FindPwdActivity extends AppCompatActivity {
                 url += "?id="+ id + "&name="+ name + "&phone=" + phone;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);
-            }else {
-                // 본인확인 인증을 하지 않았을 경우
-                AlertDialog.Builder builder = new AlertDialog.Builder(FindPwdActivity.this);
-                builder.setTitle("아이디 찾기");
-                builder.setMessage("인증번호를 확인해주십시오");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        edit_pwdFindNumber.requestFocus();
-                    }
-                });
-                builder.show();
-            }
+//            }else {
+//                // 본인확인 인증을 하지 않았을 경우
+//                AlertDialog.Builder builder = new AlertDialog.Builder(FindPwdActivity.this);
+//                builder.setTitle("아이디 찾기");
+//                builder.setMessage("인증번호를 확인해주십시오");
+//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        edit_pwdFindNumber.requestFocus();
+//                    }
+//                });
+//                builder.show();
+//            }
         }else if(v.getId() == R.id.button_pwdFindCancel){
             // 비밀번호 찾기 취소
             // 액티비티 종료

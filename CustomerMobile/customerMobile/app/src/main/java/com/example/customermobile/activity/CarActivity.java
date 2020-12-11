@@ -106,12 +106,12 @@ public class CarActivity extends AppCompatActivity {
     //  네이게이션 드로우어어
     private DrawerLayout mDrawerLayout;
 
-    // TCP/IP 통신
-    int port;
-    String address;
-    String id;
-    Socket socket;
-    Sender sender;
+//    // TCP/IP 통신
+//    int port;
+//    String address;
+//    String id;
+//    Socket socket;
+//    Sender sender;
 
     CarDataTimer carDataTimer;
 
@@ -173,13 +173,13 @@ public class CarActivity extends AppCompatActivity {
         }
 
 
-        // tcpip 설정
-        port = 5558;
-        address = "192.168.0.109";
-        id = "Mobile";
-
-        new Thread(con).start(); // 풀면 tcpip 사용
-        Log.d("[TAG]", "TAG00----------");
+//        // tcpip 설정
+//        port = 5558;
+//        address = "192.168.0.109";
+//        id = "Mobile";
+//
+//        new Thread(con).start(); // 풀면 tcpip 사용
+//        Log.d("[TAG]", "TAG00----------");
 
 
         // 상단 바 설정
@@ -560,66 +560,66 @@ public class CarActivity extends AppCompatActivity {
 
 
 
-    Runnable con = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                connect();
-                Log.d("[TAG]", "TAG-0----------");
-            } catch (IOException e) {
-                Log.d("[TAG]", "TAG-err----------");
-                e.printStackTrace();
-            }
-        }
-    };
+//    Runnable con = new Runnable() {
+//        @Override
+//        public void run() {
+//            try {
+//                connect();
+//                Log.d("[TAG]", "TAG-0----------");
+//            } catch (IOException e) {
+//                Log.d("[TAG]", "TAG-err----------");
+//                e.printStackTrace();
+//            }
+//        }
+//    };
+
+//
+//    private void connect() throws IOException {
+//        // 소켓이 만들어지는 구간
+//        try {
+//            socket = new Socket(address, port);
+//            Log.d("[TAG]", "TAG-1----------");
+//        } catch (Exception e) {
+//            while (true) {
+//                try {
+//                    Thread.sleep(2000);
+//                    socket = new Socket(address, port);
+//                    Log.d("[TAG]", "TAG-11----------");
+//                    break;
+//                } catch (Exception e1) {
+//                    System.out.println("Retry...");
+//                }
+//            }
+//        }
+//
+//        Log.d("[TAG]", "Connected Server:" + address);
+//
+//        sender = new Sender(socket);
+//        new Receiver(socket).start();
+//        //sendMsg();
+//
+//
+//    }
 
 
-    private void connect() throws IOException {
-        // 소켓이 만들어지는 구간
-        try {
-            socket = new Socket(address, port);
-            Log.d("[TAG]", "TAG-1----------");
-        } catch (Exception e) {
-            while (true) {
-                try {
-                    Thread.sleep(2000);
-                    socket = new Socket(address, port);
-                    Log.d("[TAG]", "TAG-11----------");
-                    break;
-                } catch (Exception e1) {
-                    System.out.println("Retry...");
-                }
-            }
-        }
-
-        Log.d("[TAG]", "Connected Server:" + address);
-
-        sender = new Sender(socket);
-        new Receiver(socket).start();
-        //sendMsg();
-
-
-    }
-
-
-    // 뒤로가기 눌렀을 때 q를 보내 tcp/ip 통신 종료
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        try {
-            DataFrame df = new DataFrame(null, id, "q");
-            sender.setDf(df);
-            new Thread(sender).start();
-            if (socket != null) {
-                socket.close();
-            }
-            finish();
-            onDestroy();
-
-        } catch (Exception e) {
-
-        }
-    }
+//    // 뒤로가기 눌렀을 때 q를 보내 tcp/ip 통신 종료
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        try {
+//            DataFrame df = new DataFrame(null, id, "q");
+//            sender.setDf(df);
+//            new Thread(sender).start();
+//            if (socket != null) {
+//                socket.close();
+//            }
+//            finish();
+//            onDestroy();
+//
+//        } catch (Exception e) {
+//
+//        }
+//    }
 
     // FCM 수신
     public BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -705,105 +705,105 @@ public class CarActivity extends AppCompatActivity {
         }
     };
 
-    class Receiver extends Thread {
-        ObjectInputStream oi;
-
-        public Receiver(Socket socket) throws IOException {
-            oi = new ObjectInputStream(socket.getInputStream());
-        }
-
-        @Override
-        public void run() {
-            // 수신 inputStream이 비어 있지 않은 경우 실행!
-            while (oi != null) {
-                DataFrame df = null;
-                // 수신 시도
-                try {
-                    System.out.println("[Client Receiver Thread] 수신 대기");
-                    df = (DataFrame) oi.readObject();
-                    System.out.println("[Client Receiver Thread] 수신 완료"); // 11/19에 이 부분에 setText 추가하기
-                    System.out.println(df.getSender() + ": " + df.getContents());
-                } catch (Exception e) {
-                    System.out.println("[Client Receiver Thread] 수신 실패");
-                    e.printStackTrace();
-                    break;
-                }
-
-
-            } // end while
-            try {
-                if (oi != null) {
-                    oi.close();
-                }
-                if (socket != null) {
-                    socket.close();
-                }
-            } catch (Exception e) {
-
-            }
-            // 서버가 끊기면 connect를 한다!
-            try {
-                Thread.sleep(2000);
-                System.out.println("test2");
-                connect();
-                //sendMsg();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-
-        }
-
-    }
-
-
-    class Sender implements Runnable {
-        Socket socket;
-        ObjectOutputStream outstream;
-        DataFrame df;
-
-        public Sender(Socket socket) throws IOException {
-            this.socket = socket;
-            outstream = new ObjectOutputStream(socket.getOutputStream());
-        }
-
-        public void setDf(DataFrame df) {
-            this.df = df;
-        }
-
-        @Override
-        public void run() {
-            //전송 outputStream이 비어 있지 않은 경우 실행!
-            if (outstream != null) {
-                // 전송 시도
-                try {
-                    System.out.println("[Client Sender Thread] 데이터 전송 시도: " + df.getIp() + "으로 " + df.getContents() + " 전송");
-                    outstream.writeObject(df);
-                    Log.d("[test]", df.toString());
-                    outstream.flush();
-                    System.out.println("[Client Sender Thread] 데이터 전송 시도: " + df.getIp() + "으로 " + df.getContents() + " 전송 완료");
-                } catch (IOException e) {
-                    System.out.println("[Client Sender Thread] 전송 실패");
-                    // 전송 실패시 소켓이 열려 있다면 소켓 닫아버리고 다시 서버와 연결을 시도
-                    try {
-                        if (socket != null) {
-                            System.out.println("[Client Sender Thread] 전송 실패, 소켓 닫음");
-                            socket.close();
-                        }
-                        // 소켓을 닫을 수 없음
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    // 다시 서버와 연결 시도
-                    try {
-                        Thread.sleep(2000);
-                        connect();
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
+//    class Receiver extends Thread {
+//        ObjectInputStream oi;
+//
+//        public Receiver(Socket socket) throws IOException {
+//            oi = new ObjectInputStream(socket.getInputStream());
+//        }
+//
+//        @Override
+//        public void run() {
+//            // 수신 inputStream이 비어 있지 않은 경우 실행!
+//            while (oi != null) {
+//                DataFrame df = null;
+//                // 수신 시도
+//                try {
+//                    System.out.println("[Client Receiver Thread] 수신 대기");
+//                    df = (DataFrame) oi.readObject();
+//                    System.out.println("[Client Receiver Thread] 수신 완료"); // 11/19에 이 부분에 setText 추가하기
+//                    System.out.println(df.getSender() + ": " + df.getContents());
+//                } catch (Exception e) {
+//                    System.out.println("[Client Receiver Thread] 수신 실패");
+//                    e.printStackTrace();
+//                    break;
+//                }
+//
+//
+//            } // end while
+//            try {
+//                if (oi != null) {
+//                    oi.close();
+//                }
+//                if (socket != null) {
+//                    socket.close();
+//                }
+//            } catch (Exception e) {
+//
+//            }
+//            // 서버가 끊기면 connect를 한다!
+//            try {
+//                Thread.sleep(2000);
+//                System.out.println("test2");
+//                connect();
+//                //sendMsg();
+//            } catch (Exception e1) {
+//                e1.printStackTrace();
+//            }
+//
+//        }
+//
+//    }
+//
+//
+//    class Sender implements Runnable {
+//        Socket socket;
+//        ObjectOutputStream outstream;
+//        DataFrame df;
+//
+//        public Sender(Socket socket) throws IOException {
+//            this.socket = socket;
+//            outstream = new ObjectOutputStream(socket.getOutputStream());
+//        }
+//
+//        public void setDf(DataFrame df) {
+//            this.df = df;
+//        }
+//
+//        @Override
+//        public void run() {
+//            //전송 outputStream이 비어 있지 않은 경우 실행!
+//            if (outstream != null) {
+//                // 전송 시도
+//                try {
+//                    System.out.println("[Client Sender Thread] 데이터 전송 시도: " + df.getIp() + "으로 " + df.getContents() + " 전송");
+//                    outstream.writeObject(df);
+//                    Log.d("[test]", df.toString());
+//                    outstream.flush();
+//                    System.out.println("[Client Sender Thread] 데이터 전송 시도: " + df.getIp() + "으로 " + df.getContents() + " 전송 완료");
+//                } catch (IOException e) {
+//                    System.out.println("[Client Sender Thread] 전송 실패");
+//                    // 전송 실패시 소켓이 열려 있다면 소켓 닫아버리고 다시 서버와 연결을 시도
+//                    try {
+//                        if (socket != null) {
+//                            System.out.println("[Client Sender Thread] 전송 실패, 소켓 닫음");
+//                            socket.close();
+//                        }
+//                        // 소켓을 닫을 수 없음
+//                    } catch (Exception e1) {
+//                        e1.printStackTrace();
+//                    }
+//                    // 다시 서버와 연결 시도
+//                    try {
+//                        Thread.sleep(2000);
+//                        connect();
+//                    } catch (Exception e1) {
+//                        e1.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 
     /*
