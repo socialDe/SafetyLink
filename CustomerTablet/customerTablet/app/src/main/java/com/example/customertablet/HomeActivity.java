@@ -290,7 +290,7 @@ public class HomeActivity extends AppCompatActivity {
                         // 받은 DataFrame을 웹서버로 HTTP 전송
                         // call AsynTask to perform network operation on separate thread
 
-                        String url = "http://192.168.10.100/webServer/getTabletSensor.mc";
+                        String url = "http://192.168.0.38/webServer/getTabletSensor.mc";
                         url += "?carnum=" + carnum + "&contents=" + input.getContents() + "";
                         httpAsyncTask = new HttpAsyncTask();
                         // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
@@ -378,7 +378,7 @@ public class HomeActivity extends AppCompatActivity {
     */
     public void getCarData() {
         // URL 설정.
-        String carUrl = "http://192.168.10.100/webServer/cardata.mc?carid=1";
+        String carUrl = "http://192.168.0.38/webServer/cardata.mc?carid=1";
 
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarAsync carAsync = new CarAsync();
@@ -475,7 +475,7 @@ public class HomeActivity extends AppCompatActivity {
        FCM 통신
                     */
   public void tabletsendfcm(DataFrame dataF) {
-      String urlstr = "http://192.168.10.100/webServer/tabletsendfcm.mc";
+      String urlstr = "http://192.168.0.38/webServer/tabletsendfcm.mc";
       String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + dataF.getContents();
 
       Log.d("[TEST]", conrtolUrl);
