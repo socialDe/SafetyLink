@@ -15,6 +15,8 @@ public class UsersVO implements Serializable {
 	private String usersubject;
 	private String babypushcheck;
 	private String accpushcheck;
+	private String sleeppushcheck;
+	private String droppushcheck;
 	private String mobiletoken;
 
 	public UsersVO() {
@@ -34,15 +36,15 @@ public class UsersVO implements Serializable {
 		this.userphone = userphone;
 	}
 
-	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex) {
-		super();
+	public UsersVO(String userid, String usersubject, String babypushcheck, String accpushcheck, String sleeppushcheck, String droppushcheck) {
 		this.userid = userid;
-		this.userpwd = userpwd;
-		this.username = username;
-		this.userphone = userphone;
-		this.userbirth = userbirth;
-		this.usersex = usersex;
+		this.usersubject = usersubject;
+		this.babypushcheck = babypushcheck;
+		this.accpushcheck = accpushcheck;
+		this.sleeppushcheck = sleeppushcheck;
+		this.droppushcheck = droppushcheck;
 	}
+
 
 	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex,
 				   Date userregdate) {
@@ -84,6 +86,39 @@ public class UsersVO implements Serializable {
 		this.babypushcheck = babypushcheck;
 		this.accpushcheck = accpushcheck;
 		this.mobiletoken = mobiletoken;
+	}
+
+	public UsersVO(String userid, String userpwd, String username, String userphone, Date userbirth, String usersex, Date userregdate, String userstate, String usersubject, String babypushcheck, String accpushcheck, String sleeppushcheck, String droppushcheck, String mobiletoken) {
+		this.userid = userid;
+		this.userpwd = userpwd;
+		this.username = username;
+		this.userphone = userphone;
+		this.userbirth = userbirth;
+		this.usersex = usersex;
+		this.userregdate = userregdate;
+		this.userstate = userstate;
+		this.usersubject = usersubject;
+		this.babypushcheck = babypushcheck;
+		this.accpushcheck = accpushcheck;
+		this.sleeppushcheck = sleeppushcheck;
+		this.droppushcheck = droppushcheck;
+		this.mobiletoken = mobiletoken;
+	}
+
+	public String getSleeppushcheck() {
+		return sleeppushcheck;
+	}
+
+	public void setSleeppushcheck(String sleeppushcheck) {
+		this.sleeppushcheck = sleeppushcheck;
+	}
+
+	public String getDroppushcheck() {
+		return droppushcheck;
+	}
+
+	public void setDroppushcheck(String droppushcheck) {
+		this.droppushcheck = droppushcheck;
 	}
 
 	public String getUserid() {
@@ -184,11 +219,21 @@ public class UsersVO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "UsersVO [userid=" + userid + ", userpwd=" + userpwd + ", username=" + username + ", userphone="
-				+ userphone + ", userbirth=" + userbirth + ", usersex=" + usersex + ", userregdate=" + userregdate
-				+ ", userstate=" + userstate + ", usersubject=" + usersubject + ", babypushcheck=" + babypushcheck
-				+ ", accpushcheck=" + accpushcheck + ", mobiletoken=" + mobiletoken + "]";
+		return "UsersVO{" +
+				"userid='" + userid + '\'' +
+				", userpwd='" + userpwd + '\'' +
+				", username='" + username + '\'' +
+				", userphone='" + userphone + '\'' +
+				", userbirth=" + userbirth +
+				", usersex='" + usersex + '\'' +
+				", userregdate=" + userregdate +
+				", userstate='" + userstate + '\'' +
+				", usersubject='" + usersubject + '\'' +
+				", babypushcheck='" + babypushcheck + '\'' +
+				", accpushcheck='" + accpushcheck + '\'' +
+				", sleeppushcheck='" + sleeppushcheck + '\'' +
+				", droppushcheck='" + droppushcheck + '\'' +
+				", mobiletoken='" + mobiletoken + '\'' +
+				'}';
 	}
-
-
 }

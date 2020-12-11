@@ -92,6 +92,7 @@ public class CarActivity extends AppCompatActivity {
 
     int carlistnum = 0;
     int nowcarid = 0; // 현재 차 아이디
+    CarVO nowCar = new CarVO();
 
     ArrayList<CarVO> carlist = null;
     ArrayList<CarSensorVO> carsensorlist = null;
@@ -144,6 +145,8 @@ public class CarActivity extends AppCompatActivity {
             String usersubject = sp.getString("usersubject", "");
             String babypushcheck = sp.getString("babypushcheck", "");
             String accpushcheck = sp.getString("accpushcheck", "");
+            String sleeppushcheck = sp.getString("sleeppushcheck","");
+            String droppushcheck = sp.getString("droppushcheck","");
             String mobiletoken = sp.getString("mobiletoken", "");
 
             // String 변수를 Date로 변환
@@ -158,7 +161,7 @@ public class CarActivity extends AppCompatActivity {
             }
 
             // sp 정보로 회원 객체 생성
-            user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
+            user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, sleeppushcheck, droppushcheck, mobiletoken);
 
 
 
@@ -357,6 +360,7 @@ public class CarActivity extends AppCompatActivity {
                 fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
 
                 nowcarid = carlist.get(0).getCarid();
+                nowCar = carlist.get(0);
 
                 //차 정보를 가져온 이후 차센서 정보를 가져온다
                 getCarSensorData();
@@ -471,12 +475,14 @@ public class CarActivity extends AppCompatActivity {
             fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper());
             nowcarid = carlist.get(carlistnum).getCarid();
+            nowCar = carlist.get(carlistnum);
         } else {
             carlistnum = maxnum;
             fragment1.setCarData(carlist.get(maxnum).getCarname(), carlist.get(maxnum).getCarmodel(), carlist.get(maxnum).getCarnum(), carlist.get(maxnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(), carsensorlist.get(maxnum).getFuel(), carsensorlist.get(maxnum).getStarting(), carsensorlist.get(maxnum).getDoor(), carsensorlist.get(maxnum).getTemper());
             nowcarid = carlist.get(maxnum).getCarid();
-            ;
+            nowCar = carlist.get(maxnum);
+
         }
 
 
@@ -492,12 +498,14 @@ public class CarActivity extends AppCompatActivity {
             fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper());
             nowcarid = carlist.get(carlistnum).getCarid();
+            nowCar = carlist.get(carlistnum);
 
         } else {
             carlistnum = 0;
             fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
             fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper());
             nowcarid = carlist.get(0).getCarid();
+            nowCar = carlist.get(0);
 
         }
 

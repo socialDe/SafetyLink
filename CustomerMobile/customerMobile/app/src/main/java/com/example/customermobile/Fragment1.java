@@ -243,13 +243,15 @@ public class Fragment1 extends Fragment {
         textView_carModel.setText(carmodel);
         textView_carNum.setText(carnum);
 
-        int[] imglist = {R.drawable.car1,R.drawable.car2};
+        int[] imglist = {R.drawable.car1,R.drawable.car2, R.drawable.car3};
 
 
         if(carimg.equals("car1.jpg")){
             imageView_car.setImageResource(imglist[0]);
         }else if(carimg.equals("car2.jpg")){
             imageView_car.setImageResource(imglist[1]);
+        }else if(carimg.equals("car3.jpg")){
+            imageView_car.setImageResource(imglist[2]);
         }
 
 

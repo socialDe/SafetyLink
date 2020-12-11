@@ -6,11 +6,54 @@
     android:layout_height="match_parent"
     tools:context=".Fragment2">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#2196F3"
-        android:text="222" />
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20px">
+
+            <TextView
+                android:id="@+id/textView_myInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="내 정보"
+                android:textSize="34sp"
+                tools:text="내 정보" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20px">
+
+            <TextView
+                android:id="@+id/textView_carRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="차량 등록/삭제"
+                android:textSize="34sp" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20px">
+
+            <TextView
+                android:id="@+id/textView_safetyFuncSet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="안전 기능 설정"
+                android:textSize="34sp"
+                tools:text="안전 기능 설정" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 
 </FrameLayout>
