@@ -105,7 +105,7 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 		
 		if (code.equals("U")) {
 			df.setContents(data);
-//			client.sendData(df);
+			client.sendData(df);
 		}
 		System.out.println("sensor: " + df.getSender() + "/ data: " + df.getContents());
 	}

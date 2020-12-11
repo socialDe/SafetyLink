@@ -112,17 +112,19 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 			// LED (시동 상태)
 			// 00000000: LED off(LOW)
 			// 00000001: LED on(HIGH)
-			sensorData = sensorValue;
+			sensorData = sensorValue.substring(0, 8);
 		} else if (sensorID.equals("0032")) {
 			// LED (주행 상태)
 			// 00000000: LED off(LOW)
 			// 00000001: LED on(HIGH)
-			sensorData = sensorValue;
+			sensorData = sensorValue.substring(0, 8);
+			// 주행 상태가 변하면 carRear에게도 전송하여 무게 센싱
+			receiveID = "AA00";
 		} else if (sensorID.equals("0033")) {
 			// LED (도어 상태)
 			// 00000000: LED off(LOW)
 			// 00000001: LED on(HIGH)
-			sensorData = sensorValue;
+			sensorData = sensorValue.substring(0, 8);
 		}
 
 		System.out.println("send can: " + receiveID + sensorID + sensorData);

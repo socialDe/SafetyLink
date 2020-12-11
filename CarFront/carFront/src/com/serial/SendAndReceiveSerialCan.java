@@ -88,7 +88,7 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 		String sensorData = data.substring(20, 28);
 
 		// can 데이터를 확인, 수신 기기가 차량 전체(CA00)이거나 carFront(CA02)인 경우
-		if (receiveID.equals("CA00") || receiveID.equals("CA02")) {
+		if (receiveID.equals("CA00") || receiveID.equals("CA02") || receiveID.equals("AA00")) {
 			mcu.sendIoT(sensorID + sensorData);
 		}
 	}
