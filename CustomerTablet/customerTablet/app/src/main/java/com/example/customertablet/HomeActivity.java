@@ -44,6 +44,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.customertablet.MainActivity.ip;
 
@@ -148,6 +150,19 @@ public class HomeActivity extends AppCompatActivity {
         sp = getSharedPreferences("token",MODE_PRIVATE);
         carnum = sp.getString("num","");
         Log.d("[Server]","carnum:"+carnum);
+
+                Log.d("[Server]",carnum);
+
+        Timer timer = new Timer();
+        TimerTask velocitytt = new TimerTask() {
+            @Override
+            public void run() {
+
+            }
+        };
+//        timer.schedule(velocitytt,1000,3000); // 어떤 함수를 1 초 이후에 시작하고 3 초마다 실행한다
+//        필요한 부분에 이 함수 넣으면 됨
+
 } // end OnCreate
 
 
