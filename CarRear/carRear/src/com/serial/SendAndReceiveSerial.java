@@ -96,8 +96,11 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 			// 온도센서
 			// send data(Sensor+value) can
 			double value = Double.parseDouble(sensorValue);
-			sensorData = String.format("%08d", (int)(value * 100));
-			
+			if(value < 0) {
+				sensorData = "1" + String.format("%07d", (int)(value * (-100)));
+			}else {
+				sensorData = String.format("%08d", (int)(value * 100));
+			}
 		}else if(sensorID.equals("0005") && Double.parseDouble(sensorValue) == 9999.0) {
 			// 주행을 시작함을 알려주는 플래그 셋팅
 			System.out.println("주행 전환, Flag Setting");
