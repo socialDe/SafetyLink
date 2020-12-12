@@ -101,6 +101,9 @@ public class SendAndReceiveSerial implements SerialPortEventListener {
 			}else {
 				sensorData = String.format("%08d", (int)(value * 100));
 			}
+		}else if(sensorID.equals("0004")) {
+			// 적외선 센서
+			sensorData = sensorValue.substring(0, 8);
 		}else if(sensorID.equals("0005") && Double.parseDouble(sensorValue) == 9999.0) {
 			// 주행을 시작함을 알려주는 플래그 셋팅
 			System.out.println("주행 전환, Flag Setting");

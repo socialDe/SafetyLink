@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -209,6 +210,24 @@ public class HomeActivity extends AppCompatActivity {
                     //TCPIP로 받은 값을 다시 TCPIP로 전송할 일은 없으므로 사용 X
 //                  sendDataFrame(input);
 
+
+                    // 받은 데이터가 주행 데이터인 경우
+                    if(input.getContents().substring(4,8).equals("0032")){
+                        Log.d("[Run]", "[Run]: "+input.getContents().substring(8));
+                        String runData = input.getContents().substring(8);
+
+                        if(runData.equals("00000000")){
+                            // 주행 종료
+                            imageView_moving.setBackgroundColor(Color.GRAY);
+                        }else if(runData.equals("00000001")){
+                            // 주행 시작
+                            imageView_moving.setBackgroundColor(Color.GREEN);
+                        }
+                    }
+
+
+
+
                     // 받은 데이터가 무게 데이터인 경우 수행
                     if(input.getContents().substring(4,8).equals("0005")){
                         Log.d("[Load]", "[Load]: "+input.getContents().substring(8));
@@ -219,6 +238,7 @@ public class HomeActivity extends AppCompatActivity {
                         if(loadData.substring(0,1).equals("9")){
                             initialLoad = Integer.parseInt(loadData.substring(1));
                             Log.d("[Load]", "[Load]: 초기 무게 데이터 "+initialLoad+" 설정되었습니다.");
+                            dialogLoad = 1;
                         }else {
                             if (loadDatas.size() <= 5) {
                                 if (loadDatas.size() == 5) {
@@ -247,6 +267,7 @@ public class HomeActivity extends AppCompatActivity {
                                     Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
 
                                     if(dialogLoad == 1){
+                                        dialogLoad += 1;
                                         _runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -256,12 +277,15 @@ public class HomeActivity extends AppCompatActivity {
                                                 builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
+                                                        dialogLoad -= 1;
                                                         Toast.makeText(getApplicationContext(), "신고 완료!", Toast.LENGTH_LONG).show();
+
                                                     }
                                                 });
                                                 builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
+                                                        dialogLoad -= 1;
                                                         Toast.makeText(getApplicationContext(), "취소!", Toast.LENGTH_LONG).show();
                                                     }
                                                 });
