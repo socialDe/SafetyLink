@@ -368,11 +368,6 @@ public class CarRegisterActivity extends AppCompatActivity {
                     layout_carInfo.setVisibility(View.VISIBLE);
 
                 }
-                textView_carName.setVisibility(View.VISIBLE);
-                textView_carModel.setVisibility(View.VISIBLE);
-                textView_carYear.setVisibility(View.VISIBLE);
-                textView_carType.setVisibility(View.VISIBLE);
-                textView_fuelType.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

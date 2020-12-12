@@ -166,7 +166,6 @@ public class Fragment1 extends Fragment {
         // 온도 타이머 3초로 세팅하기
         temperTimer = new TemperTimer(3000, 1000);
 
-
         imageButton_upTemper.setOnClickListener(new View.OnClickListener(){
 
             @Override

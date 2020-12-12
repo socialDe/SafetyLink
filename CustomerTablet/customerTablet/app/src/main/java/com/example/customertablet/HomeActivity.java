@@ -12,6 +12,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -96,7 +98,8 @@ public class HomeActivity extends AppCompatActivity {
 
     ValueHandler vhandler;
     HeartbeatThread hthread;
-
+    MovingCar movingcar;
+    MoveHandler mhandler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,16 +156,29 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
         lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
-
         sp = getSharedPreferences("token", MODE_PRIVATE);
         carnum = sp.getString("num", "");
         Log.d("[Server]", "carnum:" + carnum);
 
         Log.d("[Server]", carnum);
 
+        // 심장박동
         hthread = new HeartbeatThread();
-        hthread.start(); // 심장박동
+        hthread.start();
         vhandler = new ValueHandler();
+
+        // 주행화면
+        movingcar = new MovingCar();
+        movingcar.start();
+        mhandler = new MoveHandler();
+
+        // 흑백 사진
+//        ColorMatrix matrix = new ColorMatrix();
+//        matrix.setSaturation(0);
+//        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+ //       imageView_moving.setImageResource(R.drawable.stopcar);
+ //       imageView_moving.setColorFilter(filter);
+//
         // 심장박동
 //        timer = new Timer(true);
 //        heartbeatTT = new TimerTask() {
@@ -175,6 +191,47 @@ public class HomeActivity extends AppCompatActivity {
 //        필요한 부분에 이 함수 넣으면 됨
 
     } // end OnCreate
+
+    class MovingCar extends Thread {
+        public void run(){
+            final Bundle bundle = new Bundle();
+            while(true){
+                for(int i = 1; i<4; i++){
+                    Message msg = mhandler.obtainMessage();
+                    bundle.putInt("move",i);
+                    msg.setData(bundle);
+                    mhandler.sendMessage(msg);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    class MoveHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            final int move = bundle.getInt("move");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(move == 1){
+                        imageView_moving.setImageResource(R.drawable.redcar3);
+                    } else if(move == 2){
+                        imageView_moving.setImageResource(R.drawable.redcar2);
+                    } else if(move == 3){
+                        imageView_moving.setImageResource(R.drawable.redcar1);
+                    }
+                    }
+            });
+
+        }
+    } // 주행 UI end
 
     /*
     심장박동
@@ -193,7 +250,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (a == 0) {
                     value = value - (r.nextInt(5) + 1);
                 } else if (a == 1) {
-                    value = value - (r.nextInt(5) + 1);
+                    value = value + (r.nextInt(5) + 1);
                 }
                 Message message = vhandler.obtainMessage();
                 bundle.putInt("value", value);
@@ -329,7 +386,7 @@ public class HomeActivity extends AppCompatActivity {
                         String url = "http://" + ip + "/webServer/getTabletSensor.mc";
                         url += "?carnum=" + carnum + "&contents=" + input.getContents();
                         httpAsyncTask = new HttpAsyncTask();
-                        // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
+                        // Thread 안에서 Thread가 돌아갈 땐 Handler을 사용해야 한다
                         Handler mHandler = new Handler(Looper.getMainLooper());
                         final String finalUrl = url;
                         mHandler.post(new Runnable() {
@@ -400,7 +457,7 @@ public class HomeActivity extends AppCompatActivity {
         public void setUi ( final String contents){
 
             final String contentsSensor = contents.substring(0, 4);
-            int contentsData = Integer.parseInt(contents.substring(4));
+            final int contentsData = Integer.parseInt(contents.substring(4));
 
             // contentsData 사용해서 UI 바꾸기!!
             runOnUiThread(new Runnable() {
@@ -408,11 +465,11 @@ public class HomeActivity extends AppCompatActivity {
                 public void run() {
                     // 온도
                     if (contentsSensor.equals("0001")) {
-                        //contentsData/100  온도값 ex)15
+                        textView_temp.setText(contentsData/100); // 온도값 ex)15
                     }
                     // 충돌
                     else if (contentsSensor.equals("0002")) {
-                        //String.valueOf(contentsData) 충돌여부 ex)1,0
+//                        String.valueOf(contentsData) 충돌여부 ex)1,0
                     }
                     // 진동
                     else if (contentsSensor.equals("0003")) {
@@ -424,27 +481,37 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     // 무게
                     else if (contentsSensor.equals("0005")) {
-                        //contentsData 무게 ex)30
+                        //contentsData 무게 ex)30 // 트럭일 때만 넣어주자
                     }
                     // 심박수
                     else if (contentsSensor.equals("0006")) {
-                        //contentsData 심박수 ex) 80
+                        textView_heartbeat.setText(contentsData); // 심박수 ex) 80
                     }
                     // 연료
                     else if (contentsSensor.equals("0007")) {
-                        //contentsData 현재연료량 ex) 40
+                        textView_oil.setText(contentsData); // 현재연료량 ex) 40
                     }
                     // 에어컨
                     else if (contentsSensor.equals("0021")) {
-                        //String.valueOf(contentsData) 에어컨목표온도값 ex) 25
+                        textView_targetTemp.setText(String.valueOf(contentsData)); //에어컨목표온도값 ex) 25
                     }
                     // 시동
                     else if (contentsSensor.equals("0031")) {
-                        //String.valueOf(contentsData) 시동여부 ex)1,0
+                        if(String.valueOf(contentsData).equals("1")) { // 시동여부 ex)1,0
+
+                        }
                     }
                     // 주행
                     else if (contentsSensor.equals("0032")) {
-                        //String.valueOf(contentsData) 주행여부 ex)1,0
+                        if(String.valueOf(contentsData).equals("0")){ // 주행여부 ex)1,0
+//                            movingcar.start();
+                        } else {
+                            ColorMatrix matrix = new ColorMatrix(); matrix.setSaturation(0);
+                            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                            imageView_moving.setColorFilter(filter);
+//                            imageView_moving.setColorFilter(null);
+                        }
+
                         //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
                     }
                     // 문
@@ -455,71 +522,6 @@ public class HomeActivity extends AppCompatActivity {
 
             });
         }
-
-
-    /*
-            Car Data
-    */
-//    public void getCarData() {
-//        // URL 설정.
-//        String carUrl = "http://"+ip+"/webServer/cardata.mc?carid=1";
-//
-//        // AsyncTask를 통해 HttpURLConnection 수행.
-//        CarAsync carAsync = new CarAsync();
-//        carAsync.execute(carUrl);
-//    }
-
-//    class CarAsync extends AsyncTask<String, Void, String> {
-//
-//        ProgressDialog progressDialog;
-//
-//        @Override
-//        protected void onPreExecute() {
-////            progressDialog = new ProgressDialog(MainActivity.this);
-////            progressDialog.setTitle("Get Data ...");
-////            progressDialog.setCancelable(false);
-////            progressDialog.show();
-//        }
-//        @Override
-//        protected String doInBackground(String... strings) {
-//            String url = strings[0];
-//            String result = HttpConnect.getString(url); //result는 JSON
-//            Log.d("[TAG]", result);
-//            return result;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-////            progressDialog.dismiss();
-//            JSONArray ja = null;
-//            try {
-//                Log.d("[TAG]","0");
-//                ja = new JSONArray(s);
-//                Log.d("[TAG]","00");
-//                for(int i=0; i<ja.length(); i++){
-//                    JSONObject jo = ja.getJSONObject(i);
-//
-//                    int carid = jo.getInt("carid");
-//                    String userid = jo.getString("userid");
-//                    String carnum = jo.getString("carnum");
-//                    String carname = jo.getString("carname");
-//                    String cartype = jo.getString("cartype");
-//                    String carmodel = jo.getString("carmodel");
-//                    int caryear = jo.getInt("caryear");
-//                    String carimg = jo.getString("carimg");
-//                    String caroiltype = jo.getString("caroiltype");
-//                    String tablettoken = jo.getString("tablettoken");
-//
-//                    car = new CarVO(carid,userid,carnum,carname,cartype,carmodel,caryear,carimg,caroiltype,tablettoken);
-//
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//
-//    } // Car Data End
 
     /*
     HTTP 통신 Code
@@ -579,67 +581,6 @@ public class HomeActivity extends AppCompatActivity {
             new Thread(r).start();
         }
 
-//    class Receiver extends Thread {
-//        Socket socket;
-//        ObjectInputStream oi = null;
-//
-//
-//        public Receiver(Socket socket) throws IOException {
-//            Log.d("[Server]","Reciver(socket)...");
-//            this.socket = socket;
-//            ObjectOutputStream oo;
-//            oi = new ObjectInputStream(this.socket.getInputStream());
-//            oo = new ObjectOutputStream(this.socket.getOutputStream());
-//
-//            maps.put(socket.getInetAddress().toString(), oo);
-//
-//
-//            Iterator<String> keys = maps.keySet().iterator();
-//            while( keys.hasNext() ){
-//                String key = keys.next();
-//                ObjectOutputStream value = maps.get(key);
-//                Log.d("[Server]","키 : "+key+", 값 : "+value.toString());
-//            }
-//
-//            Log.d("[Server]", "[Server]" + socket.getInetAddress() + "연결되었습니다.");
-//        }
-//
-//
-//        @Override
-//        public void run() {
-//            while (oi != null) {
-//                try {
-//                    DataFrame input = (DataFrame) oi.readObject();
-//                    Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
-//
-//                    //sendDataFrame(df);
-//
-//                } catch (Exception e) {
-//                    maps.remove(socket.getInetAddress().toString());
-//                    Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
-//                    e.printStackTrace();
-//                    Log.d("[Server]", socket.getInetAddress() + " :Receiver 객체 수신 실패 ");
-//
-//                    break;
-//                }
-//            } // end while
-//
-//            try {
-//                if (oi != null) {
-//                    Log.d("[Server]", "ObjectInputStream Closed ..");
-//                    oi.close();
-//                }
-//                if (socket != null) {
-//                    Log.d("[Server]", "Socket Closed ..");
-//                    socket.close();
-//                }
-//            } catch (Exception e) {
-//                Log.d("[Server]", "객체 수신 실패 후 InputStream, socket 닫기 실패");
-//            }
-//
-//        }
-//    }// End Receiver
-
         public void sendDataFrame (DataFrame df){
             try {
                 sender = new Sender();
@@ -652,39 +593,6 @@ public class HomeActivity extends AppCompatActivity {
             }
         }
 
-
-//    class Sender extends Thread {
-//        DataFrame dataFrame;
-//        Socket socket;
-//
-//        public Sender() {
-//
-//        }
-//
-//        public void setDataFrame(DataFrame df) {
-//            this.dataFrame = df;
-//            Log.d("[Server]", "setDataFrame 완료");
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//                Log.d("[Server]", "Sender Thread 실행");
-//                // dataFrame.setIp("192.168.35.149");
-//                // dataFrame.setSender("[TabletServer]");
-//                // Log.d("[Server]", "테스트 목적 Client로 목적지 재설정");
-//                Log.d("[Server]", "[hh]"+dataFrame.toString());
-//                Log.d("[Server]", maps.toString());
-//                maps.get("/" + dataFrame.getIp()).writeObject(dataFrame);
-//                Log.d("[Server]", "Sender 객체 전송.. " + dataFrame.getIp() + "주소로 " + dataFrame.getContents());
-//                Log.d("[Server]", "Sender 객체 전송 성공");
-//
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//        }
-//    }
   /*
        FCM 통신
                     */
@@ -737,8 +645,8 @@ public class HomeActivity extends AppCompatActivity {
                     }
 
 
-                    //여기를 풀어서 모바일에서 제어시 UI변경
-                    //setUi(contents);
+                    // 모바일에서 제어시 UI변경
+                    setUi(contents);
 
 
                     Log.d("[Server]", carid);
