@@ -233,8 +233,8 @@ public class HomeActivity extends AppCompatActivity {
 
                         if(vibrData > 30){
                             // 강한 충돌 사고
-                            SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
+//                            SmsManager smsManager = SmsManager.getDefault();
+//                            smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
                             Toast.makeText(getApplicationContext(), "119에 사고가 신고되었습니다", Toast.LENGTH_SHORT).show();
                         }else {
                             // 약한 충돌 사고
@@ -518,9 +518,12 @@ public class HomeActivity extends AppCompatActivity {
                 AlertDialog.Builder dailog = new AlertDialog.Builder(HomeActivity.this);
                 dailog.setTitle("충돌 사고가 발생하였습니다");
                 dailog.setMessage("119에 신고하시겠습니까?");
-                dailog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                dailog.setPositiveButton("신고", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+//                      SmsManager smsManager = SmsManager.getDefault();
+//                      smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
+                        Toast.makeText(getApplicationContext(), "사고가 신고되었습니다", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 });
