@@ -333,19 +333,20 @@ public class CarController {
 		try {
 			cbiz.register(car);
 			out.print("success");
+			
+			int carid = cbiz.caridfromnumber(carnum).getCarid();
+			
+			CarSensorVO carsensor = new CarSensorVO(carid, 0, "0", "0", 0, 0, 50, 0, "0", "0", "0", "0", "0", 0, 0);
+			sbiz.register(carsensor);
 		} catch (Exception e) {
 			out.print("fail");
 			throw e;
 		}
-		
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
-		
-		CarSensorVO carsensor = new CarSensorVO(carid, 0, "0", "0", 0, 0, 50, 0, "0", "0", "0", "0", "0", 0, 0);
-		sbiz.register(carsensor);
-		
+			
 		out.close();
 	}
 
+	
 	// 토큰이 바꼈을 때 car number을 통해 token 업데이트
 	@RequestMapping("/tokenupdateimpl.mc")
 	public void tokenupdateimpl(HttpServletRequest request, HttpServletResponse res) throws Exception {
@@ -412,10 +413,30 @@ public class CarController {
 		String carnum = request.getParameter("carnum");
 		String number = request.getParameter("number");
 		
+		String token = "";
+		
 		System.out.println(carnum+" "+number);
 		
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
-		String token = cbiz.get(carid).getTablettoken();
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter outt = res.getWriter();
+		
+		try {
+			int carid = cbiz.caridfromnumber(carnum).getCarid();
+			if(!cbiz.get(carid).getUserid().equals("unassigned")) {
+				outt.print("alreadyExist");
+				outt.close();
+				return;
+			}
+			token = cbiz.get(carid).getTablettoken();
+			System.out.println("carid:"+carid+"\n"+"token:"+token);
+		}catch(Exception e) {
+			outt.print("notExist");
+			outt.close();
+			return;
+		}
+
+
 
 		// FCM으로 모바일 제어
 		URL url = null;

@@ -76,7 +76,7 @@ public class TabletController {
 		} else if (contentsSensor.equals("0007")) {
 			cs.setFuel(contentsData);
 		} else if (contentsSensor.equals("0021")) {
-			cs.setAircon(String.valueOf(contentsData));
+			cs.setAircon(String.valueOf(contentsData/100));
 		} else if (contentsSensor.equals("0031")) {
 			cs.setStarting(String.valueOf(contentsData));
 

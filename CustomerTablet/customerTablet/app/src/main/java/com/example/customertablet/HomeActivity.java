@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -103,7 +104,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-
         // serverStart
         try {
             startServer();
@@ -157,7 +157,17 @@ public class HomeActivity extends AppCompatActivity {
         sp = getSharedPreferences("token",MODE_PRIVATE);
         carnum = sp.getString("num","");
         Log.d("[Server]","carnum:"+carnum);
-} // end OnCreate
+
+
+        imageButton_control.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CarInfoActivity.class);
+                startActivity(intent);
+            }
+        });
+
+    } // end OnCreate
 
 
     public void sendfcm(String contents) {
@@ -554,7 +564,12 @@ public class HomeActivity extends AppCompatActivity {
                 if(contents.length() != 4){
                     DataFrame df = new DataFrame();
                     // 연결된 IP로 df를 보낸다
-                    df.setIp(socket.getInetAddress().toString().substring(1));
+                    try{
+                        df.setIp(socket.getInetAddress().toString().substring(1));
+                    }catch(Exception e){
+                        Toast.makeText(getApplicationContext(), "차량이 연결되지 않아 제어데이터를 보내지 못했습니다.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     df.setSender("Mobile");
                     df.setContents(contents);
                     Log.d("[Server]",df.toString());
