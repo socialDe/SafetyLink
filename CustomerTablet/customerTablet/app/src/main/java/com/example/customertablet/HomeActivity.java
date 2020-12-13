@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -225,8 +226,24 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
+                    // 받은 데이터가 진동 데이터
+                    if(input.getContents().substring(4,8).equals("0003")) {
+                        String strvibr = input.getContents().substring(8);
+                        int vibrData = Integer.parseInt(strvibr);
 
-
+                        if(vibrData > 30){
+                            // 강한 충돌 사고
+                            SmsManager smsManager = SmsManager.getDefault();
+                            smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
+                            Toast.makeText(getApplicationContext(), "119에 사고가 신고되었습니다", Toast.LENGTH_SHORT).show();
+                        }else {
+                            // 약한 충돌 사고
+                            String url = "http://192.168.0.38/webServer/getMovingcar.mc";
+                            url += "?carnum=" + carnum;
+                            httpAsyncTask = new HttpAsyncTask();
+                            httpAsyncTask.execute(url);
+                        }
+                    }
 
                     // 받은 데이터가 무게 데이터인 경우 수행
                     if(input.getContents().substring(4,8).equals("0005")){
@@ -495,6 +512,27 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
+            final String result = s.trim();
+
+            if(result.equals("crush")){
+                AlertDialog.Builder dailog = new AlertDialog.Builder(HomeActivity.this);
+                dailog.setTitle("충돌 사고가 발생하였습니다");
+                dailog.setMessage("119에 신고하시겠습니까?");
+                dailog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                });
+                dailog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        return;
+                    }
+                });
+                dailog.show();
+            }
+
         }// End HTTP 통신 Code
     }
   /*

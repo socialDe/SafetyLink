@@ -65,4 +65,9 @@ public class CarSensorBIZ implements Biz<Integer,String,CarSensorVO> {
 		return null;
 	}
 
+	@Override
+	public CarSensorVO movingcarfromnumber(String k) throws Exception {
+		return dao.movingcarfromnumber(k);
+	}
+
 }

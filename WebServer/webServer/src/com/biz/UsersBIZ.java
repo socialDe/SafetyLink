@@ -67,4 +67,10 @@ public class UsersBIZ implements Biz<String,String,UsersVO> {
 		return null;
 	}
 
+	@Override
+	public UsersVO movingcarfromnumber(String k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

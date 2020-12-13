@@ -64,4 +64,10 @@ public class CarBIZ implements Biz<Integer,String,CarVO> {
 		return dao.caridfromnumber(k);
 	}
 
+	@Override
+	public CarVO movingcarfromnumber(String k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

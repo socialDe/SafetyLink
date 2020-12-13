@@ -24,8 +24,13 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 	<select id="selectall" resultType="carsensor">
 		SELECT * FROM CARSENSOR 
 	</select>
+	
 	<select id="selectcarsfromuser" parameterType="carsensor" resultType="carsensor">
 		SELECT * FROM CARSENSOR WHERE CARID IN (SELECT CARID FROM CAR WHERE USERID=#{userid}) ORDER BY CARID
+	</select>
+	
+	<select id="movingcarfromnumber" parameterType="String" resultType="carsensor">
+		SELECT * FROM CARSENSOR WHERE CARID IN (SELECT CARID FROM CAR WHERE CARNUM=#{k}) AND MOVING='o' ORDER BY CARID;
 	</select>
 	
 	
