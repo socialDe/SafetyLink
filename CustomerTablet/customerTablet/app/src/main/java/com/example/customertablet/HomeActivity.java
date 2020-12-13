@@ -1070,11 +1070,12 @@ public class HomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if(v > 30){
-                    fuel = fuel - 0.1;
-                    msg = velocityhandler.obtainMessage();
-                    bundle.putDouble("fuel", fuel);
-                    msg.setData(bundle);
-                    velocityhandler.sendMessage(msg);
+                    if(fuel>=0) {
+                        msg = velocityhandler.obtainMessage();
+                        fuel = fuel - 0.1;
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    }
                     break;
                 }
             }
@@ -1090,11 +1091,12 @@ public class HomeActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 if (v > 80) {
-                    fuel = fuel - 0.2;
-                    msg = velocityhandler.obtainMessage();
-                    bundle.putDouble("fuel", fuel);
+                    if(fuel>=0) {
+                        fuel = fuel - 0.2;
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    }
                     msg.setData(bundle);
-                    velocityhandler.sendMessage(msg);
                     break;
                 }
             }
@@ -1111,21 +1113,43 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 if (v > 120) {
                     fuel = fuel - 0.3;
-                    v = v - 5;
+                    v = v - 10;
                     msg = velocityhandler.obtainMessage();
                     bundle.putInt("velocity", v);
                     msg.setData(bundle);
-                    bundle.putDouble("fuel", fuel);
-                    msg.setData(bundle);
+                    if(fuel>=0.3){
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    } else if(fuel <= 0.2){
+                        bundle.putDouble("fuel",0.01);
+                        msg.setData(bundle);
+                        velocityhandler.sendMessage(msg);
+                        whilemove = false;
+                        moveStop = new MoveStop();
+                        moveStop.start();
+                        // moving으로 바꿀 때, imageView도 바꿔주자
+                        break;
+                    }
                     velocityhandler.sendMessage(msg);
-                } else if (v < 80){
+                } else if (v < 80){ // 이 부분은 80~120으로 왔다갔다 할까 고민하느라 넣어둠
                     fuel = fuel - 0.3;
-                    v = v + 5;
+                    v = v + 10;
                     msg = velocityhandler.obtainMessage();
                     bundle.putInt("velocity", v);
                     msg.setData(bundle);
-                    bundle.putDouble("fuel", fuel);
-                    msg.setData(bundle);
+                    if(fuel>=0) {
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    } else if(fuel <= 0.2){
+                        bundle.putDouble("fuel",0.01);
+                        msg.setData(bundle);
+                        velocityhandler.sendMessage(msg);
+                        whilemove = false;
+                        moveStop = new MoveStop();
+                        moveStop.start();
+                        // moving으로 바꿀 때, imageView도 바꿔주자
+                        break;
+                    }
                     velocityhandler.sendMessage(msg);
                 }
             }
@@ -1140,6 +1164,8 @@ public class HomeActivity extends AppCompatActivity {
             double fuel = bundle.getDouble("fuel");
             if(fuel == 0){
                 fuel = Double.parseDouble(textView_oil.getText().toString());
+            } else if(fuel == 0.01){
+
             }
             final String num = String.format("%.1f",  fuel);
             runOnUiThread(new Runnable() {
