@@ -61,6 +61,7 @@
 	
 	<!-- 1. Database Setting -->
 
+<<<<<<< HEAD
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName"			
@@ -77,6 +78,13 @@
  		<property name="username" value="admin"/>
  		<property name="password" value="11111111"/>
 >>>>>>> feature/tablet_sensorProcess
+=======
+ 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+ 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+ 		<property name="url" value="jdbc:oracle:thin:@192.168.0.60:1521:xe"/>
+ 		<property name="username" value="userdb"/>
+ 		<property name="password" value="111111"/>
+>>>>>>> feature/tablet_car_management
  	</bean>
 -->
 

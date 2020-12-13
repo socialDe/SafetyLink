@@ -35,7 +35,6 @@ public class TabletController {
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
 	Calendar time = Calendar.getInstance();
 	String timenow = format.format(time.getTime());
-
 	@RequestMapping("/getTabletSensor.mc")
 	public void androidWithRequest(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		String carnum = request.getParameter("carnum");

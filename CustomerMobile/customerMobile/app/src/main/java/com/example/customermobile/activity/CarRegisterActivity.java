@@ -164,7 +164,7 @@ public class CarRegisterActivity extends AppCompatActivity {
 
     // 인증번호 보내는 fcm
     public void SendNumberFcm(String carnum, int number) {
-        String urlstr = "http://"+ip+"/webServer/sendnumberfcm.mc";
+        String urlstr = "http://" + ip + "/webServer/sendnumberfcm.mc";
         String conrtolUrl = urlstr + "?carnum=" + carnum +"&number=" + number;
 
         Log.d("[TEST]", conrtolUrl);

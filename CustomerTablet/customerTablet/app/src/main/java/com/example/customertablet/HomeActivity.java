@@ -13,12 +13,16 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -47,6 +51,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 import static com.example.customertablet.MainActivity.ip;
 
@@ -56,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
     ImageButton imageButton_control, imageButton_map, imageButton_setting, imageButton_tempUp, imageButton_tempDown;
     TextView textView_velocity, textView_oil, textView_heartbeat;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
-    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_starting, imageView_moving;
+    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_starting, imageView_moving, imageView_heartbeat;
 
     // TCP/IP Server
     ServerSocket serverSocket;
@@ -67,7 +72,7 @@ public class HomeActivity extends AppCompatActivity {
     HashMap<String, ObjectOutputStream> maps = new HashMap<>();
 
     // 현재 시간 표시 설정
-    SimpleDateFormat format = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     Date time = new Date();
     String timeNow = format.format(time);
 
@@ -94,10 +99,18 @@ public class HomeActivity extends AppCompatActivity {
     public void setCar(CarVO car) {
         this.car = car;
     }
+
     SharedPreferences sp;
     String carnum;
     Handler handler;
 
+//    Timer timer;
+//    TimerTask heartbeatTT;
+
+    ValueHandler vhandler;
+    HeartbeatThread hthread;
+    MovingCar movingcar;
+    MoveHandler mhandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +146,7 @@ public class HomeActivity extends AppCompatActivity {
         imageView_weather = findViewById(R.id.imageView_weather);
         imageView_starting = findViewById(R.id.imageView_starting);
         imageView_moving = findViewById(R.id.imageView_moving);
+        textView_heartbeat = findViewById(R.id.textView_heartbeat);
         getSupportActionBar().hide(); // 화면 확보를 위해 ActionBar 제거
 //         FCM사용 (앱이 중단되어 있을 때 기본적으로 title,body값으로 푸시!!)
         FirebaseMessaging.getInstance().subscribeToTopic("car"). //구독, 이거랑 토큰으로 원하는 기능 설정하기(파이널 때, db 활용)
@@ -153,11 +167,9 @@ public class HomeActivity extends AppCompatActivity {
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this); // 브로드캐스트를 받을 준비
         lbm.registerReceiver(receiver, new IntentFilter("notification")); // notification이라는 이름의 정보를 받겠다
 
-
-        sp = getSharedPreferences("token",MODE_PRIVATE);
-        carnum = sp.getString("num","");
-        Log.d("[Server]","carnum:"+carnum);
-
+        sp = getSharedPreferences("token", MODE_PRIVATE);
+        carnum = sp.getString("num", "");
+        Log.d("[Server]", "carnum:" + carnum);
 
         imageButton_control.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,12 +179,152 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        // 심장박동
+        hthread = new HeartbeatThread();
+        hthread.start();
+        vhandler = new ValueHandler();
+
+        // 주행화면
+        movingcar = new MovingCar();
+        movingcar.start();
+        mhandler = new MoveHandler();
+
+        // 흑백 사진
+//        ColorMatrix matrix = new ColorMatrix();
+//        matrix.setSaturation(0);
+//        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+        //       imageView_moving.setImageResource(R.drawable.stopcar);
+        //       imageView_moving.setColorFilter(filter);
+//
+        // 심장박동
+//        timer = new Timer(true);
+//        heartbeatTT = new TimerTask() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        };
+//        timer.schedule(heartbeatTT,1000,3000); // 어떤 함수를 1 초 이후에 시작하고 3 초마다 실행한다
+//        필요한 부분에 이 함수 넣으면 됨
+
     } // end OnCreate
+
+    class MovingCar extends Thread {
+        public void run() {
+            final Bundle bundle = new Bundle();
+            while (true) {
+                for (int i = 1; i < 4; i++) {
+                    Message msg = mhandler.obtainMessage();
+                    bundle.putInt("move", i);
+                    msg.setData(bundle);
+                    mhandler.sendMessage(msg);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+
+    class MoveHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            final int move = bundle.getInt("move");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (move == 1) {
+                        imageView_moving.setImageResource(R.drawable.redcar3);
+                    } else if (move == 2) {
+                        imageView_moving.setImageResource(R.drawable.redcar2);
+                    } else if (move == 3) {
+                        imageView_moving.setImageResource(R.drawable.redcar1);
+                    }
+                }
+            });
+
+        }
+    } // 주행 UI end
+
+    /*
+    심장박동
+    */
+// 스레드 클래스 생성
+    class HeartbeatThread extends Thread {
+        int value = 100;
+        boolean running = false;
+
+        public void run() {
+            running = true;
+            while (running) {
+                final Bundle bundle = new Bundle();
+                Random r = new Random();
+                int a = r.nextInt(2);
+                if (a == 0) {
+                    value = value - (r.nextInt(5) + 1);
+                } else if (a == 1) {
+                    value = value + (r.nextInt(5) + 1);
+                }
+                Message message = vhandler.obtainMessage();
+                bundle.putInt("value", value);
+                message.setData(bundle);
+                vhandler.sendMessage(message);
+                if (value < 50) {
+                    final MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mp);
+                    mediaPlayer.start(); //노래 재생
+                    value = value + 60;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+                            alertDialog.setTitle("졸음운전 감지")
+                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            mediaPlayer.stop();
+                                            textView_heartbeat.setText(value + "");
+                                            // 누르기 전에도 thread가 다시 돌면서 ValueHandler로 값을 보내고,
+                                            // 높아진 심박수가 보여진다.
+                                        }
+                                    });
+                            alertDialog.create().show();
+                        }
+                    });
+
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (Exception e) {
+                }
+
+            }
+        }
+    }
+
+    class ValueHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            final int value = bundle.getInt("value");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textView_heartbeat.setText(value + "");
+                }
+            });
+
+        }
+    } // 심장박동 end
 
 
     public void sendfcm(String contents) {
         String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
-        String conrtolUrl = urlstr + "?carnum=" + carnum +"&contents=" + contents;
+        String conrtolUrl = urlstr + "?carnum=" + carnum + "&contents=" + contents;
 
         Log.d("[TEST]", conrtolUrl);
 
@@ -180,6 +332,7 @@ public class HomeActivity extends AppCompatActivity {
         SendFcmAsync sendFcmAsync = new SendFcmAsync();
         sendFcmAsync.execute(conrtolUrl);
     }
+
 
     class SendFcmAsync extends AsyncTask<String, Void, Void> {
 
@@ -197,6 +350,7 @@ public class HomeActivity extends AppCompatActivity {
 
         }
     }
+
 
     class Receiver extends Thread {
         Socket socket;
@@ -221,46 +375,43 @@ public class HomeActivity extends AppCompatActivity {
                     final DataFrame input = (DataFrame) oi.readObject();
                     Log.d("[Server]", "[DataFrame 수신] " + input.getSender() + ": " + input.getContents());
 
-                    //setUi(input.getContents());
+                    setUi(input.getContents());
 
-
-                    if(input.getContents().substring(4,8).equals("0002")
-                          ||  input.getContents().substring(4,8).equals("0003")
-                            ||  input.getContents().substring(4,8).equals("0004"))  {
+                    if (input.getContents().substring(0, 4).equals("0002")
+                            || input.getContents().substring(0, 4).equals("0003")
+                            || input.getContents().substring(0, 4).equals("0004")) {
 
                         sendfcm(input.getContents());
 
                     }
 
                     // 받은 데이터가 주행 데이터인 경우
-                    if(input.getContents().substring(4,8).equals("0032")){
-                        Log.d("[Run]", "[Run]: "+input.getContents().substring(8));
+                    if (input.getContents().substring(4, 8).equals("0032")) {
+                        Log.d("[Run]", "[Run]: " + input.getContents().substring(8));
                         String runData = input.getContents().substring(8);
 
-                        if(runData.equals("00000000")){
+                        if (runData.equals("00000000")) {
                             // 주행 종료
                             imageView_moving.setBackgroundColor(Color.GRAY);
-                        }else if(runData.equals("00000001")){
+                        } else if (runData.equals("00000001")) {
                             // 주행 시작
                             imageView_moving.setBackgroundColor(Color.GREEN);
                         }
                     }
 
 
-
-
                     // 받은 데이터가 무게 데이터인 경우 수행
-                    if(input.getContents().substring(4,8).equals("0005")){
-                        Log.d("[Load]", "[Load]: "+input.getContents().substring(8));
+                    if (input.getContents().substring(4, 8).equals("0005")) {
+                        Log.d("[Load]", "[Load]: " + input.getContents().substring(8));
                         String loadData = input.getContents().substring(8);
 
 
                         // 주행 시작시 전송하는 무게 데이터
-                        if(loadData.substring(0,1).equals("9")){
+                        if (loadData.substring(0, 1).equals("9")) {
                             initialLoad = Integer.parseInt(loadData.substring(1));
-                            Log.d("[Load]", "[Load]: 초기 무게 데이터 "+initialLoad+" 설정되었습니다.");
+                            Log.d("[Load]", "[Load]: 초기 무게 데이터 " + initialLoad + " 설정되었습니다.");
                             dialogLoad = 1;
-                        }else {
+                        } else {
                             if (loadDatas.size() <= 5) {
                                 if (loadDatas.size() == 5) {
                                     Log.d("[Load]", "[LoadDatas]: " + loadDatas.get(0) + "삭제");
@@ -287,7 +438,7 @@ public class HomeActivity extends AppCompatActivity {
                                 if (initialLoad > avgLoad + 500) {
                                     Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
 
-                                    if(dialogLoad == 1){
+                                    if (dialogLoad == 1) {
                                         dialogLoad += 1;
                                         _runOnUiThread(new Runnable() {
                                             @Override
@@ -320,8 +471,7 @@ public class HomeActivity extends AppCompatActivity {
                     }
 
 
-
-                    if(input.getContents().equals("온도데이터 코드")) {
+                    if (input.getContents().equals("온도데이터 코드")) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -330,26 +480,21 @@ public class HomeActivity extends AppCompatActivity {
                         });
                     }
 
-//                    // 받은 DataFrame 중 HTTP로 전송해야 하는 데이터
-//                    if(input.getContents().equals("전송해야 하는 데이터")) {
+                    // 받은 DataFrame을 웹서버로 HTTP 전송
+                    // call AsynTask to perform network operation on separate thread
+                    String url = "http://" + ip + "/webServer/getTabletSensor.mc";
+                    url += "?carnum=" + carnum + "&contents=" + input.getContents();
+                    httpAsyncTask = new HttpAsyncTask();
+                    // Thread 안에서 Thread가 돌아갈 땐 Handler을 사용해야 한다
+                    Handler mHandler = new Handler(Looper.getMainLooper());
+                    final String finalUrl = url;
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            httpAsyncTask.execute(finalUrl);
+                        }
+                    }); // 1000으로 해야 돌아간다...
 
-                        // 받은 DataFrame을 웹서버로 HTTP 전송
-                        // call AsynTask to perform network operation on separate thread
-
-                        String url = "http://"+ip+"/webServer/getTabletSensor.mc";
-                        url += "?carnum=" + carnum + "&contents=" + input.getContents() + "";
-                        httpAsyncTask = new HttpAsyncTask();
-                        // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
-                        Handler mHandler = new Handler(Looper.getMainLooper());
-                        final String finalUrl = url;
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                httpAsyncTask.execute(finalUrl);
-                            }
-                        }); // 1000으로 해야 돌아간다...
-
-//                    }
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
                     Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
@@ -376,7 +521,6 @@ public class HomeActivity extends AppCompatActivity {
     }// End Receiver
 
 
-
     class Sender extends Thread {
         DataFrame dataFrame;
         Socket socket;
@@ -397,10 +541,10 @@ public class HomeActivity extends AppCompatActivity {
                 // dataFrame.setIp("192.168.35.149");
                 // dataFrame.setSender("[TabletServer]");
                 // Log.d("[Server]", "테스트 목적 Client로 목적지 재설정");
-                if(maps.get("/"+dataFrame.getIp())!= null){
-                    maps.get("/"+dataFrame.getIp()).writeObject(dataFrame);
+                if (maps.get("/" + dataFrame.getIp()) != null) {
+                    maps.get("/" + dataFrame.getIp()).writeObject(dataFrame);
                 }
-                Log.d("[Server]", "Sender 객체 전송.. "+dataFrame.getIp()+"주소로 "+dataFrame.getContents());
+                Log.d("[Server]", "Sender 객체 전송.. " + dataFrame.getIp() + "주소로 " + dataFrame.getContents());
                 Log.d("[Server]", "Sender 객체 전송 성공");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -409,67 +553,78 @@ public class HomeActivity extends AppCompatActivity {
     } // End TCP/IP 통신 Code
 
 
-    public void setUi(final String contents){
+    private void _runOnUiThread(Runnable runnable) {
+        handler.post(runnable);
+    }
 
-        final String contentsSensor = contents.substring(0,4);
-        int contentsData = Integer.parseInt(contents.substring(4));
+    public void setUi(final String contents) {
+
+        final String contentsSensor = contents.substring(0, 4);
+        final int contentsData = Integer.parseInt(contents.substring(4));
 
         // contentsData 사용해서 UI 바꾸기!!
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 // 온도
-                if(contentsSensor.equals("0001")) {
-                    //contentsData/100  온도값 ex)15
+                if (contentsSensor.equals("0001")) {
+                    textView_temp.setText(contentsData / 100); // 온도값 ex)15
                 }
                 // 충돌
-                else if(contentsSensor.equals("0002")) {
-                    //String.valueOf(contentsData) 충돌여부 ex)1,0
+                else if (contentsSensor.equals("0002")) {
+//                        String.valueOf(contentsData) 충돌여부 ex)1,0
                 }
                 // 진동
-                else if(contentsSensor.equals("0003")) {
+                else if (contentsSensor.equals("0003")) {
                     //String.valueOf(contentsData) 충돌세기 ex)2(small),3(big)
                 }
                 // pir
-                else if(contentsSensor.equals("0004")) {
-                   //String.valueOf(contentsData) 영유아감지여부 ex)1,0
+                else if (contentsSensor.equals("0004")) {
+                    //String.valueOf(contentsData) 영유아감지여부 ex)1,0
                 }
                 // 무게
-                else if(contentsSensor.equals("0005")) {
-                    //contentsData 무게 ex)30
+                else if (contentsSensor.equals("0005")) {
+                    //contentsData 무게 ex)30 // 트럭일 때만 넣어주자
                 }
                 // 심박수
-                else if(contentsSensor.equals("0006")) {
-                    //contentsData 심박수 ex) 80
+                else if (contentsSensor.equals("0006")) {
+                    textView_heartbeat.setText(contentsData); // 심박수 ex) 80
                 }
                 // 연료
-                else if(contentsSensor.equals("0007")) {
-                    //contentsData 현재연료량 ex) 40
+                else if (contentsSensor.equals("0007")) {
+                    textView_oil.setText(contentsData); // 현재연료량 ex) 40
                 }
                 // 에어컨
-                else if(contentsSensor.equals("0021")) {
-                    //String.valueOf(contentsData) 에어컨목표온도값 ex) 25
+                else if (contentsSensor.equals("0021")) {
+                    textView_targetTemp.setText(String.valueOf(contentsData)); //에어컨목표온도값 ex) 25
                 }
                 // 시동
-                else if(contentsSensor.equals("0031")) {
-                    //String.valueOf(contentsData) 시동여부 ex)1,0
+                else if (contentsSensor.equals("0031")) {
+                    if (String.valueOf(contentsData).equals("1")) { // 시동여부 ex)1,0
+
+                    }
                 }
                 // 주행
-                else if(contentsSensor.equals("0032")) {
-                    //String.valueOf(contentsData) 주행여부 ex)1,0
+                else if (contentsSensor.equals("0032")) {
+                    if (String.valueOf(contentsData).equals("0")) { // 주행여부 ex)1,0
+//                            movingcar.start();
+                    } else {
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageView_moving.setColorFilter(filter);
+//                            imageView_moving.setColorFilter(null);
+                    }
+
                     //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
                 }
                 // 문
-                else if(contentsSensor.equals("0033")) {
+                else if (contentsSensor.equals("0033")) {
                     //String.valueOf(contentsData) 문  ex)1,0
                 }
             }
 
         });
-    }
-
-    private void _runOnUiThread(Runnable runnable){
-        handler.post(runnable);
     }
 
     /*
@@ -509,7 +664,6 @@ public class HomeActivity extends AppCompatActivity {
         serverSocket = new ServerSocket(serverPort);
         Log.d("[Server]", "Start Server...");
 
-
         Runnable r = new Runnable() {
             @Override
             public void run() {
@@ -527,10 +681,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         };
-
-        new Thread(r).start();
     }
-
 
 
     public void sendDataFrame(DataFrame df) {
@@ -544,7 +695,6 @@ public class HomeActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
 
   /*
        FCM 통신
@@ -561,27 +711,26 @@ public class HomeActivity extends AppCompatActivity {
                 String contents = intent.getStringExtra("contents");
                 Toast.makeText(HomeActivity.this, "차량 상태가 변경되었습니다.", Toast.LENGTH_SHORT).show();
 
-                if(contents.length() != 4){
+                if (contents.length() != 4) {
                     DataFrame df = new DataFrame();
                     // 연결된 IP로 df를 보낸다
-                    try{
+                    try {
                         df.setIp(socket.getInetAddress().toString().substring(1));
-                    }catch(Exception e){
+                    } catch (Exception e) {
                         Toast.makeText(getApplicationContext(), "차량이 연결되지 않아 제어데이터를 보내지 못했습니다.", Toast.LENGTH_LONG).show();
                         return;
                     }
                     df.setSender("Mobile");
                     df.setContents(contents);
-                    Log.d("[Server]",df.toString());
+                    Log.d("[Server]", df.toString());
                     sendDataFrame(df);
                 }
 
+                // 모바일에서 제어시 UI변경
+                setUi(contents);
 
-                //여기를 풀어서 모바일에서 제어시 UI변경
-                //setUi(contents);
 
-
-                Log.d("[Server]",carid);
+                Log.d("[Server]", carid);
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                 NotificationCompat.Builder builder = null;
@@ -604,16 +753,16 @@ public class HomeActivity extends AppCompatActivity {
                 builder.setContentIntent(pendingIntent);
 
                 builder.setContentTitle(title);
-                builder.setContentText(carid+ " " + contents);
+                builder.setContentText(carid + " " + contents);
 
 
                 if (carid.equals("verify")) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
-                    alertDialog.setTitle(Integer.parseInt(contents)+"")
+                    alertDialog.setTitle(Integer.parseInt(contents) + "")
                             .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    }
+                                }
                             });
                     alertDialog.create().show();
                     builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
@@ -623,6 +772,7 @@ public class HomeActivity extends AppCompatActivity {
                     Notification noti = builder.build();
                     manager.notify(1, noti);
                 }
+
 
             }
         }
