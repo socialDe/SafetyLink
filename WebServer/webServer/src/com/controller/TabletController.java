@@ -13,6 +13,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,10 +83,47 @@ public class TabletController {
 		} else if (contentsSensor.equals("0032")) {
 			cs.setMoving(String.valueOf(contentsData));
 			cs.setMovingstarttime(time.getTime());
+		} else if (contentsSensor.equals("0033")) {
+			cs.setDoor(String.valueOf(contentsData));
 		}
 
 		System.out.println(cs);
 
+	}
+	
+	// Tablet 을 켰을 때 상태를 가져와줌(Tablet을 늦게 켰을 경우, 오류 방지)
+	@RequestMapping("/getstatus.mc")
+	@ResponseBody
+	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
+
+		String carnum = request.getParameter("carnum");
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+
+		CarSensorVO car = new CarSensorVO();
+		car = sbiz.get(carid);
+		
+		JSONArray ja = new JSONArray();
+
+		JSONObject data = new JSONObject();
+			
+		data.put("starting", car.getStarting());
+		data.put("door", car.getDoor());
+		data.put("moving", car.getMoving());
+		data.put("fuel", car.getFuel());
+		data.put("fuelmax", car.getFuelmax());
+		data.put("temper", car.getTemper());
+		data.put("aircon", car.getAircon());
+			
+		ja.add(data);
+		
+		System.out.println("---------test:"+ja.toJSONString());
+
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+
+		out.print(ja.toJSONString());
+		out.close();
 	}
 
 }

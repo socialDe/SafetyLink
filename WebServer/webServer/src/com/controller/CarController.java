@@ -374,7 +374,7 @@ public class CarController {
 	}
 	
 	// 인증번호 입력 후 '확인' 버튼 누르면 Car 정보를 띄워줌
-	@RequestMapping("/carnumcheckimpl")
+	@RequestMapping("/carnumcheckimplc.mc")
 	@ResponseBody
 	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
 

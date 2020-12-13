@@ -6,13 +6,13 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
@@ -44,6 +44,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -58,10 +62,11 @@ import static com.example.customertablet.MainActivity.ip;
 
 public class HomeActivity extends AppCompatActivity {
 
-    ImageButton imageButton_control, imageButton_map, imageButton_setting, imageButton_tempUp, imageButton_tempDown, imageButton_starting;
-    TextView textView_velocity, textView_oil, textView_heartbeat;
+    ImageButton imageButton_control, imageButton_map, imageButton_setting, imageButton_tempUp, imageButton_tempDown,
+            imageButton_startingOn, imageButton_startingOff, imageButton_doorOn, imageButton_doorOff;
+    TextView textView_velocity, textView_oil, textView_heartbeat, textView_maxoil;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
-    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_moving, imageView_heartbeat;
+    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_weather, imageView_moving, imageView_heartbeat;
 
     // TCP/IP Server
     ServerSocket serverSocket;
@@ -79,6 +84,7 @@ public class HomeActivity extends AppCompatActivity {
     // HTTP
     DataFrame dataF;
     HttpAsyncTask httpAsyncTask;
+    GetStatusAsync getStatusAsync;
 
     NotificationManager manager; // FCM을 위한 NotificationManager
 
@@ -103,6 +109,8 @@ public class HomeActivity extends AppCompatActivity {
     int targetTemp;
     TemperTimer temperTimer;
 
+    int startingcode, doorcode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,20 +131,24 @@ public class HomeActivity extends AppCompatActivity {
         textView_todayDate = findViewById(R.id.textView_todayDate);
         textView_weather = findViewById(R.id.textView_weather);
         textView_heartbeat = findViewById(R.id.textView_heartbeat);
+        textView_oil = findViewById(R.id.textView_oil);
+        textView_maxoil = findViewById(R.id.textView_maxoil);
 
         imageButton_control = findViewById(R.id.imageButton_control);
         imageButton_map = findViewById(R.id.imageButton_map);
         imageButton_setting = findViewById(R.id.imageButton_setting);
         imageButton_tempUp = findViewById(R.id.imageButton_tempUp);
         imageButton_tempDown = findViewById(R.id.imageButton_tempDown);
+        imageButton_startingOn = findViewById(R.id.imageButton_startingOn);
+        imageButton_startingOff = findViewById(R.id.imageButton_startingOff);
+        imageButton_doorOn = findViewById(R.id.imageButton_doorOn);
+        imageButton_doorOff = findViewById(R.id.imageButton_doorOff);
 
         imageView_frtire = findViewById(R.id.imageView_frTire);
         imageView_fltire = findViewById(R.id.imageView_flTire);
         imageView_rrtire = findViewById(R.id.imageView_rrTire);
         imageView_rltire = findViewById(R.id.imageView_rlTire);
-        imageView_door = findViewById(R.id.imageView_door);
         imageView_weather = findViewById(R.id.imageView_weather);
-        imageButton_starting = findViewById(R.id.imageButton_starting);
         imageView_moving = findViewById(R.id.imageView_moving);
         imageView_heartbeat = findViewById(R.id.imageView_heartbeat);
         //gif 추가
@@ -176,7 +188,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // 주행화면
         movingcar = new MovingCar();
-        movingcar.start();
+//        movingcar.start();
         mhandler = new MoveHandler();
 
         // 흑백 사진
@@ -196,14 +208,13 @@ public class HomeActivity extends AppCompatActivity {
 //        };
 //        timer.schedule(heartbeatTT,1000,3000); // 어떤 함수를 1 초 이후에 시작하고 3 초마다 실행한다
 //        필요한 부분에 이 함수 넣으면 됨
-        targetTemp = Integer.parseInt(textView_targetTemp.getText().toString());
-
         temperTimer = new TemperTimer(3000, 1000);
 
         imageButton_tempUp.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
+                targetTemp = Integer.parseInt(textView_targetTemp.getText().toString());
                 targetTemp = targetTemp + 1;
 
                 if(targetTemp > 30){
@@ -219,6 +230,7 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
+                targetTemp = Integer.parseInt(textView_targetTemp.getText().toString());
                 targetTemp = targetTemp -1;
 
                 if(targetTemp < 18){
@@ -231,16 +243,64 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        imageButton_starting.setOnClickListener(new View.OnClickListener() {
+        imageButton_startingOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(startingcode == 0){
+                    startingcode = 1;
+                    setUi("CA00003100000001");
+                    getSensor("CA00003100000001");
+                    tabletSendDataFrame("CA00003100000001");
+                    ColorMatrix matrix = new ColorMatrix();
+                    matrix.setSaturation(0);
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    imageButton_startingOff.setColorFilter(filter);
+                    imageButton_startingOn.setColorFilter(null);
+                }
+            }
+        });
+        imageButton_startingOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(startingcode == 1){
+                    startingcode = 0;
+                    setUi("CA00003100000000");
+                    getSensor("CA00003100000000");
+                    tabletSendDataFrame("CA00003100000000");
+                    ColorMatrix matrix = new ColorMatrix();
+                    matrix.setSaturation(0);
+                    ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                    imageButton_startingOn.setColorFilter(filter);
+                    imageButton_startingOff.setColorFilter(null);
+                }
+            }
+        });
+        imageButton_doorOn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(doorcode == 0){
+                    doorcode = 1;
+                    setUi("CA00003300000001");
+                    getSensor("CA00003300000001");
+                    tabletSendDataFrame("CA00003300000001");
+                }
+            }
+        });
 
-                if(isFinishing()){
+        imageButton_doorOff.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(doorcode == 1){
+                    doorcode = 0;
+                    setUi("CA00003300000000");
+                    getSensor("CA00003300000000");
+                    tabletSendDataFrame("CA00003300000000");
 
                 }
             }
         });
 
+        getStatus();
     }// end OnCreate
 
     class MovingCar extends Thread {
@@ -446,10 +506,15 @@ public class HomeActivity extends AppCompatActivity {
 
                         if (runData.equals("00000000")) {
                             // 주행 종료
-                            imageView_moving.setBackgroundColor(Color.GRAY);
+                            ColorMatrix matrix = new ColorMatrix();
+                            matrix.setSaturation(0);
+                            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                            imageView_moving.setImageResource(R.drawable.stopcar);
+                            imageView_moving.setColorFilter(filter);
+                            movingcar.stop(); // 오류가 날 수 있음
                         } else if (runData.equals("00000001")) {
                             // 주행 시작
-                            imageView_moving.setBackgroundColor(Color.GREEN);
+                            movingcar.start();
                         }
                     }
 
@@ -596,8 +661,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public void setUi(final String contents) {
 
-        final String contentsSensor = contents.substring(0, 4);
-        final int contentsData = Integer.parseInt(contents.substring(4));
+        final String contentsSensor = contents.substring(4, 8);
+        final int contentsData = Integer.parseInt(contents.substring(8));
 
         // contentsData 사용해서 UI 바꾸기!!
         runOnUiThread(new Runnable() {
@@ -605,7 +670,7 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 // 온도
                 if (contentsSensor.equals("0001")) {
-                    textView_temp.setText(contentsData/100); // 온도값 ex)15
+                    textView_temp.setText(contentsData/100 +"℃"); // 온도값 ex)15
                 }
                 // 충돌
                 else if (contentsSensor.equals("0002")) {
@@ -633,17 +698,22 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 // 에어컨
                 else if (contentsSensor.equals("0021")) {
-                    textView_targetTemp.setText(String.valueOf(contentsData)); //에어컨목표온도값 ex) 25
+                    textView_targetTemp.setText(String.valueOf(contentsData/100)); //에어컨목표온도값 ex) 25
                 }
                 // 시동
                 else if (contentsSensor.equals("0031")) {
-                    if (String.valueOf(contentsData).equals("0")) { // 시동여부 ex)1,0
+                    if (String.valueOf(contentsData).equals("1")) { // 시동여부 ex)1,0
+                        startingcode = 1;
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                        imageButton_starting.setColorFilter(filter);
+                        imageButton_startingOff.setColorFilter(filter);
                     } else if(String.valueOf(contentsData).equals("0")){
-                        imageButton_starting.setColorFilter(null);
+                        startingcode = 0;
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageButton_startingOn.setColorFilter(filter);
                     }
                 }
                 // 주행
@@ -655,13 +725,23 @@ public class HomeActivity extends AppCompatActivity {
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setColorFilter(filter);
-//                            imageView_moving.setColorFilter(null);
                     }
 
                     //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
                 }
                 // 문
                 else if (contentsSensor.equals("0033")) {
+                    if (String.valueOf(contentsData).equals("1")) { // 시동여부 ex)1,0
+                        doorcode = 1;
+                        imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
+                        imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
+                        imageButton_doorOn.setColorFilter(null);
+                    } else if(String.valueOf(contentsData).equals("0")){
+                        doorcode = 0;
+                        imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
+                        imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
+                        imageButton_doorOff.setColorFilter(null);
+                    }
                     //String.valueOf(contentsData) 문  ex)1,0
                 }
             }
@@ -843,6 +923,122 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+
+
+        public void getStatus(){
+            String url = "http://" + ip + "/webServer/getstatus.mc";
+            url += "?carnum=" + carnum;
+            getStatusAsync = new GetStatusAsync();
+            getStatusAsync.execute(url);
+        }
+
+    // 태블릿 켤 때 db에서 정보를 가져와 오류를 방지한다
+    class GetStatusAsync extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(HomeActivity.this);
+            progressDialog.setTitle("자동차 정보 조회 중 ...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String url = strings[0];
+            String result = HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            progressDialog.dismiss();
+            JSONArray ja = null;
+            try {
+                ja = new JSONArray(s);
+                for (int i = 0; i < ja.length(); i++) {
+                    JSONObject jo = ja.getJSONObject(i);
+
+                    String starting = jo.getString("starting");
+                    if(starting.equals("1")){
+                        startingcode = 1;
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageButton_startingOff.setColorFilter(filter);
+                    } else if(starting.equals("0")) {
+                        startingcode = 0;
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageButton_startingOn.setColorFilter(filter);
+                    }
+                    String door = jo.getString("door");
+                    if(door.equals("1")){
+                        doorcode = 1;
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageButton_doorOff.setColorFilter(filter);
+                        imageButton_doorOn.setImageResource(R.drawable.dooropenimgg);
+                        imageButton_doorOff.setImageResource(R.drawable.doorcloseimg);
+                    } else if(door.equals("0")){
+                        doorcode = 0;
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageButton_doorOn.setColorFilter(filter);
+                        imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
+                        imageButton_doorOn.setImageResource(R.drawable.doorcloseimg);
+                    }
+                    String moving = jo.getString("moving");
+                    if(moving.equals("1")){
+                        movingcar.start();
+                    }else if(moving.equals("0")){ // 잘 작동되는지 확인할 것
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageView_moving.setImageResource(R.drawable.stopcar);
+                        imageView_moving.setColorFilter(filter);
+                    }
+                    String oil = jo.getString("fuel");
+                    textView_oil.setText(oil+" L");
+                    String maxoil = jo.getString("fuelmax");
+                    textView_maxoil.setText(maxoil+"L");
+                    String temper = jo.getString("temper");
+                    textView_temp.setText(temper+"℃");
+                    String aircon = jo.getString("aircon");
+                    textView_targetTemp.setText(aircon);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+    // 속도
+    public void getVelocity() throws InterruptedException {
+//            주행 시작
+        Random r = new Random();
+        int v = 0;
+        while(true){
+            if(Integer.parseInt(textView_velocity.getText().toString())<30){
+                v = v + r.nextInt(5);
+                textView_velocity.setText(v);
+                Thread.sleep(100);
+            }
+        }
+
+    }
+    public void tire(){
+
+    }
+    public void fuel(){
+
+    }
 
     }
 
