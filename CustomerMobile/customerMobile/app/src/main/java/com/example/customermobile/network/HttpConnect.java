@@ -19,7 +19,7 @@ public class HttpConnect {
         try{
             url = new URL(urlstr);
             hcon = (HttpURLConnection)url.openConnection();
-            hcon.setConnectTimeout(10000);
+            hcon.setConnectTimeout(3000);
             hcon.setRequestMethod("GET");
             is = new BufferedInputStream(hcon.getInputStream());
             Log.d("[Log]", "is: ");

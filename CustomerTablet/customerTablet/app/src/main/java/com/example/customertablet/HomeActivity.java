@@ -20,6 +20,7 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -35,13 +36,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.df.DataFrame;
 import com.example.customertablet.network.HttpConnect;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.vo.CarSensorVO;
-import com.vo.CarVO;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -57,8 +58,7 @@ import static com.example.customertablet.MainActivity.ip;
 
 public class HomeActivity extends AppCompatActivity {
 
-
-    ImageButton imageButton_control, imageButton_map, imageButton_setting, imageButton_tempUp, imageButton_tempDown;
+    ImageButton imageButton_control, imageButton_map, imageButton_setting, imageButton_tempUp, imageButton_tempDown, imageButton_starting;
     TextView textView_velocity, textView_oil, textView_heartbeat;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
     ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_starting, imageView_moving, imageView_heartbeat;
@@ -82,23 +82,11 @@ public class HomeActivity extends AppCompatActivity {
 
     NotificationManager manager; // FCM을 위한 NotificationManager
 
-    CarSensorVO carsensor;
-    CarVO car;
-
     // 무게 관련 변수
     int initialLoad; //초기 무게
     ArrayList<Integer> loadDatas = new ArrayList<>(); // 주행중 데이터 저장 ArrayLis
     double avgLoad; // 평균 무게
     private int dialogLoad = 1; // 적재물 낙하 AlertDialog의 flag
-
-
-    public CarVO getCar() {
-        return car;
-    }
-
-    public void setCar(CarVO car) {
-        this.car = car;
-    }
 
     SharedPreferences sp;
     String carnum;
@@ -111,6 +99,9 @@ public class HomeActivity extends AppCompatActivity {
     HeartbeatThread hthread;
     MovingCar movingcar;
     MoveHandler mhandler;
+
+    int targetTemp;
+    TemperTimer temperTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +122,7 @@ public class HomeActivity extends AppCompatActivity {
         textView_address = findViewById(R.id.textView_address);
         textView_todayDate = findViewById(R.id.textView_todayDate);
         textView_weather = findViewById(R.id.textView_weather);
+        textView_heartbeat = findViewById(R.id.textView_heartbeat);
 
         imageButton_control = findViewById(R.id.imageButton_control);
         imageButton_map = findViewById(R.id.imageButton_map);
@@ -144,9 +136,13 @@ public class HomeActivity extends AppCompatActivity {
         imageView_rltire = findViewById(R.id.imageView_rlTire);
         imageView_door = findViewById(R.id.imageView_door);
         imageView_weather = findViewById(R.id.imageView_weather);
-        imageView_starting = findViewById(R.id.imageView_starting);
+        imageButton_starting = findViewById(R.id.imageButton_starting);
         imageView_moving = findViewById(R.id.imageView_moving);
-        textView_heartbeat = findViewById(R.id.textView_heartbeat);
+        imageView_heartbeat = findViewById(R.id.imageView_heartbeat);
+        //gif 추가
+        GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(imageView_heartbeat);
+        Glide.with(this).load(R.drawable.heartbeat).into(gifImage);
+
         getSupportActionBar().hide(); // 화면 확보를 위해 ActionBar 제거
 //         FCM사용 (앱이 중단되어 있을 때 기본적으로 title,body값으로 푸시!!)
         FirebaseMessaging.getInstance().subscribeToTopic("car"). //구독, 이거랑 토큰으로 원하는 기능 설정하기(파이널 때, db 활용)
@@ -206,8 +202,52 @@ public class HomeActivity extends AppCompatActivity {
 //        };
 //        timer.schedule(heartbeatTT,1000,3000); // 어떤 함수를 1 초 이후에 시작하고 3 초마다 실행한다
 //        필요한 부분에 이 함수 넣으면 됨
+        targetTemp = Integer.parseInt(textView_targetTemp.getText().toString());
 
-    } // end OnCreate
+        temperTimer = new TemperTimer(3000, 1000);
+
+        imageButton_tempUp.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                targetTemp = targetTemp + 1;
+
+                if(targetTemp > 30){
+                    Toast.makeText(HomeActivity.this,"30도 이하로 설정해주세요!",Toast.LENGTH_SHORT).show();
+                }else{
+                    textView_targetTemp.setText(String.valueOf(targetTemp));
+                    temperTimer.cancel();
+                    temperTimer.start();
+            }
+        }
+    });
+        imageButton_tempDown.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                targetTemp = targetTemp -1;
+
+                if(targetTemp < 18){
+                    Toast.makeText(HomeActivity.this,"18도 이상으로 설정해주세요!",Toast.LENGTH_SHORT).show();
+                }else{
+                    textView_targetTemp.setText(String.valueOf(targetTemp));
+                    temperTimer.cancel();
+                    temperTimer.start();
+                }
+            }
+        });
+
+        imageButton_starting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(isFinishing()){
+
+                }
+            }
+        });
+
+    }// end OnCreate
 
     class MovingCar extends Thread {
         public void run() {
@@ -255,13 +295,12 @@ public class HomeActivity extends AppCompatActivity {
     */
 // 스레드 클래스 생성
     class HeartbeatThread extends Thread {
-        int value = 100;
+        int value =90;
         boolean running = false;
-
+        final Bundle bundle = new Bundle();
         public void run() {
             running = true;
             while (running) {
-                final Bundle bundle = new Bundle();
                 Random r = new Random();
                 int a = r.nextInt(2);
                 if (a == 0) {
@@ -314,13 +353,36 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    textView_heartbeat.setText(value + "");
+                    textView_heartbeat.setText(value+"");
                 }
             });
 
         }
     } // 심장박동 end
 
+    // 온도설정을 위한 타이머
+    class TemperTimer extends CountDownTimer
+    {
+        public TemperTimer(long millisInFuture, long countDownInterval)
+        {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            setUi("CA0000210000"+String.valueOf(targetTemp)+"00");
+            getSensor("CA0000210000"+String.valueOf(targetTemp)+"00");
+            tabletSendDataFrame("CA0000210000"+String.valueOf(targetTemp)+"00");
+
+            Toast t = Toast.makeText(HomeActivity.this,"목표온도가 "+targetTemp+"로 변경됩니다!",Toast.LENGTH_SHORT);
+            t.show();
+        }
+    }
 
     public void sendfcm(String contents) {
         String urlstr = "http://" + ip + "/webServer/sendfcm.mc";
@@ -347,10 +409,9 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
+            //setUi(input.getContents());
         }
     }
-
 
     class Receiver extends Thread {
         Socket socket;
@@ -377,12 +438,11 @@ public class HomeActivity extends AppCompatActivity {
 
                     setUi(input.getContents());
 
-                    if (input.getContents().substring(0, 4).equals("0002")
-                            || input.getContents().substring(0, 4).equals("0003")
-                            || input.getContents().substring(0, 4).equals("0004")) {
+                    if (input.getContents().substring(4, 8).equals("0002")
+                            || input.getContents().substring(4, 8).equals("0003")
+                            || input.getContents().substring(4, 8).equals("0004")) {
 
                         sendfcm(input.getContents());
-
                     }
 
                     // 받은 데이터가 주행 데이터인 경우
@@ -398,7 +458,6 @@ public class HomeActivity extends AppCompatActivity {
                             imageView_moving.setBackgroundColor(Color.GREEN);
                         }
                     }
-
 
                     // 받은 데이터가 무게 데이터인 경우 수행
                     if (input.getContents().substring(4, 8).equals("0005")) {
@@ -470,22 +529,13 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
-
-                    if (input.getContents().equals("온도데이터 코드")) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                textView_temp.setText(input.getContents());
-                            }
-                        });
-                    }
-
                     // 받은 DataFrame을 웹서버로 HTTP 전송
                     // call AsynTask to perform network operation on separate thread
+
                     String url = "http://" + ip + "/webServer/getTabletSensor.mc";
                     url += "?carnum=" + carnum + "&contents=" + input.getContents();
                     httpAsyncTask = new HttpAsyncTask();
-                    // Thread 안에서 Thread가 돌아갈 땐 Handler을 사용해야 한다
+                    // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
                     Handler mHandler = new Handler(Looper.getMainLooper());
                     final String finalUrl = url;
                     mHandler.post(new Runnable() {
@@ -493,8 +543,7 @@ public class HomeActivity extends AppCompatActivity {
                         public void run() {
                             httpAsyncTask.execute(finalUrl);
                         }
-                    }); // 1000으로 해야 돌아간다...
-
+                    });
                 } catch (Exception e) {
                     maps.remove(socket.getInetAddress().toString());
                     Log.d("[Server]", socket.getInetAddress() + " Exit..." + timeNow);
@@ -503,7 +552,6 @@ public class HomeActivity extends AppCompatActivity {
                     break;
                 }
             } // end while
-
             try {
                 if (oi != null) {
                     Log.d("[Server]", "ObjectInputStream Closed ..");
@@ -553,14 +601,11 @@ public class HomeActivity extends AppCompatActivity {
     } // End TCP/IP 통신 Code
 
 
-    private void _runOnUiThread(Runnable runnable) {
-        handler.post(runnable);
-    }
 
     public void setUi(final String contents) {
 
-        final String contentsSensor = contents.substring(0, 4);
-        final int contentsData = Integer.parseInt(contents.substring(4));
+        final String contentsSensor = contents.substring(4, 8);
+        final int contentsData = Integer.parseInt(contents.substring(8));
 
         // contentsData 사용해서 UI 바꾸기!!
         runOnUiThread(new Runnable() {
@@ -568,7 +613,7 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 // 온도
                 if (contentsSensor.equals("0001")) {
-                    textView_temp.setText(contentsData / 100); // 온도값 ex)15
+                    textView_temp.setText(contentsData/100); // 온도값 ex)15
                 }
                 // 충돌
                 else if (contentsSensor.equals("0002")) {
@@ -601,14 +646,19 @@ public class HomeActivity extends AppCompatActivity {
                 // 시동
                 else if (contentsSensor.equals("0031")) {
                     if (String.valueOf(contentsData).equals("1")) { // 시동여부 ex)1,0
-
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageButton_starting.setColorFilter(filter);
+                    } else if(String.valueOf(contentsData).equals("0")){
+                        imageButton_starting.setColorFilter(null);
                     }
                 }
                 // 주행
                 else if (contentsSensor.equals("0032")) {
-                    if (String.valueOf(contentsData).equals("0")) { // 주행여부 ex)1,0
-//                            movingcar.start();
-                    } else {
+                    if (String.valueOf(contentsData).equals("1")) { // 주행여부 ex)1,0
+                            movingcar.start();
+                    } else if(String.valueOf(contentsData).equals("0")){
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
@@ -625,6 +675,10 @@ public class HomeActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void _runOnUiThread(Runnable runnable) {
+        handler.post(runnable);
     }
 
     /*
@@ -659,7 +713,6 @@ public class HomeActivity extends AppCompatActivity {
         }// End HTTP 통신 Code
     }
 
-
     public void startServer() throws Exception {
         serverSocket = new ServerSocket(serverPort);
         Log.d("[Server]", "Start Server...");
@@ -681,8 +734,8 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         };
+        new Thread(r).start();
     }
-
 
     public void sendDataFrame(DataFrame df) {
         try {
@@ -693,6 +746,17 @@ public class HomeActivity extends AppCompatActivity {
             sender.start();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    // 제어한 내용을 센서 측으로 tcp/ip 통신으로 내려보내줌
+    public void tabletSendDataFrame(String contents){
+        if (contents.length() != 4) {
+            DataFrame df = new DataFrame();
+            df.setIp(ip);
+            df.setSender("Tablet");
+            df.setContents(contents);
+            sendDataFrame(df);
         }
     }
 
@@ -713,6 +777,82 @@ public class HomeActivity extends AppCompatActivity {
 
                 if (contents.length() != 4) {
                     DataFrame df = new DataFrame();
+
+
+
+//                    //////////////////////
+//                    Log.d("[TAG]","sen:"+contents.substring(12,14));
+//                    if(contents.substring(12,14).equals("21")){
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+//                        builder.setTitle("경고알람");
+//                        builder.setMessage("충돌이 감지되었습니다!");
+//
+//                        //OK을 누르면 종료
+//                        builder.setPositiveButton("취소", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        });
+//                        //NO를 누르면 그대로
+//                        builder.setNegativeButton("신고", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Toast.makeText(getApplicationContext(), "119에 신고되었습니다.", Toast.LENGTH_LONG).show();
+//                            }
+//                        });
+//
+//                        AlertDialog dialog = builder.create();
+//                        dialog.show();
+//                    }else if(contents.substring(12,14).equals("22")){
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+//                        builder.setTitle("경고알람");
+//                        builder.setMessage("졸음이 감지되었습니다!");
+//
+//                        //OK을 누르면 종료
+//                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        });
+//                        //NO를 누르면 그대로
+//                        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//                            }
+//                        });
+//
+//                        AlertDialog dialog = builder.create();
+//                        dialog.show();
+//                    }else if(contents.substring(12,14).equals("23")){
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+//                        builder.setTitle("경고알람");
+//                        builder.setMessage("적재물 낙하가 감지되었습니다!");
+//
+//                        //OK을 누르면 종료
+//                        builder.setPositiveButton("취소", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                            }
+//                        });
+//                        //NO를 누르면 그대로
+//                        builder.setNegativeButton("신고", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Toast.makeText(getApplicationContext(), "적재물 낙하가 신고되었습니다.", Toast.LENGTH_LONG).show();
+//                            }
+//                        });
+//
+//                        AlertDialog dialog = builder.create();
+//                        dialog.show();
+//                    }
+//                    //////////////////////
+
+
+
+
                     // 연결된 IP로 df를 보낸다
                     try {
                         df.setIp(socket.getInetAddress().toString().substring(1));
@@ -724,10 +864,10 @@ public class HomeActivity extends AppCompatActivity {
                     df.setContents(contents);
                     Log.d("[Server]", df.toString());
                     sendDataFrame(df);
-                }
 
-                // 모바일에서 제어시 UI변경
-                setUi(contents);
+                    // 모바일에서 제어시 UI변경
+                    setUi(contents);
+                }
 
 
                 Log.d("[Server]", carid);
@@ -744,39 +884,55 @@ public class HomeActivity extends AppCompatActivity {
                     builder = new NotificationCompat.Builder(context);
                 }
 
-                Intent intent1 = new Intent(context, HomeActivity.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(
-                        context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
-                );
-                intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                builder.setAutoCancel(true);
-                builder.setContentIntent(pendingIntent);
+                    Intent intent1 = new Intent(context, HomeActivity.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(
+                            context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+                    intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    builder.setAutoCancel(true);
+                    builder.setContentIntent(pendingIntent);
 
-                builder.setContentTitle(title);
-                builder.setContentText(carid + " " + contents);
+                    builder.setContentTitle(title);
+                    builder.setContentText(carid + " " + contents);
 
 
-                if (carid.equals("verify")) {
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
-                    alertDialog.setTitle(Integer.parseInt(contents) + "")
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                }
-                            });
-                    alertDialog.create().show();
-                    builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
-                    Notification noti = builder.build();
-                } else {
-                    builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
-                    Notification noti = builder.build();
-                    manager.notify(1, noti);
-                }
+                    if (carid.equals("verify")) {
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+                        alertDialog.setTitle(Integer.parseInt(contents) + "")
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                });
+                        alertDialog.create().show();
+                        builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
+                        Notification noti = builder.build();
+                    } else {
+                        builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
+                        Notification noti = builder.build();
+                        manager.notify(1, noti);
+                    }
 
 
             }
         }
     };
 
-}
+        // 제어한 센서 정보를 DB에 저장
+        public void getSensor(String contents){
+            String url = "http://" + ip + "/webServer/getTabletSensor.mc";
+            url += "?carnum=" + carnum + "&contents=" + contents;
+            httpAsyncTask = new HttpAsyncTask();
+            // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
+            Handler mHandler = new Handler(Looper.getMainLooper());
+            final String finalUrl = url;
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    httpAsyncTask.execute(finalUrl);
+                }
+            });
+        }
+
+    }
 

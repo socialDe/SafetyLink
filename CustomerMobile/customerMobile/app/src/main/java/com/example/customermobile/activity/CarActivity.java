@@ -584,12 +584,12 @@ public class CarActivity extends AppCompatActivity {
                 // FCM 분기
                 if(contents.substring(4,8).equals("0004")){
                     if(contents.substring(contents.length()-1,contents.length()).equals("1")){
-                        builder.setContentTitle("\'"+whereFcmCarName + "\' " + "에서" + "영유아가 감지되었습니다");
+                        builder.setContentTitle("\'"+whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다");
                     }
                 } else if(contents.substring(4,8).equals("0002") || contents.equals("0003")){
                     if(contents.substring(contents.length()-1,contents.length()).equals("1") ||
                             contents.substring(contents.length()-1,contents.length()).equals("3")){
-                        builder.setContentTitle("\'"+ whereFcmCarName + "\' " + "에서" + "충돌이 발생했습니다");
+                        builder.setContentTitle("\'"+ whereFcmCarName + "\'" + "에서 " + "충돌이 발생했습니다");
                     }
                 }
 

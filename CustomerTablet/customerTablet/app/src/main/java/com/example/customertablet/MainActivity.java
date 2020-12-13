@@ -214,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setTitle("차량 등록");
                 builder.setMessage("차량이 등록되었습니다.");
 
+                sp = getSharedPreferences("car", MODE_PRIVATE);
                 SharedPreferences.Editor edit = sp.edit();
                 edit.putString("caryear", String.valueOf(car.getCaryear()));
                 edit.putString("carmodel", car.getCarmodel());

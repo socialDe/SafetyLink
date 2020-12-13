@@ -214,8 +214,7 @@ public class Fragment1 extends Fragment {
     // 온도설정을 위한 타이머
     class TemperTimer extends CountDownTimer
     {
-        public TemperTimer(long millisInFuture, long countDownInterval)
-        {
+        public TemperTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -296,8 +295,10 @@ public class Fragment1 extends Fragment {
         }
         textView_temper.setText(String.valueOf(temper));
 
-
-        Log.d("[TAG]", "setCarSensorData OK"+" "+fuel+" "+starting+" "+door+" "+temper);
+        textView_targetTemper.setText(aircon);
+        // 현재 타겟온도 가져오기
+        targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
+        Log.d("[TAG]", "setCarSensorData OK"+" "+fuel+" "+starting+" "+door+" "+temper+" "+aircon);
 
     }
 

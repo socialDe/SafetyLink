@@ -336,7 +336,7 @@ public class CarController {
 			
 			int carid = cbiz.caridfromnumber(carnum).getCarid();
 			
-			CarSensorVO carsensor = new CarSensorVO(carid, 0, "0", "0", 0, 0, 50, 0, "0", "0", "0", "0", "0", 0, 0);
+			CarSensorVO carsensor = new CarSensorVO(carid, 0, "0", "0", 0, 50, 50, 0, "0", "0", "25", "0", "0", 0, 0);
 			sbiz.register(carsensor);
 		} catch (Exception e) {
 			out.print("fail");
@@ -499,7 +499,7 @@ public class CarController {
 	
 	// 차량 검색 후 user와 연동하는 확인 버튼
 	@RequestMapping("/usercarregisterimpl.mc")
-	public void getTabletSensor(HttpServletRequest request) throws Exception {
+	public void usercarregisterimpl(HttpServletRequest request) throws Exception {
 		String userid = request.getParameter("userid");
 		String carnum = request.getParameter("carnum");
 		String carname = request.getParameter("carname");

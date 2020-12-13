@@ -35,6 +35,7 @@ public class TabletController {
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
 	Calendar time = Calendar.getInstance();
 	String timenow = format.format(time.getTime());
+		
 	@RequestMapping("/getTabletSensor.mc")
 	public void androidWithRequest(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		String carnum = request.getParameter("carnum");
@@ -60,7 +61,7 @@ public class TabletController {
 		int contentsData = Integer.parseInt(contents.substring(8));
 
 		if (contentsSensor.equals("0001")) {
-			cs.setTemper(contentsData / 100);
+			cs.setTemper(contentsData/100);
 		} else if (contentsSensor.equals("0002")) {
 			cs.setCrash(String.valueOf(contentsData));
 		} else if (contentsSensor.equals("0003")) {
@@ -78,7 +79,6 @@ public class TabletController {
 			cs.setAircon(String.valueOf(contentsData/100));
 		} else if (contentsSensor.equals("0031")) {
 			cs.setStarting(String.valueOf(contentsData));
-
 		} else if (contentsSensor.equals("0032")) {
 			cs.setMoving(String.valueOf(contentsData));
 			cs.setMovingstarttime(time.getTime());
