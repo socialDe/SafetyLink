@@ -25,14 +25,14 @@ import com.vo.CarVO;
 
 @Controller
 public class TabletController {
-	
-	@Resource(name="cbiz")
-	Biz<Integer,String,CarVO> cbiz;
-	@Resource(name="sbiz")
-	Biz<Integer,String,CarSensorVO> sbiz;
-	
+
+	@Resource(name = "cbiz")
+	Biz<Integer, String, CarVO> cbiz;
+	@Resource(name = "sbiz")
+	Biz<Integer, String, CarSensorVO> sbiz;
+
 	// 현재 시간 계산
-	SimpleDateFormat format = new SimpleDateFormat ("yyyy-MM-dd/HH:mm:ss");
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
 	Calendar time = Calendar.getInstance();
 	String timenow = format.format(time.getTime());
 		
@@ -42,7 +42,7 @@ public class TabletController {
 		String contents = request.getParameter("contents");
 
 		int carid = cbiz.caridfromnumber(carnum).getCarid();
-		
+
 		CarSensorVO cs = null;
 		try {
 			cs = sbiz.get(carid);
@@ -50,46 +50,42 @@ public class TabletController {
 			e.printStackTrace();
 		}
 
-		storeContents(cs,contents);	      
-	      
+		storeContents(cs, contents);
+
 		sbiz.modify(cs);
 	}
-	
-	
-    public void storeContents(CarSensorVO cs,String contents) {
-    	
-        String contentsSensor = contents.substring(4,8);
-        int contentsData = Integer.parseInt(contents.substring(8));
 
-    	
-        if(contentsSensor.equals("0001")) {
-           cs.setTemper(contentsData/100);
-        }else if(contentsSensor.equals("0002")) {
-           cs.setCrash(String.valueOf(contentsData));
-        }else if(contentsSensor.equals("0003")) {
-           cs.setCrash(String.valueOf(contentsData));
-        }else if(contentsSensor.equals("0004")) {
-           cs.setPirfront(String.valueOf(contentsData));
-           cs.setPirrear(String.valueOf(contentsData));
-        }else if(contentsSensor.equals("0005")) {
-           cs.setFreight(contentsData);
-        }else if(contentsSensor.equals("0006")) {
-           cs.setHeartbeat(contentsData);
-        }else if(contentsSensor.equals("0007")) {
-           cs.setFuel(contentsData);
-        }else if(contentsSensor.equals("0021")) {
-           cs.setAircon(String.valueOf(contentsData));
-        }else if(contentsSensor.equals("0031")) {
-           cs.setMoving(String.valueOf(contentsData));
-           cs.setMovingstarttime(time.getTime());
-        }else if(contentsSensor.equals("0032")) {
-           cs.setStarting(String.valueOf(contentsData));
-        }
-        
-        System.out.println(cs);
-        
-     }
-    
-    
-	
+	public void storeContents(CarSensorVO cs, String contents) {
+
+		String contentsSensor = contents.substring(4, 8);
+		int contentsData = Integer.parseInt(contents.substring(8));
+
+		if (contentsSensor.equals("0001")) {
+			cs.setTemper(contentsData/100);
+		} else if (contentsSensor.equals("0002")) {
+			cs.setCrash(String.valueOf(contentsData));
+		} else if (contentsSensor.equals("0003")) {
+			cs.setCrash(String.valueOf(contentsData));
+		} else if (contentsSensor.equals("0004")) {
+			cs.setPirfront(String.valueOf(contentsData));
+			cs.setPirrear(String.valueOf(contentsData));
+		} else if (contentsSensor.equals("0005")) {
+			cs.setFreight(contentsData);
+		} else if (contentsSensor.equals("0006")) {
+			cs.setHeartbeat(contentsData);
+		} else if (contentsSensor.equals("0007")) {
+			cs.setFuel(contentsData);
+		} else if (contentsSensor.equals("0021")) {
+			cs.setAircon(String.valueOf(contentsData/100));
+		} else if (contentsSensor.equals("0031")) {
+			cs.setStarting(String.valueOf(contentsData));
+		} else if (contentsSensor.equals("0032")) {
+			cs.setMoving(String.valueOf(contentsData));
+			cs.setMovingstarttime(time.getTime());
+		}
+
+		System.out.println(cs);
+
+	}
+
 }

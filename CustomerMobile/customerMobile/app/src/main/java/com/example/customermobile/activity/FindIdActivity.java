@@ -113,11 +113,11 @@ public class FindIdActivity extends AppCompatActivity {
 
     public void clickbt(View v){
         // 버튼 클릭시 키보드 숨김
-        InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        //InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        //manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         if(v.getId() == R.id.button_idFindOk){
-            if(findnumber){
+//            if(findnumber){
                 // editText -> String
                 String name = edit_idFindName.getText().toString();
                 String phone = edit_idFindPhone1.getText().toString() + edit_idFindPhone2.getText().toString() + edit_idFindPhone3.getText().toString();
@@ -127,19 +127,19 @@ public class FindIdActivity extends AppCompatActivity {
                 url += "?name="+ name +"&phone=" + phone;
                 httpAsyncTask = new HttpAsyncTask();
                 httpAsyncTask.execute(url);
-            }else {
+//            }else {
                 // 본인확인 인증을 하지 않았을 경우
-                AlertDialog.Builder builder = new AlertDialog.Builder(FindIdActivity.this);
-                builder.setTitle("아이디 찾기");
-                builder.setMessage("인증번호를 확인해주십시오");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        edit_idFindNumber.requestFocus();
-                    }
-                });
-                builder.show();
-            }
+//                AlertDialog.Builder builder = new AlertDialog.Builder(FindIdActivity.this);
+//                builder.setTitle("아이디 찾기");
+//                builder.setMessage("인증번호를 확인해주십시오");
+//                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        edit_idFindNumber.requestFocus();
+//                    }
+//                });
+//                builder.show();
+//            }
         }else if(v.getId() == R.id.button_idFindCancel){
             // 아이디 찾기 취소
             // 액티비티 종료

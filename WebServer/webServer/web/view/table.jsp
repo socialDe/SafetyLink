@@ -21,7 +21,14 @@
     <link href="view/assets/css/custom-styles.css" rel="stylesheet" />
     <!-- Google Fonts-->
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
-    <link rel="stylesheet" href="view/assets/js/Lightweight-Chart/cssCharts.css"> 
+    <link rel="stylesheet" href="view/assets/js/Lightweight-Chart/cssCharts.css">
+    
+    <style>
+    #dataTables-example{
+    	text-align: center;
+    	margin: auto;
+    }
+    </style> 
 </head>
 <body>
     <div id="wrapper">

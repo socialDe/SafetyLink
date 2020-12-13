@@ -136,8 +136,8 @@ public class CarController {
 		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
 		
-		String contentsSensor = contents.substring(0,4);
-		int contentsData = Integer.parseInt(contents.substring(4));
+		String contentsSensor = contents.substring(4,8);
+		int contentsData = Integer.parseInt(contents.substring(8));
 
 		System.out.println("carnum:"+carnum + " " + "contents:"+contents);
 
@@ -218,7 +218,8 @@ public class CarController {
         }
         // 에어컨
         else if(contentsSensor.equals("0021")) {
-        	dbcarsensor.setAircon(String.valueOf(contentsData));
+        	System.out.println("Aircon contentsData:"+contentsData);
+        	dbcarsensor.setAircon(String.valueOf(Math.round(contentsData/100)));
             //String.valueOf(contentsData) 에어컨목표온도값 ex) 25
         }
         // 시동
@@ -477,7 +478,7 @@ public class CarController {
 	
 	// 차량 검색 후 user와 연동하는 확인 버튼
 	@RequestMapping("/usercarregisterimpl.mc")
-	public void getTabletSensor(HttpServletRequest request) throws Exception {
+	public void usercarregisterimpl(HttpServletRequest request) throws Exception {
 		String userid = request.getParameter("userid");
 		String carnum = request.getParameter("carnum");
 		String carname = request.getParameter("carname");

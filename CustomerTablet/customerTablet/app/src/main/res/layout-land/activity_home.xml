@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="clip_horizontal|fill|center_vertical"
+    android:background="#00FFFFFF"
     tools:context=".HomeActivity">
 
   <LinearLayout
@@ -19,24 +20,56 @@
 
       <ImageButton
           android:id="@+id/imageButton_control"
+          style="@style/Widget.AppCompat.ImageButton"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_weight="1"
+          android:background="#FFFFFF"
+          android:scaleType="center"
+          android:visibility="visible"
           app:srcCompat="@drawable/car_control" />
+
+      <View
+          android:id="@+id/divider2"
+          android:layout_width="match_parent"
+          android:layout_height="5dp"
+          android:layout_gravity="center"
+          android:background="?android:attr/listDivider"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
       <ImageButton
           android:id="@+id/imageButton_map"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_weight="1"
-          app:srcCompat="@drawable/car_map" />
+          android:background="#FFFFFF"
+          android:scaleType="centerInside"
+          app:srcCompat="@drawable/car_map"
+          tools:visibility="visible" />
+
+      <View
+          android:id="@+id/divider3"
+          android:layout_width="match_parent"
+          android:layout_height="5dp"
+          android:layout_gravity="center"
+          android:background="?android:attr/listDivider"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
 
       <ImageButton
           android:id="@+id/imageButton_setting"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_weight="1"
+          android:background="#FFFFFF"
+          android:scaleType="centerInside"
           app:srcCompat="@drawable/car_setting" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -54,10 +87,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginRight="25dp"
             android:layout_marginBottom="30dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
           <ImageView
               android:id="@+id/imageView_velocity"
@@ -66,36 +98,43 @@
               android:layout_weight="1"
               app:srcCompat="@drawable/car_velocity" />
 
-          <TextView
-              android:id="@+id/textView_velocity"
+          <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center"
-              android:text="53km/h"
-              android:textColor="#000000"
-              android:textSize="25sp" />
+              android:layout_weight="1"
+              android:orientation="vertical">
 
-          <TextView
-              android:id="@+id/textView_velocity2"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center"
-              android:text="속도"
-              android:textColor="#000000"
-              android:textSize="25sp" />
+            <TextView
+                android:id="@+id/textView_velocity2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="속도"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/textView_velocity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="53km/h"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+          </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:layout_marginBottom="30dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
           <ImageView
               android:id="@+id/imageView_oil"
@@ -104,63 +143,105 @@
               android:layout_weight="1"
               app:srcCompat="@drawable/car_oil" />
 
-          <TextView
-              android:id="@+id/textView_oil"
+          <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center"
-              android:text="32.1L / 50L"
-              android:textColor="#000000"
-              android:textSize="25sp" />
+              android:layout_weight="1"
+              android:orientation="vertical">
 
-          <TextView
-              android:id="@+id/textView_oil2"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center"
-              android:text="연료량"
-              android:textColor="#000000"
-              android:textSize="25sp" />
+            <TextView
+                android:id="@+id/textView_oil2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="연료량"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView_oil"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="32.1L"
+                  android:textColor="#000000"
+                  android:textSize="25sp" />
+
+              <TextView
+                  android:id="@+id/textView_oil3"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2.7"
+                  android:gravity="center"
+                  android:text="/"
+                  android:textColor="#000000"
+                  android:textSize="35sp" />
+
+              <TextView
+                  android:id="@+id/textView_maxoil"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="50L"
+                  android:textColor="#000000"
+                  android:textSize="40sp" />
+            </LinearLayout>
+
+          </LinearLayout>
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="50dp"
+            android:layout_marginLeft="25dp"
             android:layout_marginRight="50dp"
             android:layout_marginBottom="30dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight="1">
 
           <ImageView
               android:id="@+id/imageView_heartbeat"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:layout_weight="1"
-              app:srcCompat="@drawable/car_hearbeat" />
+              android:background="#FFFFFF"
+              app:srcCompat="@drawable/heartbeat" />
 
-          <TextView
-              android:id="@+id/textView_heartbeat"
+          <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center"
-              android:text="070"
-              android:textColor="#000000"
-              android:textSize="25sp" />
+              android:layout_weight="1"
+              android:orientation="vertical">
 
-          <TextView
-              android:id="@+id/textView_heartbeat2"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_weight="2"
-              android:gravity="center"
-              android:text="BPM"
-              android:textColor="#000000"
-              android:textSize="25sp" />
+            <TextView
+                android:id="@+id/textView_heartbeat2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="BPM"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/textView_heartbeat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="070"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+          </LinearLayout>
 
         </LinearLayout>
       </LinearLayout>
@@ -174,17 +255,20 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView_car"
             android:layout_width="match_parent"
-            android:layout_height="371dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_marginLeft="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
             android:layout_weight="1"
             app:cardCornerRadius="20dp">
 
-          <androidx.constraintlayout.widget.ConstraintLayout
+          <androidx.constraintlayout.motion.widget.MotionLayout
+              android:id="@+id/constraintLayout2"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:background="#00FFFFFF"
+              app:layoutDescription="@xml/activity_home_xml_constraintlayout2_scene">
 
             <ImageView
                 android:id="@+id/imageView_car"
@@ -194,28 +278,30 @@
                 android:background="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.502"
+                app:layout_constraintHorizontal_bias="0.208"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.489"
                 app:srcCompat="@drawable/car" />
 
-            <ImageView
-                android:id="@+id/imageView_starting"
-                android:layout_width="225dp"
-                android:layout_height="112dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+            <ImageButton
+                android:id="@+id/imageButton_starting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#03000000"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView_car"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.258"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.923"
+                app:layout_constraintStart_toStartOf="@+id/imageView_car"
+                app:layout_constraintTop_toTopOf="@+id/imageView_car"
+                app:layout_constraintVertical_bias="0.14"
                 app:srcCompat="@drawable/poweron" />
 
             <ImageView
                 android:id="@+id/imageView_frTire"
                 android:layout_width="27dp"
                 android:layout_height="31dp"
-                android:layout_marginStart="124dp"
+                android:layout_marginStart="148dp"
                 android:layout_marginTop="48dp"
                 app:layout_constraintBottom_toTopOf="@+id/imageView4"
                 app:layout_constraintEnd_toStartOf="@+id/imageView6"
@@ -229,10 +315,10 @@
                 android:id="@+id/imageView_flTire"
                 android:layout_width="36dp"
                 android:layout_height="26dp"
-                android:layout_marginBottom="48dp"
+                android:layout_marginBottom="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.268"
+                app:layout_constraintHorizontal_bias="0.185"
                 app:layout_constraintStart_toStartOf="parent"
                 app:srcCompat="@android:drawable/presence_online" />
 
@@ -241,8 +327,8 @@
                 android:layout_width="27dp"
                 android:layout_height="31dp"
                 android:layout_marginTop="212dp"
-                android:layout_marginEnd="136dp"
-                android:layout_marginBottom="56dp"
+                android:layout_marginEnd="356dp"
+                android:layout_marginBottom="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.606"
@@ -257,24 +343,24 @@
                 android:layout_height="31dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.74"
+                app:layout_constraintHorizontal_bias="0.555"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.17"
+                app:layout_constraintVertical_bias="0.141"
                 app:srcCompat="@android:drawable/presence_online" />
 
             <ImageView
                 android:id="@+id/imageView_door"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="468dp"
+                android:layout_marginStart="664dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.497"
+                app:layout_constraintVertical_bias="0.926"
                 app:srcCompat="@drawable/dooropen" />
 
-          </androidx.constraintlayout.widget.ConstraintLayout>
+          </androidx.constraintlayout.motion.widget.MotionLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -296,82 +382,44 @@
               android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView_temp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="5"
-                android:textColor="#000000"
-                android:textSize="35sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.218" />
-
-            <TextView
                 android:id="@+id/textView_nowTemperText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="현재 온도"
                 android:textColor="#000000"
-                android:textSize="35sp"
+                android:textSize="50sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.416" />
+
+            <TextView
+                android:id="@+id/textView_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="5 ℃"
+                android:textColor="#000000"
+                android:textSize="35sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.218" />
 
             <View
                 android:id="@+id/divider"
                 android:layout_width="200dp"
                 android:layout_height="5dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="20sp"
+                android:layout_marginBottom="20sp"
                 android:background="?android:attr/listDivider"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/imageButton_tempUp"
-                android:layout_width="75dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/temperup" />
-
-            <TextView
-                android:id="@+id/textView_targetTemp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="5"
-                android:textColor="#000000"
-                android:textSize="35sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.218" />
-
-            <TextView
-                android:id="@+id/textView_C3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="℃"
-                android:textColor="#000000"
-                android:textSize="35sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.218" />
-
-            <ImageButton
-                android:id="@+id/imageButton_tempDown"
-                android:layout_width="75dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/temperdown" />
 
             <TextView
                 android:id="@+id/textView_targetTemperText"
@@ -385,6 +433,55 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.757" />
+
+            <ImageButton
+                android:id="@+id/imageButton_tempUp"
+                android:layout_width="75dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/temperup" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView_targetTemp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:text="5"
+                  android:textColor="#000000"
+                  android:textSize="35sp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintVertical_bias="0.218" />
+
+              <TextView
+                  android:id="@+id/textView_C3"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:layout_marginLeft="5dp"
+                  android:text="℃"
+                  android:textColor="#000000"
+                  android:textSize="35sp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintVertical_bias="0.218" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/imageButton_tempDown"
+                android:layout_width="75dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/temperdown" />
 
           </LinearLayout>
 
