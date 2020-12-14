@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="clip_horizontal|fill|center_vertical"
-    android:background="#00FFFFFF"
+    android:background="#FFFFFF"
     tools:context=".HomeActivity">
 
   <LinearLayout
@@ -108,21 +108,23 @@
                 android:id="@+id/textView_velocity2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="2"
                 android:gravity="center"
                 android:text="속도"
                 android:textColor="#000000"
-                android:textSize="25sp" />
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/textView_velocity"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
                 android:layout_weight="2"
                 android:gravity="center"
                 android:text="53km/h"
                 android:textColor="#000000"
-                android:textSize="25sp" />
+                android:textSize="35sp" />
 
           </LinearLayout>
 
@@ -154,11 +156,12 @@
                 android:id="@+id/textView_oil2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="2"
                 android:gravity="center"
                 android:text="연료량"
                 android:textColor="#000000"
-                android:textSize="25sp" />
+                android:textSize="40sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -170,21 +173,22 @@
                   android:id="@+id/textView_oil"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:layout_weight="2"
+                  android:layout_marginLeft="10dp"
+                  android:layout_weight="1"
                   android:gravity="center"
                   android:text="32.1L"
                   android:textColor="#000000"
-                  android:textSize="25sp" />
+                  android:textSize="40sp" />
 
               <TextView
                   android:id="@+id/textView_oil3"
                   android:layout_width="match_parent"
                   android:layout_height="match_parent"
-                  android:layout_weight="2.7"
+                  android:layout_weight="2.5"
                   android:gravity="center"
                   android:text="/"
                   android:textColor="#000000"
-                  android:textSize="35sp" />
+                  android:textSize="25sp" />
 
               <TextView
                   android:id="@+id/textView_maxoil"
@@ -194,7 +198,7 @@
                   android:gravity="center"
                   android:text="50L"
                   android:textColor="#000000"
-                  android:textSize="40sp" />
+                  android:textSize="25sp" />
             </LinearLayout>
 
           </LinearLayout>
@@ -231,7 +235,7 @@
                 android:gravity="center"
                 android:text="BPM"
                 android:textColor="#000000"
-                android:textSize="25sp" />
+                android:textSize="40sp" />
 
             <TextView
                 android:id="@+id/textView_heartbeat"
@@ -241,7 +245,7 @@
                 android:gravity="center"
                 android:text="070"
                 android:textColor="#000000"
-                android:textSize="25sp" />
+                android:textSize="40sp" />
           </LinearLayout>
 
         </LinearLayout>
@@ -264,12 +268,101 @@
             android:layout_weight="1"
             app:cardCornerRadius="20dp">
 
-          <androidx.constraintlayout.motion.widget.MotionLayout
+          <androidx.constraintlayout.widget.ConstraintLayout
               android:id="@+id/constraintLayout2"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#00FFFFFF"
-              app:layoutDescription="@xml/activity_home_xml_constraintlayout2_scene">
+              android:background="#00FFFFFF">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_doorOff"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.98">
+
+              <ImageButton
+                  android:id="@+id/imageButton_doorOff"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/doorcloseimg"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/doorcloseimg" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_doorOn"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.68">
+
+              <ImageButton
+                  android:id="@+id/imageButton_doorOn"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/dooropenimg"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/dooropenimg" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_startingOff"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.32">
+
+              <ImageButton
+                  android:id="@+id/imageButton_startingOff"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/startingoff"
+                  android:backgroundTint="#FFFEFE"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/startingoff" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_startingOn"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.029999971">
+
+              <ImageButton
+                  android:id="@+id/imageButton_startingOn"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/startingon"
+                  android:backgroundTint="#FFFEFE"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/startingon" />
+            </androidx.cardview.widget.CardView>
 
             <ImageView
                 android:id="@+id/imageView_car"
@@ -279,48 +372,34 @@
                 android:background="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.208"
+                app:layout_constraintHorizontal_bias="0.1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.489"
                 app:srcCompat="@drawable/car" />
 
-            <ImageButton
-                android:id="@+id/imageButton_starting"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#03000000"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView_car"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.923"
-                app:layout_constraintStart_toStartOf="@+id/imageView_car"
-                app:layout_constraintTop_toTopOf="@+id/imageView_car"
-                app:layout_constraintVertical_bias="0.14"
-                app:srcCompat="@drawable/poweron" />
-
             <ImageView
                 android:id="@+id/imageView_frTire"
                 android:layout_width="27dp"
                 android:layout_height="31dp"
-                android:layout_marginStart="148dp"
-                android:layout_marginTop="48dp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView4"
-                app:layout_constraintEnd_toStartOf="@+id/imageView6"
-                app:layout_constraintHorizontal_bias="0.006"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.19"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.218"
+                app:layout_constraintVertical_bias="0.141"
                 app:srcCompat="@android:drawable/presence_online" />
 
             <ImageView
                 android:id="@+id/imageView_flTire"
                 android:layout_width="36dp"
                 android:layout_height="26dp"
-                android:layout_marginBottom="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.185"
+                app:layout_constraintHorizontal_bias="0.192"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.866"
                 app:srcCompat="@android:drawable/presence_online" />
 
             <ImageView
@@ -328,14 +407,11 @@
                 android:layout_width="27dp"
                 android:layout_height="31dp"
                 android:layout_marginTop="212dp"
-                android:layout_marginEnd="356dp"
-                android:layout_marginBottom="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.606"
-                app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/imageView6"
-                app:layout_constraintVertical_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.661"
                 app:srcCompat="@android:drawable/presence_online" />
 
             <ImageView
@@ -344,24 +420,12 @@
                 android:layout_height="31dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.555"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.141"
                 app:srcCompat="@android:drawable/presence_online" />
 
-            <ImageView
-                android:id="@+id/imageView_door"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="664dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.926"
-                app:srcCompat="@drawable/dooropen" />
-
-          </androidx.constraintlayout.motion.widget.MotionLayout>
+          </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
 
@@ -389,7 +453,7 @@
                 android:layout_gravity="center"
                 android:text="현재 온도"
                 android:textColor="#000000"
-                android:textSize="50sp"
+                android:textSize="40sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -397,13 +461,13 @@
 
             <TextView
                 android:id="@+id/textView_temp"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_weight="1"
                 android:text="5 ℃"
                 android:textColor="#000000"
-                android:textSize="35sp"
+                android:textSize="45sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -429,7 +493,7 @@
                 android:layout_gravity="center"
                 android:text="목표 온도"
                 android:textColor="#000000"
-                android:textSize="50sp"
+                android:textSize="40sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -454,9 +518,9 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_gravity="center"
-                  android:text="5"
+                  android:text="20"
                   android:textColor="#000000"
-                  android:textSize="35sp"
+                  android:textSize="45sp"
                   app:layout_constraintBottom_toBottomOf="parent"
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintTop_toTopOf="parent"
@@ -470,11 +534,12 @@
                   android:layout_marginLeft="5dp"
                   android:text="℃"
                   android:textColor="#000000"
-                  android:textSize="35sp"
+                  android:textSize="45sp"
                   app:layout_constraintBottom_toBottomOf="parent"
                   app:layout_constraintEnd_toEndOf="parent"
                   app:layout_constraintTop_toTopOf="parent"
                   app:layout_constraintVertical_bias="0.218" />
+
             </LinearLayout>
 
             <ImageButton
@@ -504,7 +569,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_weight="1"
+            android:layout_weight="1.6"
             app:cardCornerRadius="20dp">
 
           <LinearLayout
@@ -517,57 +582,58 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center|center_vertical"
-                android:layout_marginStart="20dp"
-                android:background="@drawable/clear" />
+                android:layout_marginLeft="40dp"
+                android:background="@drawable/clear"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
 
             <TextView
                 android:id="@+id/textView_weatherTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginStart="12dp"
+                android:layout_marginLeft="30dp"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="5"
                 android:textColor="#000000"
-                android:textSize="40sp" />
+                android:textSize="60sp" />
 
             <TextView
                 android:id="@+id/textView_C"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_marginStart="4dp"
+                android:layout_marginLeft="5dp"
                 android:fontFamily="monospace"
                 android:gravity="center"
                 android:text="℃"
                 android:textColor="#000000"
-                android:textSize="24sp" />
+                android:textSize="40sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginRight="40dp"
+                android:gravity="center_vertical"
                 android:orientation="vertical">
-
-              <TextView
-                  android:id="@+id/textView_address"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_gravity="center_vertical"
-                  android:layout_marginStart="244dp"
-                  android:layout_marginTop="5dp"
-                  android:text="서울시 성북구"
-                  android:textColor="#000000"
-                  android:textSize="30sp" />
 
               <TextView
                   android:id="@+id/textView_todayDate"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_gravity="center_vertical"
-                  android:layout_marginStart="244dp"
-                  android:layout_marginTop="5dp"
+                  android:layout_gravity="right"
                   android:text="2020년 11월 25일"
+                  android:textColor="#000000"
+                  android:textSize="30sp" />
+
+              <TextView
+                  android:id="@+id/textView_address"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="right"
+                  android:layout_marginTop="5dp"
+                  android:text="서울시 성북구"
                   android:textColor="#000000"
                   android:textSize="30sp" />
 
@@ -575,15 +641,35 @@
                   android:id="@+id/textView_weather"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_gravity="center_vertical"
-                  android:layout_marginStart="244dp"
-                  android:layout_marginTop="1dp"
+                  android:layout_gravity="right"
                   android:text="맑음"
                   android:textColor="#000000"
                   android:textSize="30sp" />
+
             </LinearLayout>
           </LinearLayout>
 
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_time"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="2.7"
+            app:cardCornerRadius="20dp">
+
+          <TextView
+              android:id="@+id/textView_time"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_gravity="center"
+              android:text="20:20:20"
+              android:textColor="#000000"
+              android:textSize="50sp" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
@@ -595,7 +681,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="50dp"
             android:layout_marginBottom="5dp"
-            android:layout_weight="3"
+            android:layout_weight="2.6"
             app:cardCornerRadius="20dp">
 
           <ImageView

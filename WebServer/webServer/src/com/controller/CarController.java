@@ -375,12 +375,14 @@ public class CarController {
 	}
 	
 	// 인증번호 입력 후 '확인' 버튼 누르면 Car 정보를 띄워줌
-	@RequestMapping("/carnumcheckimpl")
+	@RequestMapping("/carnumcheckimpl.mc")
 	@ResponseBody
 	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
 		String carnum = request.getParameter("carnum");
+		System.out.println("carnum:"+carnum);
 		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		System.out.println("00000000");
 
 		CarVO car = new CarVO();
 		car = cbiz.get(carid);
@@ -396,7 +398,7 @@ public class CarController {
 			
 		ja.add(data);
 		
-		System.out.println("---------test:"+ja.toJSONString());
+		System.out.println("out:"+ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
