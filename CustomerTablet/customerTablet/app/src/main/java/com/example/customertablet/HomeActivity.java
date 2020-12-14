@@ -91,6 +91,7 @@ public class HomeActivity extends AppCompatActivity {
     DataFrame dataF;
     HttpAsyncTask httpAsyncTask;
     GetStatusAsync getStatusAsync;
+    GetPushCheckAsync getPushCheckAsync;
 
     NotificationManager manager; // FCM을 위한 NotificationManager
 
@@ -124,6 +125,9 @@ public class HomeActivity extends AppCompatActivity {
     MoveStart moveStart;
     MoveStop moveStop;
     Tire tire;
+
+    String droppushcheck = "o";
+    String sleeppushcheck = "o";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -337,6 +341,7 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         getStatus();
+        getPushCheck();
 
         textView_todayDate.setText(timeNowDate);
         textView_time.setText(timeNowTime);
@@ -559,79 +564,85 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     }
 
-                    // 받은 데이터가 무게 데이터인 경우 수행
-                    if (input.getContents().substring(4, 8).equals("0005")) {
-                        Log.d("[Load]", "[Load]: " + input.getContents().substring(8));
-                        String loadData = input.getContents().substring(8);
+
+                    // 낙하물 푸쉬설정이 "on" 일때만 알람창을 띄운다
+                    if(droppushcheck.equals("o")){
+
+                        // 받은 데이터가 무게 데이터인 경우 수행
+                        if (input.getContents().substring(4, 8).equals("0005")) {
+                            Log.d("[Load]", "[Load]: " + input.getContents().substring(8));
+                            String loadData = input.getContents().substring(8);
 
 
-                        // 주행 시작시 전송하는 무게 데이터
-                        if (loadData.substring(0, 1).equals("9")) {
-                            initialLoad = Integer.parseInt(loadData.substring(1));
-                            Log.d("[Load]", "[Load]: 초기 무게 데이터 " + initialLoad + " 설정되었습니다.");
-                            dialogLoad = 1;
-                        } else {
-                            if (loadDatas.size() <= 5) {
-                                if (loadDatas.size() == 5) {
-                                    Log.d("[Load]", "[LoadDatas]: " + loadDatas.get(0) + "삭제");
-                                    loadDatas.remove(0);
-                                    loadDatas.add(Integer.parseInt(loadData));
-                                    Log.d("[Load]", "[LoadDatas]: " + loadData + "추가");
-                                } else if (loadDatas.size() <= 4) {
-                                    loadDatas.add(Integer.parseInt(loadData));
-                                    Log.d("[Load]", "[LoadDatas]: " + loadData + "추가");
-                                }
-
-                                Log.d("[Load]", "[LoadDatas]: " + loadDatas.toString());
-
-                            }
-
-                            if (loadDatas.size() == 5) {
-                                avgLoad = 0;
-                                for (int data : loadDatas) {
-                                    avgLoad += data;
-                                }
-                                avgLoad /= 5;
-                                Log.d("[Load]", "[avgLoad]: " + avgLoad + " // " + "[initial Load]: " + initialLoad);
-
-                                if (initialLoad > avgLoad + 500) {
-                                    Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
-
-                                    if (dialogLoad == 1) {
-                                        dialogLoad += 1;
-                                        _runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
-                                                builder.setTitle("Alert!!");
-                                                builder.setMessage("적재물 낙하 사고가 감지되었습니다.");
-                                                builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialogLoad -= 1;
-                                                        Toast.makeText(getApplicationContext(), "신고 완료!", Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
-                                                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialogLoad -= 1;
-                                                        Toast.makeText(getApplicationContext(), "취소!", Toast.LENGTH_LONG).show();
-                                                    }
-                                                });
-                                                builder.show();
-                                            }
-                                        });
+                            // 주행 시작시 전송하는 무게 데이터
+                            if (loadData.substring(0, 1).equals("9")) {
+                                initialLoad = Integer.parseInt(loadData.substring(1));
+                                Log.d("[Load]", "[Load]: 초기 무게 데이터 " + initialLoad + " 설정되었습니다.");
+                                dialogLoad = 1;
+                            } else {
+                                if (loadDatas.size() <= 5) {
+                                    if (loadDatas.size() == 5) {
+                                        Log.d("[Load]", "[LoadDatas]: " + loadDatas.get(0) + "삭제");
+                                        loadDatas.remove(0);
+                                        loadDatas.add(Integer.parseInt(loadData));
+                                        Log.d("[Load]", "[LoadDatas]: " + loadData + "추가");
+                                    } else if (loadDatas.size() <= 4) {
+                                        loadDatas.add(Integer.parseInt(loadData));
+                                        Log.d("[Load]", "[LoadDatas]: " + loadData + "추가");
                                     }
 
+                                    Log.d("[Load]", "[LoadDatas]: " + loadDatas.toString());
+
+                                }
+
+                                if (loadDatas.size() == 5) {
+                                    avgLoad = 0;
+                                    for (int data : loadDatas) {
+                                        avgLoad += data;
+                                    }
+                                    avgLoad /= 5;
+                                    Log.d("[Load]", "[avgLoad]: " + avgLoad + " // " + "[initial Load]: " + initialLoad);
+
+                                    if (initialLoad > avgLoad + 500) {
+                                        Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
+
+                                        if (dialogLoad == 1) {
+                                            dialogLoad += 1;
+                                            _runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
+                                                    builder.setTitle("Alert!!");
+                                                    builder.setMessage("적재물 낙하 사고가 감지되었습니다.");
+                                                    builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialogLoad -= 1;
+                                                            Toast.makeText(getApplicationContext(), "신고 완료!", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialogLoad -= 1;
+                                                            Toast.makeText(getApplicationContext(), "취소!", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                                    builder.show();
+                                                }
+                                            });
+                                        }
+
+                                    }
                                 }
                             }
                         }
+
                     }
+
 
                     // 받은 DataFrame을 웹서버로 HTTP 전송
                     // call AsynTask to perform network operation on separate thread
-
                     String url = "http://" + ip + "/webServer/getTabletSensor.mc";
                     url += "?carnum=" + carnum + "&contents=" + input.getContents();
                     httpAsyncTask = new HttpAsyncTask();
@@ -980,6 +991,13 @@ public class HomeActivity extends AppCompatActivity {
         url += "?carnum=" + carnum;
         getStatusAsync = new GetStatusAsync();
         getStatusAsync.execute(url);
+    }
+
+    public void getPushCheck() {
+        String url = "http://" + ip + "/webServer/getpushcheck.mc";
+        url += "?carnum=" + carnum;
+        getPushCheckAsync = new GetPushCheckAsync();
+        getPushCheckAsync.execute(url);
     }
 
     // 태블릿 켤 때 db에서 정보를 가져와 오류를 방지한다
@@ -1425,6 +1443,56 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
+
+    // 태블릿 켤 때 db에서 푸쉬정보를 가져와 오류를 방지한다
+    class GetPushCheckAsync extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(HomeActivity.this);
+            progressDialog.setTitle("자동차 정보 조회 중 ...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String url = strings[0];
+            String result = HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+            progressDialog.dismiss();
+            JSONArray ja = null;
+            try {
+                ja = new JSONArray(s);
+                for (int i = 0; i < ja.length(); i++) {
+                    JSONObject jo = ja.getJSONObject(i);
+
+                    String droppush = jo.getString("droppushcheck");
+                    if (droppush.equals("o")) {
+                        droppushcheck = "o";
+                    } else if (droppush.equals("f")) {
+                        droppushcheck = "f";
+                    }
+                    String sleeppush = jo.getString("sleeppushcheck");
+                    if (sleeppush.equals("o")) {
+                        sleeppushcheck = "o";
+                    } else if (sleeppush.equals("f")) {
+                        sleeppushcheck = "f";
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
 
 }
 

@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.frame.Biz;
 import com.vo.CarSensorVO;
 import com.vo.CarVO;
+import com.vo.UsersVO;
 
 @Controller
 public class TabletController {
@@ -31,6 +32,8 @@ public class TabletController {
 	Biz<Integer, String, CarVO> cbiz;
 	@Resource(name = "sbiz")
 	Biz<Integer, String, CarSensorVO> sbiz;
+	@Resource(name = "ubiz")
+	Biz<String, String, UsersVO> ubiz;
 
 	// 현재 시간 계산
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
@@ -125,5 +128,40 @@ public class TabletController {
 		out.print(ja.toJSONString());
 		out.close();
 	}
+	
+	
+	// Tablet 을 켰을 때 push상태를 가져와줌
+	@RequestMapping("/getpush.mc")
+	@ResponseBody
+	public void getpush(HttpServletRequest request, HttpServletResponse res) throws Exception {
+
+		String carnum = request.getParameter("carnum");
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		
+		String userid = cbiz.get(carid).getUserid();
+
+		UsersVO user = new UsersVO();
+		user = ubiz.get(userid);
+		
+		JSONArray ja = new JSONArray();
+
+		JSONObject data = new JSONObject();
+			
+		data.put("droppushcheck", user.getDroppushcheck());
+		data.put("sleepushcheck", user.getSleeppushcheck());
+
+			
+		ja.add(data);
+		
+		System.out.println("---------test:"+ja.toJSONString());
+
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+
+		out.print(ja.toJSONString());
+		out.close();
+	}
+	
 
 }
