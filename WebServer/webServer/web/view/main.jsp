@@ -42,18 +42,8 @@
 			</script>
 		</c:when>
 		<c:when test="${admin != null }">
-			<!-- 로그인시 메인 페이지 설정 -->
-			<c:choose>
-				<c:when test="${centerpage == null }">
-					<!-- 로그인 했으나 센터 페이지 정보가 없을 경우 로그인 페이지로 이동 -->
-					<script>location.href = 'login.mc';</script>
-				</c:when>
-				<c:otherwise>
-					<!-- 로그인시 대시보드 페이지로 이동 -->
-					<script>location.href = 'dashboard.mc';</script>
-					<!-- <jsp:include page="${centerpage}.mc"></jsp:include> -->
-				</c:otherwise>
-			</c:choose>
+			<!-- 로그인시 대시보드 페이지로 이동 -->
+			<script>location.href = 'dashboard.mc';</script>
 		</c:when>
 	</c:choose>
 	<!-- JS Scripts-->
