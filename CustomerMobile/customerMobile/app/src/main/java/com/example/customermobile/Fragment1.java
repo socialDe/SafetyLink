@@ -1,6 +1,9 @@
 package com.example.customermobile;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -27,6 +30,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
+import java.util.Locale;
 
 
 public class Fragment1 extends Fragment {
@@ -44,6 +49,12 @@ public class Fragment1 extends Fragment {
 
     int targetTemper;
     TemperTimer temperTimer;
+
+    // GPS 위치 정보 수신
+    private GpsTracker gpsTracker;
+    private Context context;
+    double lat;
+    double lon;
 
     @Nullable
     @Override
@@ -205,9 +216,16 @@ public class Fragment1 extends Fragment {
             }
         }) ;
 
+        // GPS 위치 정보 수신
+        context = container.getContext();
+        getGPS();
+
 
         return viewGroup;
-    } // end onCreate
+    }
+    /*
+     * end onCreate
+     */
 
 
 
@@ -370,6 +388,53 @@ public class Fragment1 extends Fragment {
 //        System.out.println("phone Send End...");
 //    }
 
+    public void getGPS(){
+        gpsTracker = new GpsTracker(context);
+
+        lat = gpsTracker.getLatitude();
+        lon = gpsTracker.getLongitude();
+
+        String address = getCurrentAddress(lat, lon);
+        textView_address.setText(address.substring(5,address.lastIndexOf("동")+1));
+
+        Toast.makeText(context, "현재위치 \n위도 " + lat + "\n경도 " + lon, Toast.LENGTH_LONG).show();
+    }
+
+    public String getCurrentAddress( double latitude, double longitude) {
+
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                    latitude,
+                    longitude,
+                    7);
+        } catch (IOException ioException) {
+            //네트워크 문제
+            Toast.makeText(context, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(context, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+
+        }
+
+
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(context, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+
+        }
+
+        Address address = addresses.get(0);
+        return address.getAddressLine(0).toString()+"\n";
+
+    }
 
 
 }
