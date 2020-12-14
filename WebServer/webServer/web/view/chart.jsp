@@ -319,55 +319,37 @@ $(document).ready(function (){
  *  First Chart Display Test
  */
  function displayChart(){
-		$('#gra1').highcharts({
-			  chart: {
-			    type: 'line'
-			  },
-			  title: {
-			    text: 'Monthly Average Temperature'
-			  },
-			  subtitle: {
-			    text: 'Source: WorldClimate.com'
-			  },
-			  xAxis: {
-			    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-			  },
-			  yAxis: {
-			    title: {
-			      text: '차량 수'
-			    }
-			  },
-			  plotOptions: {
-			    line: {
-			      dataLabels: {
-			        enabled: true
-			      },
-			      enableMouseTracking: false
-			    }
-			  },
-			  series: [{
-			    name: 'Tokyo',
-			    data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-			  }, {
-			    name: 'London',
-			    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }, {
-			    name: 'Seoul',
-			    data: [3.3, 2.2, 5.7, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  },{
-			    name: 'Busan',
-			    data: [7.0, 3.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-			  }, {
-			    name: 'Pohang',
-			    data: [3.9, 2.2, 5.0, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }, {
-			    name: 'Bejing',
-			    data: [3.3, 2.2, 5.2, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }],
-			  caption: {
-				  text: '<b>Caption Test<b>'
-			  }
-		});
+	 var formData = '&gender_check=ManWoman';
+	 formData += '&type_check=Vehicle_all';
+	 formData += '&searchBasis=Region';
+	 formData += '&regionLists=seoul';
+	 $.ajax({
+		 cache:false,
+		 url: 'chartSearch.mc',
+		 data: formData,
+		 success: function(data){
+			 console.log("success");
+			 console.log(data);
+			 console.log(typeof(data));
+			 
+			 chartDatas = data;
+			 displayChart2();
+			 if(chartDatas.length == 6){
+				 makingTable_DoubleAll();
+			 }else if(chartDatas.length == 3 || chartDatas.length == 1){
+				 makingTable_VehicleAllOrNotAll();
+			 }else if(chartDatas.length == 2){
+				 makingTable_GenderAll();
+			 }
+			 $('#chartTable').dataTable();
+		 },
+		 error : function(request,status,error) {
+            	console.log("error");
+            	console.log(request.responseText);
+            	console.log(" error = "+error)
+            	alert("code= "+request.status+" message = "+ request.responseText +" error = "+error);
+		 }
+	 });
 }
  
  
