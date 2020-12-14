@@ -30,7 +30,7 @@
 		<!-- /. NAV SIDE  -->
 			<div class="header">
 				<div class="page-header">
-					<h1 style="margin-top: 30px;">Safety Link</h1>
+					<h1 style="margin-top: 5%;">Safety Link</h1>
 					<h4>Management System</h4>
 				</div>
 			</div>
