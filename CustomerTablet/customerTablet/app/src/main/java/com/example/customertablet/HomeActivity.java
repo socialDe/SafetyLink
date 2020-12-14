@@ -1075,6 +1075,10 @@ public class HomeActivity extends AppCompatActivity {
                         fuel = fuel - 0.1;
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
+                        doorcode = 0;
+                        setUi("CA00003300000000");
+                        getSensor("CA00003300000000");
+                        tabletSendDataFrame("CA00003300000000");
                     }
                     break;
                 }

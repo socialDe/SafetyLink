@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -35,18 +36,20 @@ public class CarManagementActivity extends AppCompatActivity {
 
     HttpAsyncTask httpAsyncTask;
 
-    ListView listView_car;
-    LinearLayout container;
+    ListView listView_carList;
     ArrayList<CarVO> list;
+
+    ImageButton imageButton_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_management);
 
-        button_logout = findViewById(R.id.button_logout);
-        listView_car = findViewById(R.id.listView_car);
-        container = findViewById(R.id.container);
+        listView_carList = findViewById(R.id.listView_carList);
         list = new ArrayList<>();
+
+        imageButton_back = findViewById(R.id.imageButton_back);
 
         // 회원정보를 intent로 가져오기
         Intent getintent = getIntent();
@@ -88,8 +91,8 @@ public class CarManagementActivity extends AppCompatActivity {
 
         }
 
-        // 로그아웃 버튼
-        button_logout.setOnClickListener(new View.OnClickListener() {
+        // 로그아웃 버튼 => 뒤로가기 버튼?
+        imageButton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sp.edit();
@@ -103,7 +106,7 @@ public class CarManagementActivity extends AppCompatActivity {
             }
         });
 
-        listView_car.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView_carList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
             }
