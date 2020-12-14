@@ -842,14 +842,11 @@ public class HomeActivity extends AppCompatActivity {
     HTTP 통신 Code
     */
     class HttpAsyncTask extends AsyncTask<String, String, String> {
-        ProgressDialog progressDialog;
+
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(HomeActivity.this);
-            progressDialog.setTitle("Send Data ...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+
         }
 
         @Override
@@ -866,7 +863,6 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            progressDialog.dismiss();
             final String result = s.trim();
 
             if (result.equals("crush")) {

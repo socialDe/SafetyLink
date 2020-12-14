@@ -22,6 +22,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -107,6 +110,7 @@ public class CarActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
 
     public CarDataTimer carDataTimer;
+    public AlermBabyTimer alermBabyTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,7 +250,9 @@ public class CarActivity extends AppCompatActivity {
         carDataTimer = new CarDataTimer(3000, 1000);
         carDataTimer.start();
 
+        alermBabyTimer = new AlermBabyTimer(10000, 1000);
     }// end onCreat
+
 
 
     public UsersVO getNowUser(){
@@ -284,6 +290,25 @@ public class CarActivity extends AppCompatActivity {
         }
     }
 
+    // 영유아 알람창을 확인하는 타이머
+    public class AlermBabyTimer extends CountDownTimer {
+        public AlermBabyTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            alarmBaby();
+            Toast.makeText(CarActivity.this, "확인을 누르지 않아 관리자에게 알람을 보냈습니다!", Toast.LENGTH_LONG).show();
+
+        }
+    }
+
 
     public void getCarData() {
         // URL 설정.
@@ -302,6 +327,16 @@ public class CarActivity extends AppCompatActivity {
         // AsyncTask를 통해 HttpURLConnection 수행.
         CarSensorAsync carSensorAsync = new CarSensorAsync();
         carSensorAsync.execute(carSensorUrl);
+    }
+
+    public void alarmBaby() {
+        // URL 설정
+        String carSensorUrl = "http://" + ip + "/webServer/alarmbaby.mc?userid=" + user.getUserid();
+
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        AlarmBabyAsync alarmBabyAsync = new AlarmBabyAsync();
+        alarmBabyAsync.execute(carSensorUrl);
     }
 
     public void sendfcm(String contents) {
@@ -552,6 +587,9 @@ public class CarActivity extends AppCompatActivity {
                 Log.d("[FCM]","carid:"+carid+" contents:"+ contents);
 
                 vibrate(300, 5);
+                Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+                ringtone.play();
 
                 // 상단알람 사용
                 manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -584,36 +622,38 @@ public class CarActivity extends AppCompatActivity {
                 // FCM 분기
                 if(contents.substring(4,8).equals("0004")){
                     if(contents.substring(contents.length()-1,contents.length()).equals("1")){
+                        alermBabyTimer.start();
+
+                        uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+                        ringtone.play();
+
                         builder.setContentTitle("\'"+whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다");
+
+                        AlertDialog.Builder builder2 = new AlertDialog.Builder(CarActivity.this);
+                        builder2.setTitle("확인 알람");
+                        builder2.setMessage("\'"+whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다\n확인을 바로 눌러주세요!");
+                        builder2.setIcon(R.mipmap.saftylink1_logo_round);
+
+                        builder2.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                alermBabyTimer.cancel();
+                            }
+                        });
+                        AlertDialog dialog = builder2.create();
+                        dialog.show();
                     }
                 } else if(contents.substring(4,8).equals("0002") || contents.equals("0003")){
                     if(contents.substring(contents.length()-1,contents.length()).equals("1") ||
                             contents.substring(contents.length()-1,contents.length()).equals("3")){
+                        uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
+                        ringtone.play();
+
                         builder.setContentTitle("\'"+ whereFcmCarName + "\'" + "에서 " + "충돌이 발생했습니다");
                     }
                 }
-
-
-
-//                // control이 temper면, data(온도값)을 set해라
-//                if (control.equals("temper")) {
-//                    builder.setContentText(control + " 이(가)" + data + " ℃로 변경되었습니다.");
-//                } // 문 제어
-//                else if (control.equals("door")) {
-//                    if (data.equals("f")) {
-//                        builder.setContentText(control + " 이(가) LOCK 상태로 변경되었습니다.");
-//                    } else if (data.equals("o")) {
-//                        builder.setContentText(control + " 이(가) UNLOCK 상태로 변경되었습니다.");
-//                    }
-//
-//                } // 시동 제어
-//                else if (control.equals("starting")) {
-//                    if (data.equals("o")) {
-//                        builder.setContentText(control + " 이(가) ON 상태로 변경되었습니다.");
-//                    } else if (data.equals("f")) {
-//                        builder.setContentText(control + " 이(가) OFF 상태로 변경되었습니다.");
-//                    }
-//                }
 
 
                 builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
@@ -683,6 +723,25 @@ public class CarActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    class AlarmBabyAsync extends AsyncTask<String, Void, Void> {
+
+        public Void result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url = strings[0];
+            HttpConnect.getString(url);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+        }
+    }
+
     // End HTTP 통신 Code
 
 

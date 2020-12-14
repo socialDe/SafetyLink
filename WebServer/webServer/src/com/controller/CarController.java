@@ -283,8 +283,8 @@ public class CarController {
 		message.put("priority", "high");
 
 		JSONObject notification = new JSONObject();
-		notification.put("title", "차 제어");
-		notification.put("body", "test:" + carid + " " + contents);
+		notification.put("title", "SaftyLink 알람");
+		notification.put("body", "");
 		message.put("notification", notification);
 
 		JSONObject data = new JSONObject();
@@ -522,5 +522,16 @@ public class CarController {
 		
 		cbiz.modify(dbcar);
 	}
+	
+	// 영유아 확인 일정시간 누르지 않았을 때 실행 됨
+	@RequestMapping("/alarmbaby.mc")
+	public void alarmbaby(HttpServletRequest request) throws Exception {
+		String userid = request.getParameter("userid");
+
+		System.out.println("userid:"+userid+"의 차량에서 영유아가 확인되었습니다!!");
+		
+
+	}
+	
 		
 }
