@@ -66,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
             imageButton_startingOn, imageButton_startingOff, imageButton_doorOn, imageButton_doorOff;
     TextView textView_velocity, textView_oil, textView_heartbeat, textView_maxoil, textView_time;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
-    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_starting, imageView_moving, imageView_heartbeat;
+    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_starting, imageView_moving, imageView_heartbeat, imageView_velocity;
 
     // TCP/IP Server
     ServerSocket serverSocket;
@@ -111,11 +111,19 @@ public class HomeActivity extends AppCompatActivity {
     HeartbeatThread hthread;
     MovingCar movingcar;
     MoveHandler mhandler;
+    VelocityHandler velocityhandler;
+    DownVelocityHandler downvelocityhandler;
+    TireHandler tirehandler;
 
     int targetTemp;
     TemperTimer temperTimer;
 
     int startingcode, doorcode;
+
+    // moving, tire thread
+    MoveStart moveStart;
+    MoveStop moveStop;
+    Tire tire;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,9 +166,13 @@ public class HomeActivity extends AppCompatActivity {
         imageView_weather = findViewById(R.id.imageView_weather);
         imageView_moving = findViewById(R.id.imageView_moving);
         imageView_heartbeat = findViewById(R.id.imageView_heartbeat);
+        imageView_velocity = findViewById(R.id.imageView_velocity);
         //gif 추가
         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(imageView_heartbeat);
         Glide.with(this).load(R.drawable.heartbeat).into(gifImage);
+
+//        GlideDrawableImageViewTarget gifVelocity = new GlideDrawableImageViewTarget(imageView_velocity);
+//        Glide.with(this).load(R.drawable.velocity).into(gifVelocity);
 
         getSupportActionBar().hide(); // 화면 확보를 위해 ActionBar 제거
 //         FCM사용 (앱이 중단되어 있을 때 기본적으로 title,body값으로 푸시!!)
@@ -204,14 +216,16 @@ public class HomeActivity extends AppCompatActivity {
 //        movingcar.start();
         mhandler = new MoveHandler();
 
-        // 흑백 사진
-//        ColorMatrix matrix = new ColorMatrix();
-//        matrix.setSaturation(0);
-//        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-        //       imageView_moving.setImageResource(R.drawable.stopcar);
-        //       imageView_moving.setColorFilter(filter);
-//
-        // 심장박동
+        moveStart = new MoveStart();
+        velocityhandler = new VelocityHandler();
+        moveStop = new MoveStop();
+        downvelocityhandler = new DownVelocityHandler();
+
+        tire = new Tire();
+        tirehandler = new TireHandler();
+
+
+        // 일정 시간마다 작동
 //        timer = new Timer(true);
 //        heartbeatTT = new TimerTask() {
 //            @Override
@@ -221,10 +235,10 @@ public class HomeActivity extends AppCompatActivity {
 //        };
 //        timer.schedule(heartbeatTT,1000,3000); // 어떤 함수를 1 초 이후에 시작하고 3 초마다 실행한다
 //        필요한 부분에 이 함수 넣으면 됨
+
         temperTimer = new TemperTimer(3000, 1000);
-
+//        온도 올리는 버튼 클릭 이벤트
         imageButton_tempUp.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 targetTemp = Integer.parseInt(textView_targetTemp.getText().toString());
@@ -239,8 +253,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-        imageButton_tempDown.setOnClickListener(new View.OnClickListener() {
 
+//        온도 내리는 버튼 클릭 이벤트
+        imageButton_tempDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 targetTemp = Integer.parseInt(textView_targetTemp.getText().toString());
@@ -255,7 +270,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-
+//        전원 ON 버튼 클릭 이벤트
         imageButton_startingOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -269,9 +284,13 @@ public class HomeActivity extends AppCompatActivity {
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOff.setColorFilter(filter);
                     imageButton_startingOn.setColorFilter(null);
+                    moveStop.whilestop = false;
+                    moveStart = new MoveStart();
+                    moveStart.start();
                 }
             }
         });
+//        전원 OFF 버튼 클릭 이벤트
         imageButton_startingOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -285,9 +304,13 @@ public class HomeActivity extends AppCompatActivity {
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOn.setColorFilter(filter);
                     imageButton_startingOff.setColorFilter(null);
+                    moveStart.whilemove = false;
+                    moveStop = new MoveStop();
+                    moveStop.start();
                 }
             }
         });
+        //        문 ON 버튼 클릭 이벤트
         imageButton_doorOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,7 +322,7 @@ public class HomeActivity extends AppCompatActivity {
                 }
             }
         });
-
+//        문 OFF 버튼 클릭 이벤트
         imageButton_doorOff.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -323,6 +346,7 @@ public class HomeActivity extends AppCompatActivity {
     class MovingCar extends Thread {
         public void run() {
             final Bundle bundle = new Bundle();
+
             while (true) {
                 for (int i = 1; i < 4; i++) {
                     Message msg = mhandler.obtainMessage();
@@ -406,6 +430,8 @@ public class HomeActivity extends AppCompatActivity {
                         }
                     });
 
+                } else if (value > 150) {
+                    value = value - 10;
                 }
                 try {
                     Thread.sleep(500);
@@ -1016,7 +1042,7 @@ public class HomeActivity extends AppCompatActivity {
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageButton_doorOn.setColorFilter(filter);
                         imageButton_doorOff.setImageResource(R.drawable.doorcloseimgg);
-                        imageButton_doorOn.setImageResource(R.drawable.doorcloseimg);
+                        imageButton_doorOn.setImageResource(R.drawable.dooropenimg);
                     }
                     String moving = jo.getString("moving");
                     if (moving.equals("1")) {
@@ -1029,13 +1055,15 @@ public class HomeActivity extends AppCompatActivity {
                         imageView_moving.setColorFilter(filter);
                     }
                     String oil = jo.getString("fuel");
-                    textView_oil.setText(oil + " L");
+                    textView_oil.setText(oil);
                     String maxoil = jo.getString("fuelmax");
                     textView_maxoil.setText(maxoil + "L");
                     String temper = jo.getString("temper");
                     textView_temp.setText(temper + "℃");
                     String aircon = jo.getString("aircon");
                     textView_targetTemp.setText(aircon);
+
+                    tire.start(); // tire 공기압 받아옴
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1045,26 +1073,330 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // 속도
-    public void getVelocity() throws InterruptedException {
-//            주행 시작
-        Random r = new Random();
-        int v = 0;
-        while (true) {
-            if (Integer.parseInt(textView_velocity.getText().toString()) < 30) {
+    class MoveStart extends Thread {
+        int v = Integer.parseInt(textView_velocity.getText().toString());
+        double fuel = Double.parseDouble(textView_oil.getText().toString());
+        final Bundle bundle = new Bundle();
+        boolean whilemove = true;
+
+        @Override
+        public void run() {
+            Random r = new Random();
+            while (whilemove) {
                 v = v + r.nextInt(5);
-                textView_velocity.setText(v);
-                Thread.sleep(100);
+                Message msg = velocityhandler.obtainMessage();
+                bundle.putInt("velocity", v);
+                System.out.println(bundle);
+                msg.setData(bundle);
+                velocityhandler.sendMessage(msg);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (v > 30) {
+                    if (fuel >= 0) {
+                        msg = velocityhandler.obtainMessage();
+                        fuel = fuel - 0.1;
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                        doorcode = 0;
+                        setUi("CA00003300000000");
+                        getSensor("CA00003300000000");
+                        tabletSendDataFrame("CA00003300000000");
+                    }
+                    break;
+                }
+            }
+            while (whilemove) {
+                v = v + r.nextInt(7);
+                Message msg = velocityhandler.obtainMessage();
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                velocityhandler.sendMessage(msg);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (v > 80) {
+                    if (fuel >= 0) {
+                        fuel = fuel - 0.2;
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    }
+                    msg.setData(bundle);
+                    break;
+                }
+            }
+            while (whilemove) {
+                v = v + r.nextInt(8);
+                Message msg = velocityhandler.obtainMessage();
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                velocityhandler.sendMessage(msg);
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (v > 120) {
+                    fuel = fuel - 0.3;
+                    v = v - 10;
+                    msg = velocityhandler.obtainMessage();
+                    bundle.putInt("velocity", v);
+                    msg.setData(bundle);
+                    if (fuel >= 0.3) {
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    } else if (fuel <= 0.2) {
+                        bundle.putDouble("fuel", 0.01);
+                        msg.setData(bundle);
+                        velocityhandler.sendMessage(msg);
+                        whilemove = false;
+                        moveStop = new MoveStop();
+                        moveStop.start();
+                        // moving으로 바꿀 때, imageView도 바꿔주자
+                        break;
+                    }
+                    velocityhandler.sendMessage(msg);
+                } else if (v < 80) { // 이 부분은 80~120으로 왔다갔다 할까 고민하느라 넣어둠
+                    fuel = fuel - 0.3;
+                    v = v + 10;
+                    msg = velocityhandler.obtainMessage();
+                    bundle.putInt("velocity", v);
+                    msg.setData(bundle);
+                    if (fuel >= 0) {
+                        bundle.putDouble("fuel", fuel);
+                        msg.setData(bundle);
+                    } else if (fuel <= 0.2) {
+                        bundle.putDouble("fuel", 0.01);
+                        msg.setData(bundle);
+                        velocityhandler.sendMessage(msg);
+                        whilemove = false;
+                        moveStop = new MoveStop();
+                        moveStop.start();
+                        // moving으로 바꿀 때, imageView도 바꿔주자
+                        break;
+                    }
+                    velocityhandler.sendMessage(msg);
+                }
             }
         }
-
     }
 
-    public void tire() {
+    class VelocityHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            final int v = bundle.getInt("velocity");
+            double fuel = bundle.getDouble("fuel");
+            if (fuel == 0) {
+                fuel = Double.parseDouble(textView_oil.getText().toString());
+            } else if (fuel == 0.01) {
 
+            }
+            final String num = String.format("%.1f", fuel);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textView_velocity.setText(v + "");
+                    textView_oil.setText(num + "");
+                }
+            });
+        }
+    } // 속도 올라가는 것
+
+    // 속도 멈출 때 천천히 내려가도록
+    class MoveStop extends Thread {
+        int v = Integer.parseInt(textView_velocity.getText().toString());
+        final Bundle bundle = new Bundle();
+        boolean whilestop = true;
+
+        @Override
+        public void run() {
+            Random r = new Random();
+            while (whilestop) {
+                v = v - r.nextInt(8);
+                Message msg = velocityhandler.obtainMessage();
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                velocityhandler.sendMessage(msg);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (v < 80) {
+                    break;
+                }
+            }
+            while (whilestop) {
+                v = v - r.nextInt(7);
+                Message msg = velocityhandler.obtainMessage();
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                velocityhandler.sendMessage(msg);
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (v < 30) {
+                    break;
+                }
+            }
+            while (whilestop) {
+                v = v - r.nextInt(4);
+                if (v <= 0) {
+                    v = 0;
+                    Message msg = velocityhandler.obtainMessage();
+                    bundle.putInt("velocity", v);
+                    msg.setData(bundle);
+                    velocityhandler.sendMessage(msg);
+                    break;
+                }
+                Message msg = velocityhandler.obtainMessage();
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                velocityhandler.sendMessage(msg);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
-    public void fuel() {
+    class DownVelocityHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            int v = bundle.getInt("velocity");
+            if (v <= 0) {
+                v = 0;
+            }
+            final int finalV = v;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    textView_velocity.setText(finalV + "");
+                }
+            });
 
+        }
+    } // 속도 내려가는 것
+
+    // 타이어 공기압
+    class Tire extends Thread {
+        Random r = new Random();
+        int a = r.nextInt(100) + 1;
+        int b = r.nextInt(100) + 1;
+        int c = r.nextInt(100) + 1;
+        int d = r.nextInt(100) + 1;
+
+        @Override
+        public void run() {
+            final Bundle bundle = new Bundle();
+            Message msg = tirehandler.obtainMessage();
+            if (a <= 5) {
+                bundle.putInt("fltire", 1);
+                msg.setData(bundle);
+            } else if (a <= 30 && a > 5) {
+                bundle.putInt("fltire", 2);
+                msg.setData(bundle);
+            } else if (a <= 100) {
+                bundle.putInt("fltire", 3);
+                msg.setData(bundle);
+            }
+            if (b <= 5) {
+                bundle.putInt("frtire", 1);
+                msg.setData(bundle);
+            } else if (b <= 30 && b > 5) {
+                bundle.putInt("frtire", 2);
+                msg.setData(bundle);
+            } else if (b <= 100) {
+                bundle.putInt("frtire", 3);
+                msg.setData(bundle);
+            }
+            if (c <= 5) {
+                bundle.putInt("rltire", 1);
+                msg.setData(bundle);
+            } else if (c <= 30 && c > 5) {
+                bundle.putInt("rltire", 2);
+                msg.setData(bundle);
+            } else if (c <= 100) {
+                bundle.putInt("rltire", 3);
+                msg.setData(bundle);
+            }
+            if (d <= 5) {
+                bundle.putInt("rrtire", 1);
+                msg.setData(bundle);
+            } else if (d <= 30 && d > 5) {
+                bundle.putInt("rrtire", 2);
+                msg.setData(bundle);
+            } else if (d <= 100) {
+                bundle.putInt("rrtire", 3);
+                msg.setData(bundle);
+            }
+            System.out.println(bundle);
+            Log.d("[Server]", String.valueOf(bundle));
+            tirehandler.sendMessage(msg);
+        }
+    }
+
+    class TireHandler extends Handler {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            Bundle bundle = msg.getData();
+            final int fl = bundle.getInt("fltire");
+            final int fr = bundle.getInt("frtire");
+            final int rl = bundle.getInt("rltire");
+            final int rr = bundle.getInt("rrtire");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (fl == 1) {
+                        imageView_fltire.setImageResource(R.drawable.redcircle);
+                    } else if (fl == 2) {
+                        imageView_fltire.setImageResource(R.drawable.orangecircle);
+                    } else if (fl == 3) {
+                        imageView_fltire.setImageResource(R.drawable.greencircle);
+                    }
+                    if (fr == 1) {
+                        imageView_frtire.setImageResource(R.drawable.redcircle);
+                    } else if (fr == 2) {
+                        imageView_frtire.setImageResource(R.drawable.orangecircle);
+                    } else if (fr == 3) {
+                        imageView_frtire.setImageResource(R.drawable.greencircle);
+                    }
+                    if (rl == 1) {
+                        imageView_rltire.setImageResource(R.drawable.redcircle);
+                    } else if (rl == 2) {
+                        imageView_rltire.setImageResource(R.drawable.orangecircle);
+                    } else if (rl == 3) {
+                        imageView_rltire.setImageResource(R.drawable.greencircle);
+                    }
+                    if (rr == 1) {
+                        imageView_rrtire.setImageResource(R.drawable.redcircle);
+                    } else if (rr == 2) {
+                        imageView_rrtire.setImageResource(R.drawable.orangecircle);
+                    } else if (rr == 3) {
+                        imageView_rrtire.setImageResource(R.drawable.greencircle);
+                    }
+                }
+            });
+
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
 
@@ -1072,11 +1404,11 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void run() {
 
-            while(true){
-                try{
+            while (true) {
+                try {
                     Thread.sleep(1000);
 
-                }catch(Exception e){
+                } catch (Exception e) {
 
                 }
                 runOnUiThread(new Runnable() {

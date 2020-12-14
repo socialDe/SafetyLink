@@ -326,7 +326,7 @@ public class CarController {
 		// caroiltype, String tablettoken
 
 		
-		CarVO car = new CarVO(userid, carnum, cartype, carmodel, caryear, carimg, caroiltype, tablettoken);
+		CarVO car = new CarVO(userid, carnum, cartype, carmodel, caryear, "car1.jpg", caroiltype, tablettoken);
 		System.out.println(car);
 
 		
