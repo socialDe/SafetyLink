@@ -25,15 +25,17 @@
           android:orientation="vertical">
 
         <ImageButton
-            android:id="@+id/imageButton_control"
+            android:id="@+id/imageButton_setting"
             style="@style/Widget.AppCompat.ImageButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFF"
-            android:scaleType="center"
+            android:scaleType="fitXY"
+            android:scaleX="0.8"
+            android:scaleY="0.3"
             android:visibility="visible"
-            app:srcCompat="@drawable/car_control" />
+            app:srcCompat="@drawable/car" />
 
         <View
             android:id="@+id/divider2"
@@ -68,13 +70,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
-            android:id="@+id/imageButton_setting"
+            android:id="@+id/imageButton_control"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:scaleType="centerInside"
-            app:srcCompat="@drawable/car_setting" />
+            android:src="@drawable/mycartext"
+            android:visibility="visible" />
 
       </LinearLayout>
 
