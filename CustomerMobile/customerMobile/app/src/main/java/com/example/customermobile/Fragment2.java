@@ -1,5 +1,6 @@
 package com.example.customermobile;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.customermobile.activity.CarActivity;
+import com.example.customermobile.activity.CarManagementActivity;
 import com.example.customermobile.activity.NonTruckFuncSetActivity;
 import com.example.customermobile.activity.TruckFuncSetActivity;
 import com.example.customermobile.vo.CarVO;
@@ -35,6 +37,14 @@ public class Fragment2 extends Fragment {
 
         textView_myInfo = rootView.findViewById(R.id.textView_myInfo);
         textView_carRegister = rootView.findViewById(R.id.textView_carRegister);
+        textView_carRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), CarManagementActivity.class);
+                intent.putExtra("user",((CarActivity)getActivity()).getNowUser());
+                startActivity(intent);
+            }
+        });
         textView_safetyFuncSet = rootView.findViewById(R.id.textView_safetyFuncSet);
         nowCarId = ((CarActivity)getActivity()).getNowCarId();
         nowCar = ((CarActivity)getActivity()).getNowCar();

@@ -1,0 +1,779 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="clip_horizontal|fill|center_vertical"
+    android:background="#FFFFFF"
+    android:clickable="false"
+    tools:context=".HomeActivity">
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+      <LinearLayout
+          android:layout_width="100dp"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/imageButton_control"
+            style="@style/Widget.AppCompat.ImageButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:scaleType="center"
+            android:visibility="visible"
+            app:srcCompat="@drawable/car_control" />
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButton_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/car_map"
+            tools:visibility="visible" />
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_gravity="center"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButton_setting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/car_setting" />
+
+      </LinearLayout>
+
+      <View
+          android:id="@+id/divider4"
+          android:layout_width="5dp"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:background="?android:attr/listDivider"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="1.6"
+          android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1">
+
+          <ImageView
+              android:id="@+id/imageView_velocity"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              app:srcCompat="@drawable/car_velocity" />
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_velocity2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="속도"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView_velocity"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="0"
+                  android:textColor="#000000"
+                  android:textSize="40sp" />
+
+              <TextView
+                  android:id="@+id/textView_velocity3"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="km/h"
+                  android:textColor="#000000"
+                  android:textSize="20sp" />
+            </LinearLayout>
+
+          </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="0.9">
+
+          <ImageView
+              android:id="@+id/imageView_oil"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              app:srcCompat="@drawable/car_oil" />
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_oil2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="연료량"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView_oil"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="40.0"
+                  android:textColor="#000000"
+                  android:textSize="25sp" />
+
+              <TextView
+                  android:id="@+id/textView_oil3"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2.8"
+                  android:gravity="center"
+                  android:text="L"
+                  android:textColor="#000000"
+                  android:textSize="25sp" />
+
+              <TextView
+                  android:id="@+id/textView_oil4"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2.6"
+                  android:gravity="center"
+                  android:text="/"
+                  android:textColor="#000000"
+                  android:textSize="35sp" />
+
+              <TextView
+                  android:id="@+id/textView_maxoil"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="1.7"
+                  android:gravity="center"
+                  android:text="50L"
+                  android:textColor="#000000"
+                  android:textSize="40sp" />
+            </LinearLayout>
+
+          </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1.1">
+
+          <ImageView
+              android:id="@+id/imageView_heartbeat"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:background="#FFFFFF"
+              app:srcCompat="@drawable/heartbeat" />
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_heartbeat2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="BPM"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/textView_heartbeat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="070"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+          </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1">
+
+          <ImageView
+              android:id="@+id/imageView_freight"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:background="#FFFFFF"
+              app:srcCompat="@drawable/freight" />
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_freight2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="적재물"
+                android:textColor="#000000"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView_freight"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="0"
+                  android:textColor="#000000"
+                  android:textSize="40sp" />
+
+              <TextView
+                  android:id="@+id/textView_freight3"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:layout_weight="2"
+                  android:gravity="center"
+                  android:text="kg"
+                  android:textColor="#000000"
+                  android:textSize="20sp" />
+            </LinearLayout>
+
+          </LinearLayout>
+
+        </LinearLayout>
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_car"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="25dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="20dp">
+
+          <androidx.constraintlayout.widget.ConstraintLayout
+              android:id="@+id/constraintLayout2"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#00FFFFFF">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_doorOff"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.98">
+
+              <ImageButton
+                  android:id="@+id/imageButton_doorOff"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/doorcloseimg"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/doorcloseimg" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_doorOn"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.68">
+
+              <ImageButton
+                  android:id="@+id/imageButton_doorOn"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/dooropenimg"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/dooropenimg" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_startingOff"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.32">
+
+              <ImageButton
+                  android:id="@+id/imageButton_startingOff"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/startingoff"
+                  android:backgroundTint="#FFFEFE"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/startingoff" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView_startingOn"
+                android:layout_width="250dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.99"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.029999971">
+
+              <ImageButton
+                  android:id="@+id/imageButton_startingOn"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:background="@drawable/startingon"
+                  android:backgroundTint="#FFFEFE"
+                  android:scaleType="fitXY"
+                  android:src="@drawable/startingon" />
+            </androidx.cardview.widget.CardView>
+
+            <ImageView
+                android:id="@+id/imageView_car"
+                android:layout_width="513dp"
+                android:layout_height="322dp"
+                android:layout_gravity="center|center_vertical"
+                android:background="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.489"
+                app:srcCompat="@drawable/car" />
+
+            <ImageView
+                android:id="@+id/imageView_frTire"
+                android:layout_width="27dp"
+                android:layout_height="31dp"
+                android:background="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.19"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.141"
+                app:srcCompat="@android:drawable/presence_online" />
+
+            <ImageView
+                android:id="@+id/imageView_flTire"
+                android:layout_width="36dp"
+                android:layout_height="26dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.192"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.866"
+                app:srcCompat="@android:drawable/presence_online" />
+
+            <ImageView
+                android:id="@+id/imageView_rlTire"
+                android:layout_width="27dp"
+                android:layout_height="31dp"
+                android:layout_marginTop="212dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.661"
+                app:srcCompat="@android:drawable/presence_online" />
+
+            <ImageView
+                android:id="@+id/imageView_rrTire"
+                android:layout_width="27dp"
+                android:layout_height="31dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.141"
+                app:srcCompat="@android:drawable/presence_online" />
+
+          </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_temp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="25dp"
+            android:layout_weight="3"
+            app:cardCornerRadius="20dp">
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_nowTemperText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="현재 온도"
+                android:textColor="#000000"
+                android:textSize="50sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.416" />
+
+            <TextView
+                android:id="@+id/textView_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="5 ℃"
+                android:textColor="#000000"
+                android:textSize="35sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.218" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="200dp"
+                android:layout_height="5dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20sp"
+                android:layout_marginBottom="20sp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView_targetTemperText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="목표 온도"
+                android:textColor="#000000"
+                android:textSize="50sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.757" />
+
+            <ImageButton
+                android:id="@+id/imageButton_tempUp"
+                android:layout_width="75dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/temperup" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+              <TextView
+                  android:id="@+id/textView_targetTemp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:textColor="#000000"
+                  android:textSize="35sp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintVertical_bias="0.218" />
+
+              <TextView
+                  android:id="@+id/textView_C3"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center"
+                  android:layout_marginLeft="5dp"
+                  android:text="℃"
+                  android:textColor="#000000"
+                  android:textSize="35sp"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  app:layout_constraintEnd_toEndOf="parent"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintVertical_bias="0.218" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/imageButton_tempDown"
+                android:layout_width="75dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/temperdown" />
+
+          </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginBottom="30dp"
+          android:layout_weight="1.6"
+          android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_weather"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="20dp">
+
+          <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|center_vertical"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/clear" />
+
+            <TextView
+                android:id="@+id/textView_weatherTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginStart="12dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="#000000"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/textView_C"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_marginStart="4dp"
+                android:fontFamily="monospace"
+                android:gravity="center"
+                android:text="℃"
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+              <TextView
+                  android:id="@+id/textView_address"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_vertical"
+                  android:layout_marginStart="244dp"
+                  android:layout_marginTop="5dp"
+                  android:text="서울시 성북구"
+                  android:textColor="#000000"
+                  android:textSize="30sp" />
+
+              <TextView
+                  android:id="@+id/textView_todayDate"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_vertical"
+                  android:layout_marginStart="244dp"
+                  android:layout_marginTop="5dp"
+                  android:text="2020년 11월 25일"
+                  android:textColor="#000000"
+                  android:textSize="30sp" />
+
+              <TextView
+                  android:id="@+id/textView_weather"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_vertical"
+                  android:layout_marginStart="244dp"
+                  android:layout_marginTop="1dp"
+                  android:text="맑음"
+                  android:textColor="#000000"
+                  android:textSize="30sp" />
+            </LinearLayout>
+          </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView_moving"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="3"
+            app:cardCornerRadius="20dp">
+
+          <ImageView
+              android:id="@+id/imageView_moving"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_gravity="center"
+              app:srcCompat="@drawable/stopcar" />
+        </androidx.cardview.widget.CardView>
+      </LinearLayout>
+    </LinearLayout>
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

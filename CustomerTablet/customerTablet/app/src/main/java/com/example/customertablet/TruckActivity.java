@@ -60,11 +60,11 @@ import java.util.Random;
 
 import static com.example.customertablet.MainActivity.ip;
 
-public class HomeActivity extends AppCompatActivity {
+public class TruckActivity extends AppCompatActivity {
 
     ImageButton imageButton_control, imageButton_map, imageButton_setting, imageButton_tempUp, imageButton_tempDown,
             imageButton_startingOn, imageButton_startingOff, imageButton_doorOn, imageButton_doorOff;
-    TextView textView_velocity, textView_oil, textView_heartbeat, textView_maxoil;
+    TextView textView_velocity, textView_oil, textView_heartbeat, textView_maxoil, textView_freight;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
     ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_weather, imageView_moving, imageView_heartbeat,
             imageView_velocity;
@@ -123,7 +123,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_truck);
 
         // serverStart
         try {
@@ -142,6 +142,7 @@ public class HomeActivity extends AppCompatActivity {
         textView_heartbeat = findViewById(R.id.textView_heartbeat);
         textView_oil = findViewById(R.id.textView_oil);
         textView_maxoil = findViewById(R.id.textView_maxoil);
+        textView_freight = findViewById(R.id.textView_freight);
 
         imageButton_control = findViewById(R.id.imageButton_control);
         imageButton_map = findViewById(R.id.imageButton_map);
@@ -201,7 +202,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // 주행화면
         movingcar = new MovingCar();
-        movingcar.start();
+//        movingcar.start();
         mhandler = new MoveHandler();
 
         moveStart = new MoveStart();
@@ -233,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
                 targetTemp = targetTemp + 1;
 
                 if(targetTemp > 30){
-                    Toast.makeText(HomeActivity.this,"30도 이하로 설정해주세요!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TruckActivity.this,"30도 이하로 설정해주세요!",Toast.LENGTH_SHORT).show();
                 }else{
                     textView_targetTemp.setText(String.valueOf(targetTemp));
                     temperTimer.cancel();
@@ -249,7 +250,7 @@ public class HomeActivity extends AppCompatActivity {
                 targetTemp = targetTemp -1;
 
                 if(targetTemp < 18){
-                    Toast.makeText(HomeActivity.this,"18도 이상으로 설정해주세요!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TruckActivity.this,"18도 이상으로 설정해주세요!",Toast.LENGTH_SHORT).show();
                 }else{
                     textView_targetTemp.setText(String.valueOf(targetTemp));
                     temperTimer.cancel();
@@ -330,10 +331,10 @@ public class HomeActivity extends AppCompatActivity {
     }// end OnCreate
 
     class MovingCar extends Thread {
-        boolean moving = true;
         public void run() {
             final Bundle bundle = new Bundle();
-            while (moving) {
+
+            while (true) {
                 for (int i = 1; i < 4; i++) {
                     Message msg = mhandler.obtainMessage();
                     bundle.putInt("move", i);
@@ -400,7 +401,7 @@ public class HomeActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+                            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(TruckActivity.this);
                             alertDialog.setTitle("졸음운전 감지")
                                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                         @Override
@@ -466,7 +467,7 @@ public class HomeActivity extends AppCompatActivity {
             getSensor("CA0000210000"+String.valueOf(targetTemp)+"00");
             tabletSendDataFrame("CA0000210000"+String.valueOf(targetTemp)+"00");
 
-            Toast t = Toast.makeText(HomeActivity.this,"목표온도가 "+targetTemp+"로 변경됩니다!",Toast.LENGTH_SHORT);
+            Toast t = Toast.makeText(TruckActivity.this,"목표온도가 "+targetTemp+"로 변경됩니다!",Toast.LENGTH_SHORT);
             t.show();
         }
     }
@@ -544,10 +545,9 @@ public class HomeActivity extends AppCompatActivity {
                             ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                             imageView_moving.setImageResource(R.drawable.stopcar);
                             imageView_moving.setColorFilter(filter);
-                            movingcar.moving = false;
+                            movingcar.stop(); // 오류가 날 수 있음
                         } else if (runData.equals("00000001")) {
                             // 주행 시작
-                            MovingCar movingcar = new MovingCar();
                             movingcar.start();
                         }
                     }
@@ -595,7 +595,7 @@ public class HomeActivity extends AppCompatActivity {
                                         _runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(HomeActivity.this);
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(TruckActivity.this);
                                                 builder.setTitle("Alert!!");
                                                 builder.setMessage("적재물 낙하 사고가 감지되었습니다.");
                                                 builder.setPositiveButton("신고", new DialogInterface.OnClickListener() {
@@ -753,14 +753,12 @@ public class HomeActivity extends AppCompatActivity {
                 // 주행
                 else if (contentsSensor.equals("0032")) {
                     if (String.valueOf(contentsData).equals("1")) { // 주행여부 ex)1,0
-                        MovingCar movingcar = new MovingCar();
-                        movingcar.start();
+                            movingcar.start();
                     } else if(String.valueOf(contentsData).equals("0")){
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setColorFilter(filter);
-                        movingcar.moving = false;
                     }
 
                     //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
@@ -880,7 +878,7 @@ public class HomeActivity extends AppCompatActivity {
                     String title = intent.getStringExtra("title");
                     String carid = intent.getStringExtra("carid");
                     String contents = intent.getStringExtra("contents");
-                    Toast.makeText(HomeActivity.this, "차량 상태가 변경되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(TruckActivity.this, "차량 상태가 변경되었습니다.", Toast.LENGTH_SHORT).show();
 
                     if (contents.length() != 4) {
                         DataFrame df = new DataFrame();
@@ -911,7 +909,7 @@ public class HomeActivity extends AppCompatActivity {
                         builder = new NotificationCompat.Builder(context);
                     }
 
-                    Intent intent1 = new Intent(context, HomeActivity.class);
+                    Intent intent1 = new Intent(context, TruckActivity.class);
                     PendingIntent pendingIntent = PendingIntent.getActivity(
                             context, 101, intent1, PendingIntent.FLAG_UPDATE_CURRENT
                     );
@@ -924,7 +922,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
                     if (carid.equals("verify")) {
-                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
+                        AlertDialog.Builder alertDialog = new AlertDialog.Builder(TruckActivity.this);
                         alertDialog.setTitle(Integer.parseInt(contents) + "")
                                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     @Override
@@ -975,7 +973,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(HomeActivity.this);
+            progressDialog = new ProgressDialog(TruckActivity.this);
             progressDialog.setTitle("자동차 정보 조회 중 ...");
             progressDialog.setCancelable(false);
             progressDialog.show();
@@ -1032,7 +1030,6 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     String moving = jo.getString("moving");
                     if(moving.equals("1")){
-                        MovingCar movingcar = new MovingCar();
                         movingcar.start();
                     }else if(moving.equals("0")){ // 잘 작동되는지 확인할 것
                         ColorMatrix matrix = new ColorMatrix();
@@ -1040,7 +1037,6 @@ public class HomeActivity extends AppCompatActivity {
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setImageResource(R.drawable.stopcar);
                         imageView_moving.setColorFilter(filter);
-                        movingcar.moving = false;
                     }
                     String oil = jo.getString("fuel");
                     textView_oil.setText(oil);
@@ -1050,6 +1046,8 @@ public class HomeActivity extends AppCompatActivity {
                     textView_temp.setText(temper+"℃");
                     String aircon = jo.getString("aircon");
                     textView_targetTemp.setText(aircon);
+                    String freight = jo.getString("freight");
+                    textView_freight.setText(freight);
 
                     tire.start(); // tire 공기압 받아옴
                 }
@@ -1084,7 +1082,9 @@ public class HomeActivity extends AppCompatActivity {
                 if(v > 30){
                     if(fuel>=0) {
                         msg = velocityhandler.obtainMessage();
-                        fuel = fuel - 0.1;
+                        if(fuel>=0.1){
+                            fuel = fuel - 0.1;
+                        }
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
                         doorcode = 0;

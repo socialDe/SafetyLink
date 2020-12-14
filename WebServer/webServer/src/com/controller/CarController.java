@@ -45,7 +45,6 @@ public class CarController {
 	@RequestMapping("/cardata.mc")
 	@ResponseBody
 	public void cardata(HttpServletRequest request, HttpServletResponse res) throws Exception {
-
 		String userid = request.getParameter("userid");
 
 		ArrayList<CarVO> dbcarlist = new ArrayList<>();
@@ -374,7 +373,7 @@ public class CarController {
 	}
 	
 	// 인증번호 입력 후 '확인' 버튼 누르면 Car 정보를 띄워줌
-	@RequestMapping("/carnumcheckimplc.mc")
+	@RequestMapping("/carnumcheckimpl.mc")
 	@ResponseBody
 	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
 

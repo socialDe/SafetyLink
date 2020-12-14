@@ -1,18 +1,23 @@
 package com.example.customermobile.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +25,10 @@ import com.example.customermobile.R;
 import com.example.customermobile.network.HttpConnect;
 import com.example.customermobile.vo.CarVO;
 import com.example.customermobile.vo.UsersVO;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,13 +42,15 @@ public class CarManagementActivity extends AppCompatActivity {
     SharedPreferences sp;
     Button button_logout;
     UsersVO user;
-
-    HttpAsyncTask httpAsyncTask;
-
+    // 차량 정보 리스트 받아오기
+    CarVO car;
+    ArrayList<CarVO> carlist;
+    LinearLayout container;
     ListView listView_carList;
-    ArrayList<CarVO> list;
 
-    ImageButton imageButton_back;
+    CarAsync carAsync;
+
+    ImageButton imageButton_back, imageButton_addCar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,15 +58,34 @@ public class CarManagementActivity extends AppCompatActivity {
         setContentView(R.layout.activity_car_management);
 
         listView_carList = findViewById(R.id.listView_carList);
-        list = new ArrayList<>();
 
+        carlist = new ArrayList<>();
+        container = findViewById(R.id.container_car);
+
+//        뒤로가기 버튼
         imageButton_back = findViewById(R.id.imageButton_back);
+        imageButton_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        imageButton_addCar = findViewById(R.id.imageButton_addCar);
+        imageButton_addCar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CarRegisterActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // 회원정보를 intent로 가져오기
-        Intent getintent = getIntent();
-        user = null;
-        user = (UsersVO) getintent.getSerializableExtra("user");
-
+        Intent intent = getIntent();
+        user = (UsersVO) intent.getSerializableExtra("user");
+//        String userid = getintent.getStringExtra("userId");
+        Log.d("[Server]", user.toString());
         sp = getSharedPreferences("user", MODE_PRIVATE);
 
         // intent 정보가 없을 경우, sp로 회원정보 가져오기
@@ -75,6 +105,7 @@ public class CarManagementActivity extends AppCompatActivity {
             String accpushcheck = sp.getString("accpushcheck", "");
             String mobiletoken = sp.getString("mobiletoken", "");
 
+
             // String 변수를 Date로 변환
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date userbirth = null;
@@ -88,103 +119,152 @@ public class CarManagementActivity extends AppCompatActivity {
 
             // sp 정보로 회원 객체 생성
             user = new UsersVO(userid, userpwd, username, userphone, userbirth, usersex, userregdate, userstate, usersubject, babypushcheck, accpushcheck, mobiletoken);
-
         }
-
-        // 로그아웃 버튼 => 뒤로가기 버튼?
-        imageButton_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences.Editor editor = sp.edit();
-                editor.clear();
-                editor.commit();
-
-                String url = "http://" + ip + "/webServer/userlogoutimpl.mc";
-                url += "?id=" + user.getUserid() + "&destroy=no";
-                httpAsyncTask = new HttpAsyncTask();
-                httpAsyncTask.execute(url);
-            }
-        });
 
         listView_carList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(getApplicationContext(), CarDetailActivity.class);
+                int carid = carlist.get(position).getCarid();
+                String carname = carlist.get(position).getCarname();
+                String carnum = carlist.get(position).getCarnum();
+                String cartype = carlist.get(position).getCartype();
+                String carmodel = carlist.get(position).getCarmodel();
+                int caryear = carlist.get(position).getCaryear();
+                String carimg = carlist.get(position).getCarimg();
+                String fueltype = carlist.get(position).getCaroiltype();
+                car = new CarVO(carid, carname, carnum, cartype, carmodel, caryear, carimg, fueltype);
+                intent.putExtra("car", car);
+                startActivity(intent);
             }
         });
-
+        getCarData();
     }// end oncreate
 
-
     /*
-     HTTP 통신 Code
-     */
-    class HttpAsyncTask extends AsyncTask<String, String, String> {
+      차량 정보 가져옴
+    * */
+    public void getCarData() {
+        // URL 설정.
+        String carUrl = "http://" + ip + "/webServer/cardata.mc?userid=" + user.getUserid();
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        carAsync = new CarAsync();
+        carAsync.execute(carUrl);
+    }
+
+    class CarAsync extends AsyncTask<String, Void, String> {
+
         ProgressDialog progressDialog;
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(CarManagementActivity.this);
-            progressDialog.setTitle("로그아웃");
-            progressDialog.setCancelable(false);
 
-            if (sp.getString("userid", "") == null) {
-                progressDialog.show();
-            } else {
-
-            }
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            String url = strings[0].toString();
-            String result = HttpConnect.getString(url);
+            String url = strings[0];
+            String result = HttpConnect.getString(url); //result는 JSON
+            Log.d("[TAG]", "result = "+result);
             return result;
         }
 
         @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
+        protected void onPostExecute(String s) {
+
+            Log.d("[TEST]", "s:" + s);
+
+            // userid가 car를 갖고있지 않으면 차량을 등록하는 화면으로 넘긴다
+            // 차별 차정보를 저장한다
+                JSONArray ja = null;
+                try {
+                    ja = new JSONArray(s);
+                    carlist = new ArrayList<>();
+
+                    for (int i = 0; i < ja.length(); i++) {
+                        JSONObject jo = ja.getJSONObject(i);
+
+                        int carid = jo.getInt("carid");
+                        String userid = jo.getString("userid");
+                        String carnum = jo.getString("carnum");
+                        String carname = jo.getString("carname");
+                        String cartype = jo.getString("cartype");
+                        String carmodel = jo.getString("carmodel");
+                        int caryear = jo.getInt("caryear");
+                        String carimg = jo.getString("carimg");
+                        String caroiltype = jo.getString("caroiltype");
+                        String tablettoken = jo.getString("tablettoken");
+
+                        car = new CarVO(carid, userid, carnum, carname, cartype, carmodel, caryear, carimg, caroiltype, tablettoken);
+
+                        carlist.add(car);
+                        Log.d("[Server]", car.toString());
+                        Log.d("[Server]", carlist.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            CarAdapter carAdapter = new CarAdapter();
+            listView_carList.setAdapter(carAdapter);
+            }
+        }
+
+    class CarAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return carlist.size();
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            progressDialog.dismiss();
-            String result = s.trim();
-            if (result.equals("logoutsuccess")) {
-                // 로그아웃
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-            } else if (result.equals("destroy")) {
-                // destroy
-            } else if (result.equals("logoutfail")) {
-                // 로그아웃 실패: Exception
-                AlertDialog.Builder builder = new AlertDialog.Builder(CarManagementActivity.this);
-                builder.setTitle("로그아웃에 실패하였습니다.");
-                builder.setMessage("다시 시도해 주십시오.");
-
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                    }
-                });
-
-                builder.show();
-            }
+        public Object getItem(int position) {
+            Log.d("[Server]", "position:"+position);
+            return carlist.get(position);
         }
-    }
-    // End HTTP 통신 Code
 
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
 
-    @Override
-    protected void onDestroy() {
-        String url = "http://" + ip + "/webServer/userlogoutimpl.mc";
-        String destroy = "yes";
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View carView = null;
+            LayoutInflater inflater =
+                    (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            carView =
+                    inflater.inflate(R.layout.car, container, true);
+            // 여기서 carView.findViewById로 정의해줘야 인식한다..
+            TextView tx_carname = carView.findViewById(R.id.textView_carName);
+            TextView tx_carnum = carView.findViewById(R.id.textView_carNum);
+            TextView tx_carmodel = carView.findViewById(R.id.textView_carModel);
+            int[] imglist = {R.drawable.car1, R.drawable.car2, R.drawable.car3};
+            ImageView imageView_carImg = carView.findViewById(R.id.imageView_carImg);
+                String carimg = carlist.get(position).getCarimg();
+                if (carimg.equals("car1.jpg")) {
+                    imageView_carImg.setImageResource(R.drawable.car1);
+                } else if (carimg.equals("car2.jpg")) {
+                    imageView_carImg.setImageResource(R.drawable.car2);
+                } else if (carimg.equals("car3.jpg")) {
+                    imageView_carImg.setImageResource(R.drawable.car3);
+                }
 
-        url += "?id=" + user.getUserid() + "&destroy=" + destroy;
-        httpAsyncTask = new HttpAsyncTask();
-        httpAsyncTask.execute(url);
-        super.onDestroy();
-    }
+                Log.d("[Server]", "carname :"+carlist.get(position).getCarname());
+                Log.d("[Server]", "carmodel :"+carlist.get(position).getCarmodel());
+                Log.d("[Server]", "carnum :"+carlist.get(position).getCarnum());
+                tx_carname.setText(carlist.get(position).getCarname());
+                tx_carmodel.setText(carlist.get(position).getCarmodel()); // int는 String으로 변경해주기
+                tx_carnum.setText(carlist.get(position).getCarnum());
+                // user 정보
+                TextView textView_username = findViewById(R.id.textView_userName);
+                textView_username.setText(user.getUsername());
+                TextView textView_userphone = findViewById(R.id.textView_userPhone);
+                textView_userphone.setText(user.getUserphone());
 
+//            String i = list.get(position).getRank();
+//            img1.setImageResource(imgs[Integer.parseInt(i)-1]);
+            return carView;
+        }
+    } /* 차량 정보 END */
 }
