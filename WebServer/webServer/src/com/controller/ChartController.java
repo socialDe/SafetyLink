@@ -50,7 +50,7 @@ public class ChartController {
 			String type_check, String searchBasis, String regionLists, String startPeriod, String endPeriod,
 			String timeLists1, String timeLists2) {
 		
-		
+		System.out.println(gender_check + type_check + regionLists);
 		ArrayList<LineData> lineDatas = new ArrayList<>();
 		
 		// For Test

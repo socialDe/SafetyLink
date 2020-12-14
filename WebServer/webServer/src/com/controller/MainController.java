@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class MainController {
 
 	
 	@RequestMapping("/main.mc")
-	public ModelAndView main() {
+	public ModelAndView main(HttpSession session) {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("main");
 		return mv;
@@ -53,6 +54,19 @@ public class MainController {
     @RequestMapping("/table.mc")
     public ModelAndView table() {
             ModelAndView mv = new ModelAndView();
+            
+
+    		// For Test
+    		Random r = new Random();
+    		
+    		int sleep = r.nextInt(100); // 졸음 경보 임시데이터
+    		int freight = r.nextInt(100); // 적재물 경보 임시데이터
+    		int accident = r.nextInt(100); // 일간 교통사고 임시데이터
+    		int baby = r.nextInt(100); // 영유아 경보 임시데이터
+            mv.addObject("sleep", sleep);
+            mv.addObject("freight", freight);
+            mv.addObject("accident", accident);
+            mv.addObject("baby", baby);
             
             ArrayList<UsersVO> usersInfo = new ArrayList<>();
             try {
