@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Target Material Design Bootstrap Admin Template</title>
+    <title>Safety Link</title>
     	<!-- Bootstrap Js -->
     <script src="view/assets/js/bootstrap.min.js"></script>
 	
@@ -132,13 +132,35 @@ $(document).ready(function (){
 	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
 	$('#gender_all').change(function(){
 		if($('#gender_all').is(':checked')){
-			if($('#gender_man').is(':checked')){
+			if($('#gender_man').is(':checked') || $('#gender_woman').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#gender_man').trigger('click');	
+				if($('#gender_man').is(':checked')){
+					$('#gender_man').trigger('click');
+				}
+				if($('#gender_woman').is(':checked')){
+					$('#gender_woman').trigger('click');
+				}
 			}
-			if($('#gender_woman').is(':checked')){
+		}
+	});
+
+	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#gender_man').change(function(){
+		if($('#gender_man').is(':checked')){
+			if($('#gender_all').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#gender_woman').trigger('click');
+				$('#gender_all').trigger('click');	
+			}
+		}
+	});
+
+
+	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#gender_woman').change(function(){
+		if($('#gender_woman').is(':checked')){
+			if($('#gender_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#gender_all').trigger('click');	
 			}
 		}
 	});
@@ -146,20 +168,46 @@ $(document).ready(function (){
 	// Vehicle Type Filter 체크박스 All은 다른 항목과 함께 사용 불가
 	$('#vehicle_all').change(function(){
 		if($('#vehicle_all').is(':checked')){
-			if($('#sedan').is(':checked')){
+			if($('#sedan').is(':checked') || $('#van').is(':checked') || $('#truck').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#sedan').trigger('click');	
-			}
-			if($('#van').is(':checked')){
-				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#van').trigger('click');
-			}
-			if($('#truck').is(':checked')){
-				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#truck').trigger('click');
+				if($('#sedan').is(':checked')){
+				$('#sedan').trigger('click');
+				}
+				if($('#van').is(':checked')){
+					$('#van').trigger('click');
+				}
+				if($('#truck').is(':checked')){
+					$('#truck').trigger('click');
+				}
 			}
 		}
 	});
+	// Vehicle Type Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#sedan').change(function(){
+		if($('#sedan').is(':checked')){
+			if($('#vehicle_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#vehicle_all').trigger('click');
+			}
+		}
+	});
+	$('#van').change(function(){
+		if($('#van').is(':checked')){
+			if($('#vehicle_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#vehicle_all').trigger('click');
+			}
+		}
+	});
+	$('#truck').change(function(){
+		if($('#truck').is(':checked')){
+			if($('#vehicle_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#vehicle_all').trigger('click');
+			}
+		}
+	});
+	
 
 	
 /* 	// 월 단위 datepicker
@@ -271,55 +319,37 @@ $(document).ready(function (){
  *  First Chart Display Test
  */
  function displayChart(){
-		$('#gra1').highcharts({
-			  chart: {
-			    type: 'line'
-			  },
-			  title: {
-			    text: 'Monthly Average Temperature'
-			  },
-			  subtitle: {
-			    text: 'Source: WorldClimate.com'
-			  },
-			  xAxis: {
-			    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-			  },
-			  yAxis: {
-			    title: {
-			      text: '차량 수'
-			    }
-			  },
-			  plotOptions: {
-			    line: {
-			      dataLabels: {
-			        enabled: true
-			      },
-			      enableMouseTracking: false
-			    }
-			  },
-			  series: [{
-			    name: 'Tokyo',
-			    data: [7.0, 6.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-			  }, {
-			    name: 'London',
-			    data: [3.9, 4.2, 5.7, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }, {
-			    name: 'Seoul',
-			    data: [3.3, 2.2, 5.7, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  },{
-			    name: 'Busan',
-			    data: [7.0, 3.9, 9.5, 14.5, 18.4, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
-			  }, {
-			    name: 'Pohang',
-			    data: [3.9, 2.2, 5.0, 8.5, 11.9, 15.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }, {
-			    name: 'Bejing',
-			    data: [3.3, 2.2, 5.2, 6.5, 17.9, 13.2, 17.0, 16.6, 14.2, 10.3, 6.6, 4.8]
-			  }],
-			  caption: {
-				  text: '<b>Caption Test<b>'
-			  }
-		});
+	 var formData = '&gender_check=ManWoman';
+	 formData += '&type_check=Vehicle_all';
+	 formData += '&searchBasis=Region';
+	 formData += '&regionLists=seoul';
+	 $.ajax({
+		 cache:false,
+		 url: 'chartSearch.mc',
+		 data: formData,
+		 success: function(data){
+			 console.log("success");
+			 console.log(data);
+			 console.log(typeof(data));
+			 
+			 chartDatas = data;
+			 displayChart2();
+			 if(chartDatas.length == 6){
+				 makingTable_DoubleAll();
+			 }else if(chartDatas.length == 3 || chartDatas.length == 1){
+				 makingTable_VehicleAllOrNotAll();
+			 }else if(chartDatas.length == 2){
+				 makingTable_GenderAll();
+			 }
+			 $('#chartTable').dataTable();
+		 },
+		 error : function(request,status,error) {
+            	console.log("error");
+            	console.log(request.responseText);
+            	console.log(" error = "+error)
+            	alert("code= "+request.status+" message = "+ request.responseText +" error = "+error);
+		 }
+	 });
 }
  
  
@@ -683,260 +713,91 @@ function displayChart2(){
     <link rel="stylesheet" href="view/assets/js/Lightweight-Chart/cssCharts.css"> 
 </head>
 <body>
-    <div id="wrapper">
-        <nav class="navbar navbar-default top-navbar" role="navigation">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand waves-effect waves-dark" href="index.html"><i class="large material-icons">track_changes</i> <strong>target</strong></a>
-				
-		<div id="sideNav" class="waves-effect waves-dark" href=""><i class="material-icons dp48">toc</i></div>
-            </div>
 
-            <ul class="nav navbar-top-links navbar-right"> 
-				<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown4"><i class="fa fa-envelope fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>				
-				<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown3"><i class="fa fa-tasks fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-				<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown2"><i class="fa fa-bell fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-				  <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1"><i class="fa fa-user fa-fw"></i> <b>John Doe</b> <i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
-        </nav>
-		<!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-<li><a href="#"><i class="fa fa-user fa-fw"></i> My Profile</a>
-</li>
-<li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-</li> 
-<li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-</li>
-</ul>
-<ul id="dropdown2" class="dropdown-content w250">
-  <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-</ul>
-<ul id="dropdown3" class="dropdown-content dropdown-tasks w250">
-<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 1</strong>
-					<span class="pull-right text-muted">60% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-						<span class="sr-only">60% Complete (success)</span>
+<div id="wrapper">
+	<nav class="navbar navbar-default top-navbar" role="navigation">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle waves-effect waves-dark" data-toggle="collapse" data-target=".sidebar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand waves-effect waves-dark" href="main.mc"><img src="img/logo_name.png" width="175px" height="35px" style="display: inline;"></a>
+
+			<div id="sideNav" href="">
+				<i class="material-icons dp48">toc</i>
+			</div>
+		</div>
+
+		<ul class="nav navbar-top-links navbar-right">
+			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown2"><i class="fa fa-tasks fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
+			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1"><i class="fa fa-user fa-fw"></i> <b>${admin.adminname }</b><i class="material-icons right">arrow_drop_down</i></a></li>
+		</ul>
+	</nav>
+	<!-- Dropdown Structure -->
+	<ul id="dropdown1" class="dropdown-content">
+		<li><a href="logout.mc"><i class="fa fa-sign-out fa-fw"></i>Logout</a></li>
+	</ul>
+	<ul id="dropdown2" class="dropdown-content dropdown-tasks w250">
+		<li><a href="#">
+				<div>
+					<p><strong>졸음 경보</strong> <span class="pull-right text-muted">${sleep } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${sleep }" aria-valuemin="0" aria-valuemax="100" style="width: ${sleep }%">
+							<span class="sr-only">${sleep } cases (success)</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 2</strong>
-					<span class="pull-right text-muted">28% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" style="width: 28%">
-						<span class="sr-only">28% Complete</span>
+		</a></li>
+		<li class="divider"></li>
+		<li><a href="#">
+				<div>
+					<p><strong>영유아 경보</strong> <span class="pull-right text-muted">${baby } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="${baby }" aria-valuemin="0" aria-valuemax="100" style="width: ${baby }%">
+							<span class="sr-only">${baby } cases</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 3</strong>
-					<span class="pull-right text-muted">60% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-						<span class="sr-only">60% Complete (warning)</span>
+		</a></li>
+		<li class="divider"></li>
+		<li><a href="#">
+				<div>
+					<p><strong>적재물 낙하 경보</strong> <span class="pull-right text-muted">${freight } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="${freight } " aria-valuemin="0" aria-valuemax="100" style="width: ${freight }%">
+							<span class="sr-only">${freight } cases (warning)</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 4</strong>
-					<span class="pull-right text-muted">85% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%">
-						<span class="sr-only">85% Complete (danger)</span>
+		</a></li>
+		<li class="divider"></li>
+		<li><a href="#">
+				<div>
+					<p><strong>교통 사고</strong> <span class="pull-right text-muted">${accident } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="${accident }" aria-valuemin="0" aria-valuemax="100" style="width: ${accident }%">
+							<span class="sr-only">${accident } cases (danger)</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-</ul>   
-<ul id="dropdown4" class="dropdown-content dropdown-tasks w250 taskList">
-  <li>
-                                <div>
-                                    <strong>John Doe</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Today</em>
-                                    </span>
-                                </div>
-                                <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s...</p>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <p>Lorem Ipsum has been the industry's standard dummy text ever since an kwilnw...</p>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <p>Lorem Ipsum has been the industry's standard dummy text ever since the...</p>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-</ul>  
-	   <!--/. NAV TOP  -->
-        <!--/. NAV TOP  -->
-        <nav class="navbar-default navbar-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav" id="main-menu">
+		</a></li>
+		<li class="divider"></li>
+		<li>
+	</ul>
+	<!--/. NAV TOP  -->
+	<nav class="navbar-default navbar-side" role="navigation">
+		<div class="sidebar-collapse">
+			<ul class="nav" id="main-menu">
+				<li><a href="dashboard.mc" class="waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+				<li><a href="chart.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
+				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Tables</a></li>
+			</ul>
 
-                    <li>
-                        <a href="dashboard.mc" class="waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="ui-elements.html" class="waves-effect waves-dark"><i class="fa fa-desktop"></i> UI Elements</a>
-                    </li>
-					<li>
-                        <a href="chart.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a>
-                    </li>
-                    <li>
-                        <a href="tab-panel.html" class="waves-effect waves-dark"><i class="fa fa-qrcode"></i> Tabs & Panels</a>
-                    </li>
-                    
-                    <li>
-                        <a href="table.html" class="waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a>
-                    </li>
-                    <li>
-                        <a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>
-                    </li>
+		</div>
 
-
-                    <li>
-                        <a href="#" class="waves-effect waves-dark"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#" class="waves-effect waves-dark">Second Level Link<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="empty.html" class="waves-effect waves-dark"><i class="fa fa-fw fa-file"></i> Empty Page</a>
-                    </li>
-                </ul>
-
-            </div>
-
-        </nav>
+	</nav>
         <!-- /. NAV SIDE  -->
         <div id="page-wrapper">
 		  <div class="header"> 

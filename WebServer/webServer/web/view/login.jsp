@@ -24,30 +24,24 @@
 </head>
 <body>
 	<div id="wrapper">
-		<nav class="navbar top-navbar" role="navigation">
-			<div class="navbar-header">
-				<a class="navbar-brand waves-effect waves-dark" href="index.html"><i
-					class="large material-icons">track_changes</i> <strong>target</strong></a>
-			</div>
-		</nav>
+		<div class="navbar-header">
+				<a class="navbar-brand waves-effect waves-dark" href="main.mc"><img src="img/logo_name.png" width="175px" height="35px" style="display: inline;"></a>
+		</div>
 		<!-- /. NAV SIDE  -->
-		<div id="page-wrapper">
 			<div class="header">
 				<div class="page-header">
-					<h1>Safety Link</h1>
+					<h1 style="margin-top: 5%;">Safety Link</h1>
 					<h4>Management System</h4>
 				</div>
 			</div>
 
 			<div id="page-inner">
-
-				<div class="col-md-6">
+				<div id="logincenter">
 					<div class="card">
-						<div class="card-action">Sign in</div>
+						<div class="card-action" style="font-size: 2em; margin-left: 20px;">Sign in</div>
 						<div class="card-content">
-						
 							<!-- 로그인 폼 시작 -->
-							<div class="col s12">
+							<div class="col s12" style="margin: 0 40px;">
 							<form id="loginform" action="loginimpl.mc" method="post">
 								<div class="row">
 									<div class="input-field col s12">
@@ -61,7 +55,7 @@
 										<label for="Administrator ID">Administrator Password</label>
 									</div>
 								</div>
-								<input type="submit" class="waves-effect waves-light btn" value="Sign in">
+								<input type="submit" class="waves-effect waves-light btn" value="Sign in" style="float: right;">
 							</form>
 							</div>
 							<!-- 로그인 폼 종료 -->

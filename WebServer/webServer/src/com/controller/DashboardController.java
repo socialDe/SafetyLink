@@ -39,7 +39,7 @@ public class DashboardController {
     		// For Test
     		Random r = new Random();
     		
-    		int sleep = r.nextInt(1000); // 졸음 경보 임시데이터
+    		int sleep = r.nextInt(100); // 졸음 경보 임시데이터
     		int freight = r.nextInt(100); // 적재물 경보 임시데이터
     		int accident = r.nextInt(100); // 일간 교통사고 임시데이터
     		int baby = r.nextInt(100); // 영유아 경보 임시데이터
@@ -57,6 +57,7 @@ public class DashboardController {
             mv.addObject("sleep", sleep);
             mv.addObject("freight", freight);
             mv.addObject("accident", accident);
+            mv.addObject("baby", baby);
 
             // 일간 주행 유저 = 주행 중 차량 수 / 전체 유저 * 100
             int driving = (int) (1.0 * drivingcars.size() / users.size() * 100);
