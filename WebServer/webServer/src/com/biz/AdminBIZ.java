@@ -73,4 +73,10 @@ public class AdminBIZ implements Biz<String,Integer,AdminVO> {
 		return null;
 	}
 
+	@Override
+	public AdminVO movingcarfromnumber(String k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

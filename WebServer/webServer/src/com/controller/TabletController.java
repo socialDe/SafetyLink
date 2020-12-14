@@ -146,9 +146,10 @@ public class TabletController {
 		JSONArray ja = new JSONArray();
 
 		JSONObject data = new JSONObject();
-			
+		
+		data.put("accpushcheck", user.getAccpushcheck());	
 		data.put("droppushcheck", user.getDroppushcheck());
-		data.put("sleepushcheck", user.getSleeppushcheck());
+		data.put("sleeppushcheck", user.getSleeppushcheck());
 
 			
 		ja.add(data);
@@ -163,5 +164,96 @@ public class TabletController {
 		out.close();
 	}
 	
+	
 
+	@RequestMapping("/getMovingcar.mc")
+	public void getMovingcar(HttpServletRequest request, HttpServletResponse res){
+		String carnum = request.getParameter("carnum");
+		System.out.println(carnum);
+		
+		CarSensorVO carinfo = null;
+		CarVO car = null;
+		try {
+			carinfo = sbiz.movingcarfromnumber(carnum);
+			car = cbiz.caridfromnumber(carnum);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(carinfo);
+		
+		// 이 부분에 수정할 코드를 넣는다
+		if(car != null) {
+			PrintWriter out = null;
+			try {
+				out = res.getWriter();
+				out.print("crush");
+			} catch (IOException e) {
+				// e.printStackTrace();
+			} finally {
+				out.close();
+			}
+		}else {
+
+			String token = car.getTablettoken();
+//			String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
+			
+			// FCM으로 모바일 제어
+			URL url = null;
+			try {
+				url = new URL("https://fcm.googleapis.com/fcm/send");
+			} catch (MalformedURLException e) {
+				System.out.println("Error while creating Firebase URL | MalformedURLException");
+				e.printStackTrace();
+			}
+			HttpURLConnection conn = null;
+			try {
+				conn = (HttpURLConnection) url.openConnection();
+			} catch (IOException e) {
+				System.out.println("Error while createing connection with Firebase URL | IOException");
+				e.printStackTrace();
+			}
+			conn.setUseCaches(false);
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			// set my firebase server key
+			conn.setRequestProperty("Authorization", "key="
+					+ "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
+
+			// create notification message into JSON format
+			JSONObject message = new JSONObject();
+			
+			System.out.println(token);
+			
+			message.put("to", token);
+//			message.put("to", "/topics/car");
+			message.put("priority", "high");
+			
+			JSONObject notification = new JSONObject();
+			notification.put("title", "충돌 사고");
+			notification.put("body", "test:"+car.getCarid()+" "+"충돌 사고");
+			message.put("notification", notification);
+			
+			JSONObject data = new JSONObject();
+			data.put("carid",car.getCarid());
+			data.put("contents","충돌 사고");
+			message.put("data", data);
+
+
+			try {
+				OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+				System.out.println("FCM 전송:"+message.toString());
+				out.write(message.toString());
+				out.flush();
+				conn.getInputStream();
+				System.out.println(" FCM OK...............");
+
+			} catch (IOException e) {
+				System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
+				e.printStackTrace();
+			}
+			
+		}
+	}
 }
