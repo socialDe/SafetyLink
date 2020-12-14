@@ -132,13 +132,35 @@ $(document).ready(function (){
 	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
 	$('#gender_all').change(function(){
 		if($('#gender_all').is(':checked')){
-			if($('#gender_man').is(':checked')){
+			if($('#gender_man').is(':checked') || $('#gender_woman').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#gender_man').trigger('click');	
+				if($('#gender_man').is(':checked')){
+					$('#gender_man').trigger('click');
+				}
+				if($('#gender_woman').is(':checked')){
+					$('#gender_woman').trigger('click');
+				}
 			}
-			if($('#gender_woman').is(':checked')){
+		}
+	});
+
+	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#gender_man').change(function(){
+		if($('#gender_man').is(':checked')){
+			if($('#gender_all').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#gender_woman').trigger('click');
+				$('#gender_all').trigger('click');	
+			}
+		}
+	});
+
+
+	// Gender Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#gender_woman').change(function(){
+		if($('#gender_woman').is(':checked')){
+			if($('#gender_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#gender_all').trigger('click');	
 			}
 		}
 	});
@@ -146,20 +168,46 @@ $(document).ready(function (){
 	// Vehicle Type Filter 체크박스 All은 다른 항목과 함께 사용 불가
 	$('#vehicle_all').change(function(){
 		if($('#vehicle_all').is(':checked')){
-			if($('#sedan').is(':checked')){
+			if($('#sedan').is(':checked') || $('#van').is(':checked') || $('#truck').is(':checked')){
 				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#sedan').trigger('click');	
-			}
-			if($('#van').is(':checked')){
-				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#van').trigger('click');
-			}
-			if($('#truck').is(':checked')){
-				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
-				$('#truck').trigger('click');
+				if($('#sedan').is(':checked')){
+				$('#sedan').trigger('click');
+				}
+				if($('#van').is(':checked')){
+					$('#van').trigger('click');
+				}
+				if($('#truck').is(':checked')){
+					$('#truck').trigger('click');
+				}
 			}
 		}
 	});
+	// Vehicle Type Filter 체크박스 All은 다른 항목과 함께 사용 불가
+	$('#sedan').change(function(){
+		if($('#sedan').is(':checked')){
+			if($('#vehicle_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#vehicle_all').trigger('click');
+			}
+		}
+	});
+	$('#van').change(function(){
+		if($('#van').is(':checked')){
+			if($('#vehicle_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#vehicle_all').trigger('click');
+			}
+		}
+	});
+	$('#truck').change(function(){
+		if($('#truck').is(':checked')){
+			if($('#vehicle_all').is(':checked')){
+				alert('All은 다른 선택과 중복으로 사용할 수 없습니다.');
+				$('#vehicle_all').trigger('click');
+			}
+		}
+	});
+	
 
 	
 /* 	// 월 단위 datepicker
