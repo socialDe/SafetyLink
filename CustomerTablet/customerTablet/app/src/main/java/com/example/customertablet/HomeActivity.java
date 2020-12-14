@@ -1,6 +1,7 @@
 package com.example.customertablet;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -20,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,10 +29,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.df.DataFrame;
+import com.example.customertablet.Activity.MapActivity;
 import com.example.customertablet.network.HttpConnect;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -158,6 +162,18 @@ public class HomeActivity extends AppCompatActivity {
         carnum = sp.getString("num","");
         Log.d("[Server]","carnum:"+carnum);
 } // end OnCreate
+
+    public void clickbt(View v){
+        if(v.getId() == R.id.imageButton_control){
+
+        }else if (v.getId() == R.id.imageButton_map){
+            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }else  if (v.getId() == R.id.imageButton_setting){
+
+        }
+    }
 
 
     public void sendfcm(String contents) {

@@ -22,6 +22,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_weight="1"
+          android:onClick="clickbt"
           app:srcCompat="@drawable/car_control" />
 
       <ImageButton
@@ -29,6 +30,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_weight="1"
+          android:onClick="clickbt"
           app:srcCompat="@drawable/car_map" />
 
       <ImageButton
@@ -36,6 +38,7 @@
           android:layout_width="match_parent"
           android:layout_height="match_parent"
           android:layout_weight="1"
+          android:onClick="clickbt"
           app:srcCompat="@drawable/car_setting" />
     </LinearLayout>
 
