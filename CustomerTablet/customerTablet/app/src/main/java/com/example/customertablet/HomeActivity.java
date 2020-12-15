@@ -90,7 +90,7 @@ public class HomeActivity extends AppCompatActivity {
 
     // HTTP
     DataFrame dataF;
-    HttpAsyncTask httpAsyncTask,httpAsyncTask2;
+    HttpAsyncTask httpAsyncTask, httpAsyncTask2;
     GetStatusAsync getStatusAsync;
     GetPushCheckAsync getPushCheckAsync;
 
@@ -283,16 +283,13 @@ public class HomeActivity extends AppCompatActivity {
                 if (startingcode == 0) {
                     startingcode = 1;
                     setUi("CA00003100000001");
-                    getSensor("CA00003100000001");
+                    //getSensor("CA00003100000001");
                     tabletSendDataFrame("CA00003100000001");
                     ColorMatrix matrix = new ColorMatrix();
                     matrix.setSaturation(0);
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOff.setColorFilter(filter);
                     imageButton_startingOn.setColorFilter(null);
-                    moveStop.whilestop = false;
-                    moveStart = new MoveStart();
-                    moveStart.start();
                 }
             }
         });
@@ -303,16 +300,13 @@ public class HomeActivity extends AppCompatActivity {
                 if (startingcode == 1) {
                     startingcode = 0;
                     setUi("CA00003100000000");
-                    getSensor("CA00003100000000");
+                    //getSensor("CA00003100000000");
                     tabletSendDataFrame("CA00003100000000");
                     ColorMatrix matrix = new ColorMatrix();
                     matrix.setSaturation(0);
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOn.setColorFilter(filter);
                     imageButton_startingOff.setColorFilter(null);
-                    moveStart.whilemove = false;
-                    moveStop = new MoveStop();
-                    moveStop.start();
                 }
             }
         });
@@ -323,7 +317,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (doorcode == 0) {
                     doorcode = 1;
                     setUi("CA00003300000001");
-                    getSensor("CA00003300000001");
+                    //getSensor("CA00003300000001");
                     tabletSendDataFrame("CA00003300000001");
                 }
             }
@@ -335,7 +329,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (doorcode == 1) {
                     doorcode = 0;
                     setUi("CA00003300000000");
-                    getSensor("CA00003300000000");
+                    //getSensor("CA00003300000000");
                     tabletSendDataFrame("CA00003300000000");
 
                 }
@@ -343,8 +337,11 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         getStatus();
-        getPushCheck();
-        Log.d("[TAG]","acc:"+accpushcheck+" drop:"+droppushcheck+" sleep:"+sleeppushcheck);
+
+        Thread t1 = new Thread(new PushCheckThread());
+        t1.start();
+
+        Log.d("[TAG]", "acc:" + accpushcheck + " drop:" + droppushcheck + " sleep:" + sleeppushcheck);
 
         textView_todayDate.setText(timeNowDate);
         textView_time.setText(timeNowTime);
@@ -353,6 +350,7 @@ public class HomeActivity extends AppCompatActivity {
 
     class MovingCar extends Thread {
         boolean moving = true;
+
         public void run() {
             final Bundle bundle = new Bundle();
 
@@ -487,7 +485,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onFinish() {
             setUi("CA0000210000" + String.valueOf(targetTemp) + "00");
-            getSensor("CA0000210000" + String.valueOf(targetTemp) + "00");
+            //getSensor("CA0000210000" + String.valueOf(targetTemp) + "00");
             tabletSendDataFrame("CA0000210000" + String.valueOf(targetTemp) + "00");
 
             Toast t = Toast.makeText(HomeActivity.this, "목표온도가 " + targetTemp + "로 변경됩니다!", Toast.LENGTH_SHORT);
@@ -575,7 +573,7 @@ public class HomeActivity extends AppCompatActivity {
                     if (input.getContents().substring(4, 8).equals("0003")) {
                         String strvibr = input.getContents().substring(8);
                         int vibrData = Integer.parseInt(strvibr);
-                        Log.d("[acc]","vibrData"+vibrData);
+                        Log.d("[acc]", "vibrData" + vibrData);
                         // 충돌 푸쉬설정이 "on" 일때만 알람창을 띄운다
                         if (accpushcheck.equals("o")) {
                             if (vibrData > 30) {
@@ -881,7 +879,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             final String result = s.trim();
-            Log.d("[TAG]", "result:"+result);
+            Log.d("[TAG]", "result:" + result);
             if (result.equals("crush")) {
                 AlertDialog.Builder dailog = new AlertDialog.Builder(HomeActivity.this);
                 dailog.setTitle("충돌 사고가 발생하였습니다");
@@ -1054,7 +1052,8 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getSensors(String contents, String fuel) {
         String url = "http://" + ip + "/webServer/getTabletSensor.mc";
-        url += "?carnum=" + carnum + "&contents=" + contents + "&fuel=" + fuel;
+        int fuelInt = Integer.parseInt(fuel);
+        url += "?carnum=" + carnum + "&contents=" + contents + "&fuel=" + fuelInt;
         httpAsyncTask = new HttpAsyncTask();
         // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
         Handler mHandler = new Handler(Looper.getMainLooper());
@@ -1162,7 +1161,7 @@ public class HomeActivity extends AppCompatActivity {
                         moveStart.whilemove = false;
                     }
                     int oil = jo.getInt("fuel");
-                    textView_oil.setText(oil/100+"");
+                    textView_oil.setText(oil / 100 + "");
                     String maxoil = jo.getString("fuelmax");
                     textView_maxoil.setText(maxoil + "L");
                     String temper = jo.getString("temper");
@@ -1209,7 +1208,12 @@ public class HomeActivity extends AppCompatActivity {
                         msg.setData(bundle);
                         doorcode = 0;
                         setUi("CA00003300000000"); // Tablet UI에 설정
-                        getSensors("CA00003300000000", "CA0000070000"+String.valueOf(fuel*100)); // DB에 저장
+                        if (fuel >= 10 && fuel < 100) {
+                            //getSensors("CA00003300000000", "CA0000070000"+String.valueOf(fuel*100)); // DB에 저장
+                        } else if (fuel < 10) {
+                            //getSensors("CA00003300000000", "CA000007000"+String.valueOf(fuel*1000)); // DB에 저장
+                        }
+
                         tabletSendDataFrame("CA00003300000000"); // TCP/IP로 전송
 
                     }
@@ -1232,7 +1236,7 @@ public class HomeActivity extends AppCompatActivity {
                         fuel = fuel - 0.2;
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
-                        getSensor("CA0000070000"+String.valueOf(fuel*100));
+                        //getSensor("CA0000070000"+String.valueOf(fuel*100));
 
                     }
                     msg.setData(bundle);
@@ -1269,7 +1273,7 @@ public class HomeActivity extends AppCompatActivity {
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
-                    getSensor("CA0000070000"+String.valueOf(fuel*100));
+                    //getSensor("CA0000070000"+String.valueOf(fuel*100));
                     velocityhandler.sendMessage(msg);
                 } else if (v < 80) { // 이 부분은 80~120으로 왔다갔다 할까 고민하느라 넣어둠
                     fuel = fuel - 0.3;
@@ -1290,7 +1294,7 @@ public class HomeActivity extends AppCompatActivity {
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
-                    getSensor("CA0000070000"+String.valueOf(fuel*100));
+                    //getSensor("CA0000070000"+String.valueOf(fuel*100));
                     velocityhandler.sendMessage(msg);
                 }
             }
@@ -1363,11 +1367,12 @@ public class HomeActivity extends AppCompatActivity {
                 v = v - r.nextInt(4);
                 if (v <= 0) {
                     v = 0;
-                    imageView_moving.setImageResource(R.drawable.stopcar);
                     Message msg = velocityhandler.obtainMessage();
                     bundle.putInt("velocity", v);
                     msg.setData(bundle);
                     velocityhandler.sendMessage(msg);
+                    getSensor("CA00003200000000");
+                    tabletSendDataFrame("CA00003200000000");
                     break;
                 }
                 Message msg = velocityhandler.obtainMessage();
@@ -1391,6 +1396,7 @@ public class HomeActivity extends AppCompatActivity {
             int v = bundle.getInt("velocity");
             if (v <= 0) {
                 v = 0;
+                imageView_moving.setImageResource(R.drawable.stopcar);
             }
             final int finalV = v;
             runOnUiThread(new Runnable() {
@@ -1542,14 +1548,8 @@ public class HomeActivity extends AppCompatActivity {
     // 태블릿 켤 때 db에서 푸쉬정보를 가져와 오류를 방지한다
     class GetPushCheckAsync extends AsyncTask<String, Void, String> {
 
-        ProgressDialog progressDialog;
-
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(HomeActivity.this);
-            progressDialog.setTitle("자동차 정보 조회 중 ...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
         }
 
         @Override
@@ -1562,8 +1562,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
 
-            progressDialog.dismiss();
-            Log.d("[TAG]","pushcheck:"+s);
+            Log.d("[TAG]", "pushcheck:" + s);
             JSONArray ja = null;
             try {
                 ja = new JSONArray(s);
@@ -1595,6 +1594,21 @@ public class HomeActivity extends AppCompatActivity {
 
         }
     }
+
+    class PushCheckThread implements Runnable {
+
+        @Override
+        public void run() {
+            getPushCheck();
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }
 

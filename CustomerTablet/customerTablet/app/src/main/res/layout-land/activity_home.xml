@@ -76,7 +76,9 @@
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:scaleType="centerInside"
-            android:src="@drawable/mycartext"
+            android:scaleX="0.6"
+            android:scaleY="0.6"
+            android:src="@drawable/infoicon2"
             android:visibility="visible" />
 
       </LinearLayout>
