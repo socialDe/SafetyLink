@@ -161,21 +161,20 @@ public class Fragment1 extends Fragment {
         }) ;
 
 
-        // 현재 타겟온도 가져오기
-        targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
-        // 온도 타이머 3초로 세팅하기
-        temperTimer = new TemperTimer(3000, 1000);
-
+        // 온도 타이머 2초로 세팅하기
+        temperTimer = new TemperTimer(2000, 1000);
 
         imageButton_upTemper.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
-                targetTemper = targetTemper + 1;
 
-                if(targetTemper > 30){
+                ((CarActivity)getActivity()).carDataTimer.cancel();
+
+                if(targetTemper >= 30){
                     Toast.makeText(getActivity(),"30도 이하로 설정해주세요!",Toast.LENGTH_SHORT).show();
                 }else{
+                    targetTemper = targetTemper + 1;
                     textView_targetTemper.setText(String.valueOf(targetTemper));
 
                     temperTimer.cancel();
@@ -190,11 +189,13 @@ public class Fragment1 extends Fragment {
         imageButton_downTemper.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                targetTemper = targetTemper - 1;
 
-                if(targetTemper < 18){
+                ((CarActivity)getActivity()).carDataTimer.cancel();
+
+                if(targetTemper <= 18){
                     Toast.makeText(getActivity(),"18도 이상으로 설정해주세요!",Toast.LENGTH_SHORT).show();
                 }else{
+                    targetTemper = targetTemper - 1;
                     textView_targetTemper.setText(String.valueOf(targetTemper));
 
                     temperTimer.cancel();
@@ -213,8 +214,7 @@ public class Fragment1 extends Fragment {
     // 온도설정을 위한 타이머
     class TemperTimer extends CountDownTimer
     {
-        public TemperTimer(long millisInFuture, long countDownInterval)
-        {
+        public TemperTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
         }
 
@@ -225,8 +225,8 @@ public class Fragment1 extends Fragment {
 
         @Override
         public void onFinish() {
+            ((CarActivity)getActivity()).carDataTimer.start();
             ((CarActivity)getActivity()).sendfcm("CA0000210000"+String.valueOf(targetTemper)+"00");;
-
             Toast t = Toast.makeText(getActivity(),"차량온도가 "+targetTemper+"로 세팅합니다!",Toast.LENGTH_SHORT);
             t.show();
             ((CarActivity)getActivity()).vibrate(500,5);
@@ -260,7 +260,7 @@ public class Fragment1 extends Fragment {
     }
 
     // 차센서 정보를 세팅하는 함수
-    public void setCarSensorData(String moving, int fuel, String starting, String door, int temper){
+    public void setCarSensorData(String moving, int fuel, String starting, String door, int temper, String aircon){
 
         if(moving.equals("1")){
             textView_moving.setText("주행중");
@@ -271,6 +271,9 @@ public class Fragment1 extends Fragment {
         }
         textView_fuel.setText(String.valueOf(fuel));
         textView_possibleDistance.setText(String.valueOf(fuel*12));
+        textView_targetTemper.setText(aircon);
+        // 현재 타겟온도 가져오기
+        targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
         Log.d("[TAG]","Here:"+fuel+" "+starting+" "+door+" "+temper);
         if(starting.equals("1")){
             startingSW = 1;
@@ -292,8 +295,10 @@ public class Fragment1 extends Fragment {
         }
         textView_temper.setText(String.valueOf(temper));
 
-
-        Log.d("[TAG]", "setCarSensorData OK"+" "+fuel+" "+starting+" "+door+" "+temper);
+        textView_targetTemper.setText(aircon);
+        // 현재 타겟온도 가져오기
+        targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());
+        Log.d("[TAG]", "setCarSensorData OK"+" "+fuel+" "+starting+" "+door+" "+temper+" "+aircon);
 
     }
 
@@ -302,68 +307,68 @@ public class Fragment1 extends Fragment {
 
 
 
-    // FCM 발신
-    // 데이터를 Push Message에 넣어서 보내는 send 함수(제어)
-    public void sendFcm(String control, String input) { // String control, String input 으로 변경하기 !
-        System.out.println("phone Send Start...");
-        URL url = null;
-        try {
-            url = new URL("https://fcm.googleapis.com/fcm/send");
-        } catch (MalformedURLException e) {
-            System.out.println("Error while creating Firebase URL | MalformedURLException");
-            e.printStackTrace();
-        }
-        HttpURLConnection conn = null;
-        try {
-            conn = (HttpURLConnection) url.openConnection();
-        } catch (IOException e) {
-            System.out.println("Error while createing connection with Firebase URL | IOException");
-            e.printStackTrace();
-        }
-        conn.setUseCaches(false);
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        conn.setRequestProperty("Content-Type", "application/json");
-
-        // set my firebase server key
-        conn.setRequestProperty("Authorization", "key="
-// 세미프로젝트 키 + "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
-                + "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
-
-        // create notification message into JSON format
-        JSONObject message = new JSONObject();
-        try {
-            message.put("to", "/topics/car");
-            message.put("priority", "high");
-
-            JSONObject notification = new JSONObject();
-            notification.put("title", "HyunDai");
-            notification.put("body", "자동차 상태 변경");
-            message.put("notification", notification);
-
-            JSONObject data = new JSONObject();
-            data.put("control", control); // 이 부분 변경하며 temp, door, power 등 조절
-            data.put("data", input);
-            message.put("data", data);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-            System.out.println("FCM 전송:" + message.toString());
-            out.write(message.toString());
-            out.flush();
-            conn.getInputStream();
-            System.out.println("OK...............");
-
-        } catch (IOException e) {
-            System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
-            e.printStackTrace();
-        }
-
-        System.out.println("phone Send End...");
-    }
+//    // FCM 발신
+//    // 데이터를 Push Message에 넣어서 보내는 send 함수(제어)
+//    public void sendFcm(String control, String input) { // String control, String input 으로 변경하기 !
+//        System.out.println("phone Send Start...");
+//        URL url = null;
+//        try {
+//            url = new URL("https://fcm.googleapis.com/fcm/send");
+//        } catch (MalformedURLException e) {
+//            System.out.println("Error while creating Firebase URL | MalformedURLException");
+//            e.printStackTrace();
+//        }
+//        HttpURLConnection conn = null;
+//        try {
+//            conn = (HttpURLConnection) url.openConnection();
+//        } catch (IOException e) {
+//            System.out.println("Error while createing connection with Firebase URL | IOException");
+//            e.printStackTrace();
+//        }
+//        conn.setUseCaches(false);
+//        conn.setDoInput(true);
+//        conn.setDoOutput(true);
+//        conn.setRequestProperty("Content-Type", "application/json");
+//
+//        // set my firebase server key
+//        conn.setRequestProperty("Authorization", "key="
+//// 세미프로젝트 키 + "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
+//                + "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
+//
+//        // create notification message into JSON format
+//        JSONObject message = new JSONObject();
+//        try {
+//            message.put("to", "/topics/car");
+//            message.put("priority", "high");
+//
+//            JSONObject notification = new JSONObject();
+//            notification.put("title", "HyunDai");
+//            notification.put("body", "자동차 상태 변경");
+//            message.put("notification", notification);
+//
+//            JSONObject data = new JSONObject();
+//            data.put("control", control); // 이 부분 변경하며 temp, door, power 등 조절
+//            data.put("data", input);
+//            message.put("data", data);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+//            System.out.println("FCM 전송:" + message.toString());
+//            out.write(message.toString());
+//            out.flush();
+//            conn.getInputStream();
+//            System.out.println("OK...............");
+//
+//        } catch (IOException e) {
+//            System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
+//            e.printStackTrace();
+//        }
+//
+//        System.out.println("phone Send End...");
+//    }
 
 
 

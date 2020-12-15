@@ -68,5 +68,10 @@ public class CarSensorBIZ implements Biz<Integer,String,CarSensorVO> {
 	public ArrayList<CarSensorVO> getdrivingcars(String k) throws Exception {
 		return dao.selectdrivingcars(k);
 	}
+	
+	@Override
+	public CarSensorVO movingcarfromnumber(String k) throws Exception {
+		return dao.movingcarfromnumber(k);
+	}
 
 }

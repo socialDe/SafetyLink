@@ -50,9 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="안전 기능 설정"
+                android:text="안전 기능 푸쉬 설정"
                 android:textSize="34sp"
-                tools:text="안전 기능 설정" />
+                tools:text="안전 기능 푸쉬 설정" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 

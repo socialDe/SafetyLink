@@ -66,6 +66,10 @@ public class CarBIZ implements Biz<Integer,String,CarVO> {
 
 	@Override
 	public ArrayList<CarVO> getdrivingcars(String k) throws Exception {
+		return null;
+	}
+	
+	public CarVO movingcarfromnumber(String k) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

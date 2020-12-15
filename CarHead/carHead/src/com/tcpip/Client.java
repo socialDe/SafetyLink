@@ -82,11 +82,7 @@ public class Client {
 			canId = "0420AD02";
 		}
 		
-		if(df.getContents().substring(0, 4).equals("0021")) {
-			// 에어컨
-			
-		}
-		
+		System.out.println("Send can" + "W28" + canId + df.getContents());
 		can.sendSerial("W28" + canId + df.getContents(), canId);
 	}
 	

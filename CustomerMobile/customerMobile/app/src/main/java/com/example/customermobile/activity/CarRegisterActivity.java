@@ -61,6 +61,9 @@ public class CarRegisterActivity extends AppCompatActivity {
     TextView textView_carModel, textView_carType, textView_carYear, textView_fuelType;
     LinearLayout layout_carInfo;
 
+    String carnum;
+    int number;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,47 +148,23 @@ public class CarRegisterActivity extends AppCompatActivity {
 
         layout_carInfo.setVisibility(View.INVISIBLE);
 
+
     }// end oncreate
 
     public void bt_checkNum(View v){
-        final String carnum = editText_carNum.getText().toString();
+        Log.d("[LOG]", "carnum:"+carnum);
         //인증번호 생성
         Random r = new Random();
-        final int number = r.nextInt(9000)+1000;
-        Log.d("[Server]","인증번호는 : "+number);
+        number = r.nextInt(9000)+1000;
+        carnum = editText_carNum.getText().toString();
 
         SendNumberFcm(carnum, number);
-
-        final EditText edittext = new EditText(CarRegisterActivity.this);
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CarRegisterActivity.this);
-        alertDialog.setTitle("인증번호")
-                .setView(edittext)
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(edittext.getText().toString().equals(number+"")){
-                                String url = "http://" + ip + "/webServer/carnumcheckimpl.mc";
-                                url += "?carnum=" + carnum;
-                                carNumCheckAsync = new CarNumCheckAsync();
-                                carNumCheckAsync.execute(url);
-                            } else{
-                            Toast.makeText(CarRegisterActivity.this,"번호가 틀렸습니다",Toast.LENGTH_SHORT).show();
-                        }
-                        }
-                })
-        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(CarRegisterActivity.this,"취소되었습니다",Toast.LENGTH_SHORT).show();
-            }
-        });
-        alertDialog.create().show();
 
     }
 
     // 인증번호 보내는 fcm
     public void SendNumberFcm(String carnum, int number) {
-        String urlstr = "http://"+ip+"/webServer/sendnumberfcm.mc";
+        String urlstr = "http://" + ip + "/webServer/sendnumberfcm.mc";
         String conrtolUrl = urlstr + "?carnum=" + carnum +"&number=" + number;
 
         Log.d("[TEST]", conrtolUrl);
@@ -195,21 +174,52 @@ public class CarRegisterActivity extends AppCompatActivity {
         controlAsync.execute(conrtolUrl);
     }
 
-    class ControlAsync extends AsyncTask<String, Void, Void> {
-
-        public Void result;
+    class ControlAsync extends AsyncTask<String, Void, String> {
 
         @Override
-        protected Void doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
             String url = strings[0];
-            HttpConnect.getString(url); //result는 JSON
+            String result = HttpConnect.getString(url);
             return result;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(String s) {
+            if(s.equals("notExist")){
+                Toast.makeText(CarRegisterActivity.this,"등록된 차량번호가 아닙니다.",Toast.LENGTH_SHORT).show();
 
+            }else if(s.equals("alreadyExist")){
+                Toast.makeText(CarRegisterActivity.this,"이미 등록된 차량번호 입니다.",Toast.LENGTH_SHORT).show();
+
+            }else{
+                final EditText edittext = new EditText(CarRegisterActivity.this);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CarRegisterActivity.this);
+                alertDialog.setTitle("인증번호")
+                        .setView(edittext)
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(edittext.getText().toString().equals(number+"")){
+                                    String url = "http://" + ip + "/webServer/carnumcheckimpl.mc";
+                                    url += "?carnum=" + carnum;
+                                    carNumCheckAsync = new CarNumCheckAsync();
+                                    carNumCheckAsync.execute(url);
+                                } else{
+                                    Toast.makeText(CarRegisterActivity.this,"번호가 틀렸습니다",Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(CarRegisterActivity.this,"취소되었습니다",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                alertDialog.create().show();
+            }
         }
+
+
     }
 
     public void bt_register(View v){
