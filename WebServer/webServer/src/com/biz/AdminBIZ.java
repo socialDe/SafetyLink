@@ -63,7 +63,7 @@ public class AdminBIZ implements Biz<String,Integer,AdminVO> {
 	}
 
 	@Override
-	public AdminVO caridfromnumber(String k) throws Exception {
+	public AdminVO carfromnumber(String k) throws Exception {
 		return null;
 	
 	}

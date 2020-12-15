@@ -144,7 +144,7 @@ public class CarController {
 		// DB에 control 변경값 저장
 		CarSensorVO dbcarsensor = null;
 		
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 		String userid = cbiz.get(carid).getUserid();
 
 		
@@ -169,14 +169,8 @@ public class CarController {
         	}      	
         }
         // 차량에서 모바일로 보내는 푸쉬(충돌)
-        else if(contentsSensor.equals("0002") || contentsSensor.equals("0003")){
-        	if(ubiz.get(userid).getAccpushcheck().equals("o")) {
-        		token = ubiz.get(userid).getMobiletoken();
-        	}
-        	// 안받기로 설정
-        	else if(ubiz.get(userid).getAccpushcheck().equals("f")) {
+        else if(contentsSensor.equals("0003")){
         		return;
-        	}  
         }
         // 모바일에서 차량제어
         else{
@@ -334,7 +328,7 @@ public class CarController {
 			cbiz.register(car);
 			out.print("success");
 			
-			int carid = cbiz.caridfromnumber(carnum).getCarid();
+			int carid = cbiz.carfromnumber(carnum).getCarid();
 			
 			CarSensorVO carsensor = new CarSensorVO(carid, 0, "0", "0", 0, 50, 50, 0, "0", "0", "25", "0", "0", 0, 0);
 			sbiz.register(carsensor);
@@ -357,7 +351,7 @@ public class CarController {
 		String carnum = request.getParameter("num");
 		String tablettoken = request.getParameter("token");
 
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 
 		CarVO car = new CarVO(carid, tablettoken);
 		System.out.println(car);
@@ -381,7 +375,7 @@ public class CarController {
 
 		String carnum = request.getParameter("carnum");
 		System.out.println("carnum:"+carnum);
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 		System.out.println("00000000");
 
 		CarVO car = new CarVO();
@@ -425,7 +419,7 @@ public class CarController {
 		PrintWriter outt = res.getWriter();
 		
 		try {
-			int carid = cbiz.caridfromnumber(carnum).getCarid();
+			int carid = cbiz.carfromnumber(carnum).getCarid();
 			if(!cbiz.get(carid).getUserid().equals("unassigned")) {
 				outt.print("alreadyExist");
 				outt.close();
@@ -507,7 +501,7 @@ public class CarController {
 		String carname = request.getParameter("carname");
 		System.out.println(userid+" "+carnum+" "+carname);
 		
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 		
 		CarVO dbcar = null;
 		try {

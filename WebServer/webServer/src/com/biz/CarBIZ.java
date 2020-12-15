@@ -60,8 +60,8 @@ public class CarBIZ implements Biz<Integer,String,CarVO> {
 	}
 	
 	@Override
-	public CarVO caridfromnumber(String k) throws Exception {
-		return dao.caridfromnumber(k);
+	public CarVO carfromnumber(String k) throws Exception {
+		return dao.carfromnumber(k);
 	}
 
 	@Override

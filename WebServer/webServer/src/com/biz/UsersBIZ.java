@@ -62,7 +62,7 @@ public class UsersBIZ implements Biz<String,String,UsersVO> {
 	}
 
 	@Override
-	public UsersVO caridfromnumber(String k) throws Exception {
+	public UsersVO carfromnumber(String k) throws Exception {
 		return null;
 	
 	}

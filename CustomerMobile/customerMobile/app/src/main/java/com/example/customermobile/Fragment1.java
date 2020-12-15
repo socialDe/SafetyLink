@@ -97,6 +97,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(startingSW == 0){
+                    CarActivity.carDataTimer.start();
                     startingSW = 1;
 
                     ((CarActivity)getActivity()).sendfcm("CA00003100000001");
@@ -113,6 +114,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(startingSW == 1){
+                    CarActivity.carDataTimer.start();
                     startingSW = 0;
 
                     ((CarActivity)getActivity()).sendfcm("CA00003100000000");
@@ -130,6 +132,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(doorSW == 0) {
+                    CarActivity.carDataTimer.start();
                     doorSW = 1;
 
                     ((CarActivity) getActivity()).sendfcm("CA00003300000001");
@@ -147,6 +150,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(doorSW == 1) {
+                    CarActivity.carDataTimer.start();
                     doorSW = 0;
 
                     ((CarActivity)getActivity()).sendfcm("CA00003300000000");
@@ -168,6 +172,7 @@ public class Fragment1 extends Fragment {
 
             @Override
             public void onClick(View v) {
+                CarActivity.carDataTimer.start();
 
                 ((CarActivity)getActivity()).carDataTimer.cancel();
 
@@ -270,7 +275,7 @@ public class Fragment1 extends Fragment {
             textView_moving.setTextColor(Color.RED);
         }
         textView_fuel.setText(String.valueOf(fuel/100));
-        textView_possibleDistance.setText(String.valueOf(fuel*12));
+        textView_possibleDistance.setText(String.valueOf(fuel*12/100));
         textView_targetTemper.setText(aircon);
         // 현재 타겟온도 가져오기
         targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());

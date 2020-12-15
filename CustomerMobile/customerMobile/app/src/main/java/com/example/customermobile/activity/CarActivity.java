@@ -109,7 +109,7 @@ public class CarActivity extends AppCompatActivity {
     //  네이게이션 드로우어어
     private DrawerLayout mDrawerLayout;
 
-    public CarDataTimer carDataTimer;
+    public static CarDataTimer carDataTimer;
     public AlermBabyTimer alermBabyTimer;
 
     @Override
@@ -644,9 +644,8 @@ public class CarActivity extends AppCompatActivity {
                         AlertDialog dialog = builder2.create();
                         dialog.show();
                     }
-                } else if(contents.substring(4,8).equals("0002") || contents.equals("0003")){
-                    if(contents.substring(contents.length()-1,contents.length()).equals("1") ||
-                            contents.substring(contents.length()-1,contents.length()).equals("3")){
+                } else if(contents.substring(4,8).equals("0003")){
+                    if(contents.substring(contents.length()-1,contents.length()).equals("2")){
                         uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                         ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
                         ringtone.play();

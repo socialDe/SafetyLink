@@ -45,7 +45,7 @@ public class TabletController {
 		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
 
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 
 		CarSensorVO cs = null;
 		try {
@@ -55,6 +55,8 @@ public class TabletController {
 		}
 
 		storeContents(cs, contents);
+		
+		System.out.println("modify:"+cs);
 
 		sbiz.modify(cs);
 	}
@@ -65,7 +67,7 @@ public class TabletController {
 		String contents = request.getParameter("contents");
 		String fuel = request.getParameter("fuel");
 
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 
 		CarSensorVO cs = null;
 		try {
@@ -121,7 +123,7 @@ public class TabletController {
 	public void carnumcheck(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
 		String carnum = request.getParameter("carnum");
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 
 		CarSensorVO car = new CarSensorVO();
 		car = sbiz.get(carid);
@@ -140,7 +142,7 @@ public class TabletController {
 			
 		ja.add(data);
 		
-		System.out.println("---------test:"+ja.toJSONString());
+		System.out.println("getstatus:"+ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -157,7 +159,7 @@ public class TabletController {
 	public void getpush(HttpServletRequest request, HttpServletResponse res) throws Exception {
 
 		String carnum = request.getParameter("carnum");
-		int carid = cbiz.caridfromnumber(carnum).getCarid();
+		int carid = cbiz.carfromnumber(carnum).getCarid();
 		
 		String userid = cbiz.get(carid).getUserid();
 
@@ -175,7 +177,7 @@ public class TabletController {
 			
 		ja.add(data);
 		
-		System.out.println("---------test:"+ja.toJSONString());
+		System.out.println("getpush:"+ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -194,16 +196,19 @@ public class TabletController {
 		
 		CarSensorVO carinfo = null;
 		CarVO car = null;
+		String userid = "";
+		UsersVO user = null;
 		try {
 			carinfo = sbiz.movingcarfromnumber(carnum);
-			car = cbiz.caridfromnumber(carnum);
+			car = cbiz.carfromnumber(carnum);
+			userid = car.getUserid();
+			user = ubiz.get(userid);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(carinfo);
 		
 		// 이 부분에 수정할 코드를 넣는다
-		if(car != null) {
+		if(carinfo != null) {
 			PrintWriter out = null;
 			try {
 				out = res.getWriter();
@@ -215,10 +220,11 @@ public class TabletController {
 			}
 		}else {
 
-			String token = car.getTablettoken();
+			String token = user.getMobiletoken();
 //			String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
 			
-			// FCM으로 모바일 제어
+			
+			// FCM으로 차량 제어
 			URL url = null;
 			try {
 				url = new URL("https://fcm.googleapis.com/fcm/send");
@@ -244,27 +250,26 @@ public class TabletController {
 
 			// create notification message into JSON format
 			JSONObject message = new JSONObject();
-			
-			System.out.println(token);
-			
-			message.put("to", token);
-//			message.put("to", "/topics/car");
-			message.put("priority", "high");
-			
-			JSONObject notification = new JSONObject();
-			notification.put("title", "충돌 사고");
-			notification.put("body", "test:"+car.getCarid()+" "+"충돌 사고");
-			message.put("notification", notification);
-			
-			JSONObject data = new JSONObject();
-			data.put("carid",car.getCarid());
-			data.put("contents","충돌 사고");
-			message.put("data", data);
 
+			System.out.println("token:"+token);
+
+			message.put("to", token);
+			//message.put("to", "/topics/car");
+			message.put("priority", "high");
+
+			JSONObject notification = new JSONObject();
+			notification.put("title", "SaftyLink 알람");
+			notification.put("body", "");
+			message.put("notification", notification);
+
+			JSONObject data = new JSONObject();
+			data.put("carid", car.getCarid());
+			data.put("contents", "CA02000300000002");
+			message.put("data", data);
 
 			try {
 				OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
-				System.out.println("FCM 전송:"+message.toString());
+				System.out.println("FCM 전송:" + message.toString());
 				out.write(message.toString());
 				out.flush();
 				conn.getInputStream();
@@ -275,6 +280,66 @@ public class TabletController {
 				e.printStackTrace();
 			}
 			
+			
+			
+////////////////////////////////////////////////////////////////
+//			// FCM으로 모바일 제어
+//			URL url = null;
+//			try {
+//				url = new URL("https://fcm.googleapis.com/fcm/send");
+//			} catch (MalformedURLException e) {
+//				System.out.println("Error while creating Firebase URL | MalformedURLException");
+//				e.printStackTrace();
+//			}
+//			HttpURLConnection conn = null;
+//			try {
+//				conn = (HttpURLConnection) url.openConnection();
+//			} catch (IOException e) {
+//				System.out.println("Error while createing connection with Firebase URL | IOException");
+//				e.printStackTrace();
+//			}
+//			conn.setUseCaches(false);
+//			conn.setDoInput(true);
+//			conn.setDoOutput(true);
+//			conn.setRequestProperty("Content-Type", "application/json");
+//
+//			// set my firebase server key
+//			conn.setRequestProperty("Authorization", "key="
+//					+ "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
+//
+//			// create notification message into JSON format
+//			JSONObject message = new JSONObject();
+//			
+//			System.out.println(token);
+//			
+//			message.put("to", token);
+////			message.put("to", "/topics/car");
+//			message.put("priority", "high");
+//			
+//			JSONObject notification = new JSONObject();
+//			notification.put("title", "충돌 사고");
+//			notification.put("body", "test:"+car.getCarid()+" "+"충돌 사고");
+//			message.put("notification", notification);
+//			
+//			JSONObject data = new JSONObject();
+//			data.put("carid",car.getCarid());
+//			data.put("contents","충돌 사고");
+//			message.put("data", data);
+//
+//
+//			try {
+//				OutputStreamWriter out = new OutputStreamWriter(conn.getOutputStream(), "UTF-8");
+//				System.out.println("FCM 전송:"+message.toString());
+//				out.write(message.toString());
+//				out.flush();
+//				conn.getInputStream();
+//				System.out.println(" FCM OK...............");
+//
+//			} catch (IOException e) {
+//				System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
+//				e.printStackTrace();
+//			}
+//			
 		}
 	}
 }
