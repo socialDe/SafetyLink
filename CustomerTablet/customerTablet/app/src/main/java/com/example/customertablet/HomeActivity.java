@@ -13,11 +13,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
 import android.media.MediaPlayer;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +25,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -1035,6 +1034,20 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    public void getSensors(String contents, String fuel) {
+        String url = "http://" + ip + "/webServer/getTabletSensor.mc";
+        url += "?carnum=" + carnum + "&contents=" + contents + "&fuel=" + fuel;
+        httpAsyncTask = new HttpAsyncTask();
+        // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        final String finalUrl = url;
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                httpAsyncTask.execute(finalUrl);
+            }
+        });
+    }
 
     public void getStatus() {
         String url = "http://" + ip + "/webServer/getstatus.mc";
@@ -1122,8 +1135,8 @@ public class HomeActivity extends AppCompatActivity {
                         imageView_moving.setImageResource(R.drawable.stopcar);
                         imageView_moving.setColorFilter(filter);
                     }
-                    String oil = jo.getString("fuel");
-                    textView_oil.setText(oil);
+                    int oil = jo.getInt("fuel");
+                    textView_oil.setText(oil/100+"");
                     String maxoil = jo.getString("fuelmax");
                     textView_maxoil.setText(maxoil + "L");
                     String temper = jo.getString("temper");
@@ -1169,9 +1182,10 @@ public class HomeActivity extends AppCompatActivity {
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
                         doorcode = 0;
-                        setUi("CA00003300000000");
-                        getSensor("CA00003300000000");
-                        tabletSendDataFrame("CA00003300000000");
+                        setUi("CA00003300000000"); // Tablet UI에 설정
+                        getSensors("CA00003300000000", "CA0000070000"+String.valueOf(fuel*100)); // DB에 저장
+                        tabletSendDataFrame("CA00003300000000"); // TCP/IP로 전송
+
                     }
                     break;
                 }
@@ -1192,6 +1206,8 @@ public class HomeActivity extends AppCompatActivity {
                         fuel = fuel - 0.2;
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
+                        getSensor("CA0000070000"+String.valueOf(fuel*100));
+
                     }
                     msg.setData(bundle);
                     break;
@@ -1227,6 +1243,7 @@ public class HomeActivity extends AppCompatActivity {
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
+                    getSensor("CA0000070000"+String.valueOf(fuel*100));
                     velocityhandler.sendMessage(msg);
                 } else if (v < 80) { // 이 부분은 80~120으로 왔다갔다 할까 고민하느라 넣어둠
                     fuel = fuel - 0.3;
@@ -1247,6 +1264,7 @@ public class HomeActivity extends AppCompatActivity {
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
+                    getSensor("CA0000070000"+String.valueOf(fuel*100));
                     velocityhandler.sendMessage(msg);
                 }
             }

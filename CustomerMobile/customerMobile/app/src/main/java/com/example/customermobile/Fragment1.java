@@ -269,7 +269,7 @@ public class Fragment1 extends Fragment {
             textView_moving.setText("정차");
             textView_moving.setTextColor(Color.RED);
         }
-        textView_fuel.setText(String.valueOf(fuel));
+        textView_fuel.setText(String.valueOf(fuel/100));
         textView_possibleDistance.setText(String.valueOf(fuel*12));
         textView_targetTemper.setText(aircon);
         // 현재 타겟온도 가져오기

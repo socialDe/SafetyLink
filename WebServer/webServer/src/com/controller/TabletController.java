@@ -59,6 +59,27 @@ public class TabletController {
 		sbiz.modify(cs);
 	}
 
+	@RequestMapping("/getTabletSensors.mc")
+	public void androidWithRequests(HttpServletRequest request, HttpServletResponse res) throws Exception {
+		String carnum = request.getParameter("carnum");
+		String contents = request.getParameter("contents");
+		String fuel = request.getParameter("fuel");
+
+		int carid = cbiz.caridfromnumber(carnum).getCarid();
+
+		CarSensorVO cs = null;
+		try {
+			cs = sbiz.get(carid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		storeContents(cs, contents);
+		storeContents(cs, fuel);
+
+		sbiz.modify(cs);
+	}
+	
 	public void storeContents(CarSensorVO cs, String contents) {
 
 		String contentsSensor = contents.substring(4, 8);
