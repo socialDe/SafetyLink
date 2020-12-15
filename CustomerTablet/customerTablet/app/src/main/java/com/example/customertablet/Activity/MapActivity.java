@@ -1,5 +1,6 @@
 package com.example.customertablet.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
@@ -55,49 +56,38 @@ public class MapActivity extends AppCompatActivity {
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
 
-        locationManager=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
         MapsInitializer.initialize(getApplication().getApplicationContext());
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
+                gMap = googleMap;
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                gMap = googleMap;
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 10, locationListener);
-
-                if (mLatitude == 0 && mLongitude == 0){
-                    mLatitude = 37;
-                    mLongitude = 127;
-                }
-                LatLng latlng = new LatLng(mLatitude, mLongitude);
-                Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
                 gMap.setMyLocationEnabled(true);
-                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,10));
+
+                MyLocation myLocation = new MyLocation();
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, myLocation);
+
+                Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    //위치정보 구하기 리스너
-    LocationListener locationListener = new LocationListener() {
+    class MyLocation implements LocationListener {
+
         @Override
-        public void onLocationChanged(Location location) {
-            mLatitude = location.getLatitude();   //위도
-            mLongitude = location.getLongitude(); //경도
-            LatLng latlng = new LatLng(mLatitude, mLongitude);
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,10));
+        public void onLocationChanged(@NonNull Location location) {
+            double lat = location.getLatitude();
+            double lon = location.getLongitude();
+
+            LatLng latLng = new LatLng(lat, lon);
+//            gMap.addMarker(new MarkerOptions().position(latLng).title("My Point").snippet("xxx"));
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
         }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) { Log.d("[tag]", "onStatusChanged"); }
-
-        @Override
-        public void onProviderEnabled(String provider) { }
-
-        @Override
-        public void onProviderDisabled(String provider) { }
-    };
+    }
 
     @SuppressLint("MissingPermission")
     @Override
