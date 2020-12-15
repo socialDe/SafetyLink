@@ -139,6 +139,7 @@ public class TabletController {
 		data.put("fuelmax", car.getFuelmax());
 		data.put("temper", car.getTemper());
 		data.put("aircon", car.getAircon());
+		data.put("freight", car.getFreight());
 			
 		ja.add(data);
 		

@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.RegisterActivity">
+    android:orientation="vertical"
+    tools:context=".activity.MyPageActivity">
 
-    <TextView
-        android:id="@+id/textView9"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="16dp"
-        android:text="회원가입"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        android:layout_marginBottom="70dp"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/imageButton_back3"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            app:srcCompat="@drawable/arrowiconl" />
+
+        <TextView
+            android:id="@+id/textView_carregister"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|clip_vertical|center_horizontal"
+            android:layout_weight="1"
+            android:foregroundGravity="center"
+            android:gravity="center"
+            android:text="내 정보       "
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="30sp" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout6"
@@ -43,10 +56,12 @@
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_weight="3"
-                android:gravity="center_vertical"
-                android:text="아이디" />
+                android:gravity="center|center_vertical"
+                android:text="아이디"
+                android:textAlignment="textStart" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,22 +69,18 @@
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/editText_registerId"
+                <TextView
+                    android:id="@+id/mypage_tx_registerId"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_weight="1"
                     android:ems="10"
+                    android:gravity="center_vertical"
                     android:hint="ID"
-                    android:inputType="textPersonName" />
+                    android:inputType="text"
+                    android:textColor="#000000"
+                    android:textSize="20sp" />
 
-                <Button
-                    android:id="@+id/button_registerIdCheck"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:onClick="clickbt"
-                    android:text="중복 확인" />
             </LinearLayout>
         </LinearLayout>
 
@@ -88,7 +99,7 @@
                 android:text="비밀번호" />
 
             <EditText
-                android:id="@+id/editText_registerPwd"
+                android:id="@+id/mypage_etx_registerPwd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -110,7 +121,7 @@
                 android:text="비밀번호 확인" />
 
             <EditText
-                android:id="@+id/editText_registerPwdCon"
+                android:id="@+id/mypage_etx_registerPwdCon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -132,7 +143,7 @@
                 android:layout_weight="3" />
 
             <TextView
-                android:id="@+id/textView_registerPwdCheck"
+                android:id="@+id/mypage_tx_registerPwdCheck"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -152,7 +163,7 @@
                 android:text="이름" />
 
             <EditText
-                android:id="@+id/editText_registerName"
+                android:id="@+id/mypage_etx_registerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -175,21 +186,21 @@
                 android:text="성별" />
 
             <RadioGroup
-                android:id="@+id/radioGroup_registerSex"
+                android:id="@+id/mypage_rg_registerSex"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radioButton_registerMan"
+                    android:id="@+id/mypage_rb_registerMan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="32dp"
                     android:text="남" />
 
                 <RadioButton
-                    android:id="@+id/radioButton_registerWomen"
+                    android:id="@+id/mypage_rb_registerWomen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="여" />
@@ -217,16 +228,16 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText_registerPhone1"
+                    android:id="@+id/mypage_etx_registerPhone1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
                     android:ems="3"
                     android:gravity="center"
                     android:hint="010"
+                    android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:maxLength="3"
-                    android:imeOptions="actionNext" />
+                    android:maxLength="3" />
 
                 <TextView
                     android:id="@+id/textView6"
@@ -237,15 +248,15 @@
                     android:textSize="24sp" />
 
                 <EditText
-                    android:id="@+id/editText_registerPhone2"
+                    android:id="@+id/mypage_etx_registerPhone2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="8dp"
                     android:ems="3"
                     android:gravity="center"
+                    android:imeOptions="actionNext"
                     android:inputType="number"
-                    android:maxLength="4"
-                    android:imeOptions="actionNext"/>
+                    android:maxLength="4" />
 
                 <TextView
                     android:id="@+id/textView10"
@@ -256,7 +267,7 @@
                     android:textSize="24sp" />
 
                 <EditText
-                    android:id="@+id/editText_registerPhone3"
+                    android:id="@+id/mypage_etx_registerPhone3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="3"
@@ -287,14 +298,13 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:id="@+id/editText_registerBirth"
+                    android:id="@+id/mypage_etx_registerBirth"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ems="10"
                     android:enabled="false"
-                    android:inputType="date"
-                    android:textColor="#000000" />
+                    android:inputType="date" />
 
                 <Button
                     android:id="@+id/button_registerBirth"
@@ -311,32 +321,34 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="64dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_registerOk"
-            android:layout_width="match_parent"
+            android:id="@+id/button_modify_car"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:layout_weight="1"
-            android:onClick="clickbt"
-            android:text="확인" />
+            android:text="수정" />
 
         <Button
-            android:id="@+id/button_registerCancel"
-            android:layout_width="match_parent"
+            android:id="@+id/button_delete_car"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
+            android:layout_marginRight="25dp"
             android:layout_weight="1"
-            android:onClick="clickbt"
+            android:backgroundTint="#F80000"
+            android:text="삭제" />
+
+        <Button
+            android:id="@+id/button_modifyx_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1"
             android:text="취소" />
     </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

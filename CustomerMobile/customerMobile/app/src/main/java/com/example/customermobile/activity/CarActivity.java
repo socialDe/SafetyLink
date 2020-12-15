@@ -41,7 +41,6 @@ import com.example.customermobile.Fragment2;
 import com.example.customermobile.Fragment3;
 import com.example.customermobile.network.HttpConnect;
 import com.example.customermobile.R;
-import com.example.customermobile.df.DataFrame;
 import com.example.customermobile.vo.CarSensorVO;
 import com.example.customermobile.vo.CarVO;
 import com.example.customermobile.vo.UsersVO;
@@ -53,7 +52,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.owl93.dpb.CircularProgressView;
-import com.skydoves.progressview.OnProgressChangeListener;
 import com.skydoves.progressview.ProgressView;
 
 
@@ -61,10 +59,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -793,5 +787,15 @@ public class CarActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-
+//    @Override
+//    public void onBackPressed(){
+//        int count = getSupportFragmentManager().getBackStackEntryCount();
+//        if (count == 0) {
+//            super.onBackPressed();
+//        } else {
+//            onChangedFragment(1, null);
+//            getSupportFragmentManager().popBackStack();
+//        }
+//
+//    }
 }

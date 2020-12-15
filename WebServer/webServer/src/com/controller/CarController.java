@@ -45,7 +45,6 @@ public class CarController {
 	@RequestMapping("/cardata.mc")
 	@ResponseBody
 	public void cardata(HttpServletRequest request, HttpServletResponse res) throws Exception {
-
 		String userid = request.getParameter("userid");
 
 		ArrayList<CarVO> dbcarlist = new ArrayList<>();
@@ -528,4 +527,32 @@ public class CarController {
 	}
 	
 		
+	@RequestMapping("/carmodifyimpl.mc")
+	public void carmodifyimpl(HttpServletRequest request) throws Exception {
+		int carid = Integer.parseInt(request.getParameter("carid"));
+		String carname = request.getParameter("carname");
+		
+		System.out.println(carid+" "+carname);
+		
+		CarVO dbcar = null;
+		try {
+			dbcar = cbiz.get(carid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		dbcar.setCarname(carname);
+	
+		System.out.println(dbcar);
+		
+		cbiz.modify(dbcar);
+	}
+	
+	@RequestMapping("/cardeleteimpl.mc")
+	public void cardeleteimpl(HttpServletRequest request) throws Exception {
+		int carid = Integer.parseInt(request.getParameter("carid"));
+		
+		System.out.println(carid);
+		sbiz.remove(carid);
+		cbiz.remove(carid);
+	}
 }

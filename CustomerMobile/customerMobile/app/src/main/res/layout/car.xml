@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/container_car"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="15dp">
@@ -11,12 +11,11 @@
         android:id="@+id/cardView_car"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
-        app:cardCornerRadius="40dp">
+        app:cardCornerRadius="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -24,23 +23,11 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
 
-            <ImageButton
-                android:id="@+id/imageButton_carList"
-                android:layout_width="350dp"
-                android:layout_height="132dp"
-                android:background="#00FFFFFF"
-                android:src="@drawable/ic_launcher_background"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@drawable/mobilebg" />
-
             <ImageView
-                android:id="@+id/imageView_car"
+                android:id="@+id/imageView_carImg"
                 android:layout_width="240dp"
                 android:layout_height="80dp"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="4dp"
                 android:scaleType="fitXY"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +37,7 @@
                 android:id="@+id/textView_carName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="93dp"
+                android:layout_marginTop="84dp"
                 android:fontFamily="sans-serif-black"
                 android:text="차 이름"
                 android:textColor="#000000"
@@ -64,13 +51,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
+                android:layout_marginBottom="16dp"
                 android:text="모델명"
                 android:textColor="#000000"
                 android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_carName" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_carName"
+                app:layout_constraintVertical_bias="0.55" />
 
             <TextView
                 android:id="@+id/textView_carNum"
@@ -80,30 +69,12 @@
                 android:text="차 번호판번호"
                 android:textColor="#000000"
                 android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.501"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_carModel" />
-
-            <ImageButton
-                android:id="@+id/imageButton_carRight"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="28dp"
-                android:background="@drawable/arrowiconr"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/CardView_moving"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="344dp"
-                android:layout_marginBottom="100dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_carModel"
+                app:layout_constraintVertical_bias="0.47000003" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
