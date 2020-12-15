@@ -892,10 +892,8 @@ public class HomeActivity extends AppCompatActivity {
                         sendDataFrame(df);
                     }
 
-
                     // 모바일에서 제어시 UI변경
                     setUi(contents);
-
 
                     Log.d("[Server]", carid);
                     // 상단알람 사용
@@ -1032,7 +1030,6 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     String moving = jo.getString("moving");
                     if(moving.equals("1")){
-                        MovingCar movingcar = new MovingCar();
                         movingcar.start();
                     }else if(moving.equals("0")){ // 잘 작동되는지 확인할 것
                         ColorMatrix matrix = new ColorMatrix();

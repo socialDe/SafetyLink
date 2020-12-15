@@ -1,5 +1,6 @@
 package com.example.customermobile.activity;
 
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -40,7 +41,6 @@ import static com.example.customermobile.activity.LoginActivity.ip;
 public class CarManagementActivity extends AppCompatActivity {
 
     SharedPreferences sp;
-    Button button_logout;
     UsersVO user;
     // 차량 정보 리스트 받아오기
     CarVO car;
@@ -49,13 +49,17 @@ public class CarManagementActivity extends AppCompatActivity {
     ListView listView_carList;
 
     CarAsync carAsync;
+    CarAdapter carAdapter;
 
     ImageButton imageButton_back, imageButton_addCar;
+
+    public static CarManagementActivity activity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_car_management);
+        activity = this;
 
         listView_carList = findViewById(R.id.listView_carList);
 
@@ -77,6 +81,7 @@ public class CarManagementActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), CarRegisterActivity.class);
                 startActivity(intent);
+                intent.putExtra("user", user);
                 finish();
             }
         });
@@ -135,10 +140,16 @@ public class CarManagementActivity extends AppCompatActivity {
                 String fueltype = carlist.get(position).getCaroiltype();
                 car = new CarVO(carid, carname, carnum, cartype, carmodel, caryear, carimg, fueltype);
                 intent.putExtra("car", car);
+                intent.putExtra("user",user);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
+
             }
         });
         getCarData();
+        carAdapter = new CarAdapter();
+        carAdapter.notifyDataSetChanged();
+
     }// end oncreate
 
     /*
@@ -267,4 +278,5 @@ public class CarManagementActivity extends AppCompatActivity {
             return carView;
         }
     } /* 차량 정보 END */
+
 }

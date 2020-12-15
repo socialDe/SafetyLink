@@ -1,6 +1,5 @@
 package com.example.customermobile;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.customermobile.activity.CarActivity;
 import com.example.customermobile.activity.CarManagementActivity;
+import com.example.customermobile.activity.MyPageActivity;
 import com.example.customermobile.activity.NonTruckFuncSetActivity;
 import com.example.customermobile.activity.TruckFuncSetActivity;
 import com.example.customermobile.vo.CarVO;
@@ -27,7 +27,7 @@ public class Fragment2 extends Fragment {
     int nowCarId;
     String userId;
     UsersVO user;
-
+    CarActivity carActivity;
 
 
     @Nullable
@@ -37,7 +37,7 @@ public class Fragment2 extends Fragment {
 
         textView_myInfo = rootView.findViewById(R.id.textView_myInfo);
         textView_carRegister = rootView.findViewById(R.id.textView_carRegister);
-        textView_carRegister.setOnClickListener(new View.OnClickListener() {
+        textView_carRegister.setOnClickListener(new View.OnClickListener() { // 차량 관리 페이지
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CarManagementActivity.class);
@@ -75,13 +75,19 @@ public class Fragment2 extends Fragment {
                     System.out.println("Intent putExtra: "+nowCarId);
                     startActivity(intent);
                 }
-
-
             }
         });
 
-
+        textView_myInfo.setOnClickListener(new View.OnClickListener() { // 내 정보
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), MyPageActivity.class);
+                intent.putExtra("user",user);
+                startActivity(intent);
+            }
+        });
 
         return rootView;
     }
+
 }

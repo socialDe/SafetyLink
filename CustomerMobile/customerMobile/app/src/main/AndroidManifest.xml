@@ -18,7 +18,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.CarDetailActivity"></activity>
+        <activity android:name=".activity.MyPageActivity"></activity>
+        <activity android:name=".activity.CarDetailActivity" />
         <activity android:name=".activity.TruckFuncSetActivity" />
         <activity android:name=".activity.CarRegisterActivity" /> <!-- FService 추가 -->
         <service android:name=".MyFService">
