@@ -577,20 +577,20 @@ public class HomeActivity extends AppCompatActivity {
                         String strvibr = input.getContents().substring(8);
                         int vibrData = Integer.parseInt(strvibr);
 
-                        if (vibrData > 30) {
-                            // 낙하물 푸쉬설정이 "on" 일때만 알람창을 띄운다
-                            if (accpushcheck.equals("o")) {
+                        // 낙하물 푸쉬설정이 "on" 일때만 알람창을 띄운다
+                        if (accpushcheck.equals("o")) {
+                            if (vibrData > 30) {
                                 // 강한 충돌 사고
-//                            SmsManager smsManager = SmsManager.getDefault();
-//                            smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
+//                                SmsManager smsManager = SmsManager.getDefault();
+//                                smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
                                 Toast.makeText(getApplicationContext(), "119에 사고가 신고되었습니다", Toast.LENGTH_SHORT).show();
+                            } else {
+                                // 약한 충돌 사고
+                                String url = "http://" + ip + "/webServer/getMovingcar.mc";
+                                url += "?carnum=" + carnum;
+                                httpAsyncTask = new HttpAsyncTask();
+                                httpAsyncTask.execute(url);
                             }
-                        } else {
-                            // 약한 충돌 사고
-                            String url = "http://" + ip + "/webServer/getMovingcar.mc";
-                            url += "?carnum=" + carnum;
-                            httpAsyncTask = new HttpAsyncTask();
-                            httpAsyncTask.execute(url);
                         }
                     }
 
@@ -874,7 +874,7 @@ public class HomeActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
 //                      SmsManager smsManager = SmsManager.getDefault();
 //                      smsManager.sendTextMessage("tel:010-9316-3163", null, "충돌 사고 발생", null, null);
-                        Toast.makeText(getApplicationContext(), "사고가 신고되었습니다", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "119에 사고가 신고되었습니다", Toast.LENGTH_SHORT).show();
                         return;
                     }
                 });
