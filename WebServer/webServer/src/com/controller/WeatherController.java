@@ -13,6 +13,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -22,12 +26,44 @@ public class WeatherController {
 
         @RequestMapping("/weather.mc")
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-                SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");                
-                String urlstr = "http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst?serviceKey=6nR7suwJwMO23I2niiCJ66VxN3bQdmdM6C92NrgYpGc8cEUeqHAD6AACVBhLMw6WjRzMenrrEG7nqmqNYf4bHQ%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&base_date="+date.format(new Date())+"&base_time=0800&nx=60&ny=125&";
+                SimpleDateFormat date = new SimpleDateFormat("yyyyMMdd");
+                String nx = request.getParameter("nx");
+        		String ny = request.getParameter("ny");
+        		System.out.println("nx: "+nx);
+        		System.out.println("ny: "+ny);
+                String urlstr = "http://apis.data.go.kr/1360000/VilageFcstInfoService/getVilageFcst?serviceKey=6nR7suwJwMO23I2niiCJ66VxN3bQdmdM6C92NrgYpGc8cEUeqHAD6AACVBhLMw6WjRzMenrrEG7nqmqNYf4bHQ%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&base_date="+date.format(new Date())+"&base_time=0800&nx="+nx+"&ny="+ny+"&";
                 String jsonstr = getRequest(urlstr, "");
                 response.setContentType("test/json;charset=utf-8");
                 PrintWriter out = response.getWriter();
-                out.print(jsonstr);
+                System.out.println("jsonstr: "+jsonstr.toString());
+                
+                
+                JSONParser parser = new JSONParser();
+                Object obj = new Object();
+                try {
+					obj = parser.parse(jsonstr);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+                JSONObject jsonObj = (JSONObject)obj;
+                Object responseObj = jsonObj.get("response");
+                JSONObject responseJSONObj = (JSONObject)responseObj;
+                Object bodyObj = responseJSONObj.get("body");
+                JSONObject bodyJSONObj = (JSONObject) bodyObj;
+                Object items = bodyJSONObj.get("items");
+                JSONObject itemsJSON = (JSONObject) items;
+                Object item = itemsJSON.get("item");
+                JSONArray itemJA = (JSONArray)item;
+                
+                String temperature = ((JSONObject)itemJA.get(6)).get("fcstValue").toString();
+                String pty = ((JSONObject)itemJA.get(1)).get("fcstValue").toString();
+                String sky = ((JSONObject)itemJA.get(5)).get("fcstValue").toString();
+                
+                System.out.println("temperature:"+temperature+"pty:"+pty+"sky:"+sky);
+                out.print("temperature:"+temperature+"pty:"+pty+"sky:"+sky);
+                
+                
+                
 
         }
 
