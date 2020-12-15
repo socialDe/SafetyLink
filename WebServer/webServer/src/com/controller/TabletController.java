@@ -79,7 +79,6 @@ public class TabletController {
 			cs.setAircon(String.valueOf(contentsData));
 		} else if (contentsSensor.equals("0031")) {
 			cs.setStarting(String.valueOf(contentsData));
-
 		} else if (contentsSensor.equals("0032")) {
 			cs.setMoving(String.valueOf(contentsData));
 			cs.setMovingstarttime(time.getTime());

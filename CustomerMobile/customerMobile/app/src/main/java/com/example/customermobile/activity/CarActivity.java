@@ -260,7 +260,7 @@ public class CarActivity extends AppCompatActivity {
 
         getCarData();
 
-        carDataTimer = new CarDataTimer(5000, 1000);
+        carDataTimer = new CarDataTimer(2000, 1000);
         carDataTimer.start();
 
     }// end onCreat
