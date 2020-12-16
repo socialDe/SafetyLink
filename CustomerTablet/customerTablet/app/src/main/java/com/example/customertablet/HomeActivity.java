@@ -39,6 +39,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.df.DataFrame;
+import com.example.customertablet.Activity.MapActivity;
 import com.example.customertablet.network.HttpConnect;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -212,6 +213,14 @@ public class HomeActivity extends AppCompatActivity {
         });
         // db에서 상태 가져옴
         getStatus();
+
+        imageButton_map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MapActivity.class);
+                startActivity(intent);
+            }
+        });
 
         // 심장박동
         hthread = new HeartbeatThread();
