@@ -65,8 +65,8 @@ public class MapActivity extends AppCompatActivity {
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                gMap.setMyLocationEnabled(true);
 
+                gMap.setMyLocationEnabled(true);
                 MyLocation myLocation = new MyLocation();
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, myLocation);
@@ -80,12 +80,15 @@ public class MapActivity extends AppCompatActivity {
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
-            double lat = location.getLatitude();
-            double lon = location.getLongitude();
-
-            LatLng latLng = new LatLng(lat, lon);
+            mLatitude = location.getLatitude();
+            mLongitude = location.getLongitude();
+            LatLng latLng = new LatLng(mLatitude, mLongitude);
+            if(mLatitude == 0 && mLongitude == 0){
+                mLatitude = 37;
+                mLongitude = 127;
+            }
 //            gMap.addMarker(new MarkerOptions().position(latLng).title("My Point").snippet("xxx"));
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
     }
 
