@@ -60,12 +60,16 @@ public class CarBIZ implements Biz<Integer,String,CarVO> {
 	}
 	
 	@Override
-	public CarVO caridfromnumber(String k) throws Exception {
-		return dao.caridfromnumber(k);
+	public CarVO carfromnumber(String k) throws Exception {
+		return dao.carfromnumber(k);
 	}
 
 	@Override
 	public ArrayList<CarVO> getdrivingcars(String k) throws Exception {
+		return null;
+	}
+	
+	public CarVO movingcarfromnumber(String k) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

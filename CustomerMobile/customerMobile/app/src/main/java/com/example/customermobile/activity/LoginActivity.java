@@ -86,17 +86,17 @@ public class LoginActivity extends AppCompatActivity {
         getToken();
 
         sp = getSharedPreferences("user", MODE_PRIVATE);
-        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
+        sptoken = getSharedPreferences("applicaton", MODE_PRIVATE);
         token = sptoken.getString("token", "");
 
 
         // 인텐트로 string을 받아 toast를 띄워주는 부분
         Intent intent = getIntent();
         String getintent = intent.getStringExtra("toast");
-        if(getintent != null){
-            if(getintent.equals("loginok")){
+        if (getintent != null) {
+            if (getintent.equals("loginok")) {
                 Toast.makeText(LoginActivity.this, "회원가입되었습니다. 해당 아이디로 로그인해주세요.", Toast.LENGTH_SHORT).show();
-            }else if(getintent.equals("loginfail")){
+            } else if (getintent.equals("loginfail")) {
                 Toast.makeText(LoginActivity.this, "회원가입에 실패하였습니다. 다시 시도해주십시오.", Toast.LENGTH_LONG).show();
             }
         }
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         String userid = sp.getString("userid", "");
         String userpwd = sp.getString("userpwd", "");
 
-        if(userid != null && userid != "" && userpwd != null && userpwd != ""){
+        if (userid != null && userid != "" && userpwd != null && userpwd != "") {
             login(userid, userpwd);
         }
 
@@ -141,6 +141,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -156,6 +157,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
     }
+
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
@@ -167,15 +169,16 @@ public class LoginActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                            Log.d("[TEST]","google sign in success");
+                            Log.d("[TEST]", "google sign in success");
                         } else {
                             // If sign in fails, display a message to the user.
                             updateUI(null);
-                            Log.d("[TEST]","google sign in fail");
+                            Log.d("[TEST]", "google sign in fail");
                         }
                     }
                 });
     }
+
     private void updateUI(FirebaseUser fuser) { //update ui code here
 
         if (fuser != null) {
@@ -192,17 +195,17 @@ public class LoginActivity extends AppCompatActivity {
             // FirebaseUser.getIdToken() instead.
             String uid = fuser.getUid();
 
-            Log.d("[TEST]","GetGoogleInfo: "+name+" "+email+" "+photoUrl+" "+uid+" "+emailVerified);
+            Log.d("[TEST]", "GetGoogleInfo: " + name + " " + email + " " + photoUrl + " " + uid + " " + emailVerified);
 
             // 구글이메일이 DB에 유저아이디 정보로 있는지 확인한다
             String emailcheck = email;
 
-            String url = "http://"+ip+"/webServer/useridcheckimpl.mc";
+            String url = "http://" + ip + "/webServer/useridcheckimpl.mc";
             url += "?id=" + emailcheck;
             httpAsyncTask = new LoginActivity.HttpAsyncTask();
             httpAsyncTask.execute(url);
 
-            Log.d("[TEST]","Here:"+user);
+            Log.d("[TEST]", "Here:" + user);
 
             //login(email,"google");
 
@@ -212,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void getToken(){
+    public void getToken() {
         //토큰값을 받아옵니다.
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -224,9 +227,9 @@ public class LoginActivity extends AppCompatActivity {
 
                         // 토큰이 계속 초기화가 되기때문에 sharedPreferences로 저장하여 초기화 방지
                         token = task.getResult().getToken();
-                        sptoken = getSharedPreferences("applicaton",MODE_PRIVATE);
+                        sptoken = getSharedPreferences("applicaton", MODE_PRIVATE);
                         SharedPreferences.Editor editor = sptoken.edit();
-                        editor.putString("token",token); // key, value를 이용하여 저장하는 형태
+                        editor.putString("token", token); // key, value를 이용하여 저장하는 형태
                         editor.commit();
                         Log.d("[Log]", token);
                     }
@@ -235,26 +238,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void clickbt(View v){
-        if(v.getId() == R.id.button_login){
+    public void clickbt(View v) {
+        if (v.getId() == R.id.button_login) {
             String id = editText_loginid.getText().toString();
             String pwd = editText_loginpwd.getText().toString();
             login(id, pwd);
-        }else if(v.getId() == R.id.button_register){
+        } else if (v.getId() == R.id.button_register) {
             Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
             startActivity(intent);
-        }else if(v.getId() == R.id.textView_findId){
+        } else if (v.getId() == R.id.textView_findId) {
             Intent intent = new Intent(getApplicationContext(), FindIdActivity.class);
             startActivity(intent);
-        }else if(v.getId() == R.id.textView_findPwd){
+        } else if (v.getId() == R.id.textView_findPwd) {
             Intent intent = new Intent(getApplicationContext(), FindPwdActivity.class);
             startActivity(intent);
         }
-     }
+    }
 
-    public void login(String id, String pwd){
-        String url = "http://"+ip+"/webServer/userloginimpl.mc";
-        url += "?id="+id+"&pwd="+pwd+"&token="+token;
+    public void login(String id, String pwd) {
+        String url = "http://" + ip + "/webServer/userloginimpl.mc";
+        url += "?id=" + id + "&pwd=" + pwd + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
     }
@@ -274,7 +277,7 @@ public class LoginActivity extends AppCompatActivity {
     /*
     HTTP 통신 Code
     */
-    class HttpAsyncTask extends AsyncTask<String,String,String> {
+    class HttpAsyncTask extends AsyncTask<String, String, String> {
         ProgressDialog progressDialog;
 
         @Override
@@ -282,17 +285,11 @@ public class LoginActivity extends AppCompatActivity {
             progressDialog = new ProgressDialog(LoginActivity.this);
             progressDialog.setTitle("Login");
             progressDialog.setCancelable(false);
-            //progressDialog.show();
+            progressDialog.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
-//            userData = new UsersVO();
-//            userData.setUserid(urls[1]);
-//            userData.setUserpwd(urls[2]);
-//            Log.d("[Server]", "[AsyncTask Background]" + urls[0] + urls[1] + urls[2] + urls);
-//            return POST(urls[0], userData);
-
             String url = strings[0].toString();
             String result = HttpConnect.getString(url);
             return result;
@@ -306,9 +303,15 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             progressDialog.dismiss();
+
+            if (s == null || s.equals("")) {
+                Toast.makeText(LoginActivity.this, "로그인 오류가 발생했습니다. 관리자에게 문의하세요", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             final String result = s.trim();
 
-            Log.d("[TEST]","[TEST]:"+result);
+            Log.d("[TEST]", "[TEST]:" + result);
 
             if (result.equals("fail")) {
                 // LOGIN FAIL
@@ -327,7 +330,7 @@ public class LoginActivity extends AppCompatActivity {
                 AlertDialog.Builder dailog = new AlertDialog.Builder(LoginActivity.this);
                 dailog.setTitle("다른 기기에서 로그인 중입니다.");
                 dailog.setMessage("로그아웃 후 사용해 주세요.");
-                dailog.setPositiveButton("확인",  new DialogInterface.OnClickListener() {
+                dailog.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         return;
@@ -346,16 +349,16 @@ public class LoginActivity extends AppCompatActivity {
                 });
                 dailog.show();
             }// useridcheckimpl에서 available이 오면 db에 구글email로 아이디가 없다고 판단하고 구글정보로 회원가입을 진행시킨다.
-            else if(result.equals("available")){
+            else if (result.equals("available")) {
                 Intent intent = new Intent(getApplicationContext(), SocialRegisterActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra("email", email);
                 startActivity(intent);
             }// useridcheckimpl에서 cannot이 오면 db에 구글email로 아이디가 있다고 판단하고 email로 로그인을 진행시킨다.
-            else if(result.equals("cannot id")){
-                login(email,"google");
+            else if (result.equals("cannot id")) {
+                login(email, "google");
             }// useridcheckimpl에서 checkfail 오면 아이디체크 오류가 발생하여 토스트로 알려준다.
-            else if(result.equals("checkfail")){
+            else if (result.equals("checkfail")) {
                 Toast.makeText(LoginActivity.this, user.getUsername() + "구글 로그인 오류가 발생했습니다!", Toast.LENGTH_SHORT).show();
             } else {
                 // LOGIN SUCCESS
@@ -393,7 +396,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 // 자동 로그인
-                if(checkBox_loginauto.isChecked()) {
+                if (checkBox_loginauto.isChecked()) {
                     SharedPreferences.Editor edit = sp.edit();
                     edit.putString("userid", user.getUserid());
                     edit.putString("userpwd", user.getUserpwd());
@@ -449,19 +452,18 @@ public class LoginActivity extends AppCompatActivity {
             if (s == null || s.equals("[]")) {
                 Intent intent = new Intent(getApplicationContext(), CarRegisterActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intent.putExtra("user",user);
+                intent.putExtra("user", user);
                 startActivity(intent);
-            }else{
+            } else {
                 Intent intent = new Intent(getApplicationContext(), CarActivity.class);
-                intent.putExtra("user",user);
+                intent.putExtra("user", user);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
-                Toast t = Toast.makeText(LoginActivity.this, user.getUsername() + "님 환영합니다",Toast.LENGTH_SHORT);
-                t.setGravity(Gravity.BOTTOM,0,150);
+                Toast t = Toast.makeText(LoginActivity.this, user.getUsername() + "님 환영합니다", Toast.LENGTH_SHORT);
+                t.setGravity(Gravity.BOTTOM, 0, 150);
                 t.show();
             }
         }
-
 
 
     }

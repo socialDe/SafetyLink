@@ -15,17 +15,6 @@
 	<aop:aspectj-autoproxy></aop:aspectj-autoproxy>
 	
 	<!-- 1. Database Setting -->
- 	<bean id="dataSource"
-                class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-                <property name="driverClassName"
-                        value="oracle.jdbc.driver.OracleDriver" />
-                <property name="url"
-                        value="jdbc:oracle:thin:@127.0.0.1:1521:xe" />
-                <property name="username" value="admin" />
-                <property name="password" value="11111111" />
-    </bean>
-
-<!-- AWS 원격
  	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
  		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe"/>
@@ -35,7 +24,6 @@
  		<property name="username" value="admin"/>
  		<property name="password" value="11111111"/>
  	</bean>
--->
 
 	<!-- 2. Transaction Setting -->
  	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

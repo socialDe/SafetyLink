@@ -20,6 +20,17 @@ public class CarVO implements Serializable {
 		super();
 	}
 
+	public CarVO(int carid, String carname, String carnum, String cartype, String carmodel, int caryear,String carimg, String caroiltype) {
+		this.carid = carid;
+		this.carname = carname;
+		this.carnum = carnum;
+		this.cartype = cartype;
+		this.carmodel = carmodel;
+		this.caryear = caryear;
+		this.carimg = carimg;
+		this.caroiltype = caroiltype;
+	}
+
 	public CarVO(String carnum, String cartype, String carmodel, int caryear, String caroiltype) {
 		super();
 		this.carnum = carnum;

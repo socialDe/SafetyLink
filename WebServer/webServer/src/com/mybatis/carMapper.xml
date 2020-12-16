@@ -30,8 +30,8 @@ PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
 	</select>
 	
 	<!-- 태블릿에서 차량 센서 정보를 http로 보내기 위해서 carid를 가져올 때 -->
-	<select id="caridfromnumber" parameterType="String" resultType="car">
-		SELECT CARID FROM CAR WHERE CARNUM=#{carnum}
+	<select id="carfromnumber" parameterType="String" resultType="car">
+		SELECT * FROM CAR WHERE CARNUM=#{carnum}
 	</select>
 	
 	

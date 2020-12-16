@@ -63,12 +63,18 @@ public class AdminBIZ implements Biz<String,Integer,AdminVO> {
 	}
 
 	@Override
-	public AdminVO caridfromnumber(String k) throws Exception {
+	public AdminVO carfromnumber(String k) throws Exception {
 		return null;
 	
 	}
 
 	public ArrayList<AdminVO> getdrivingcars(Integer k) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public AdminVO movingcarfromnumber(String k) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
