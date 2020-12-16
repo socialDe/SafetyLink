@@ -418,6 +418,7 @@ public class HomeActivity extends AppCompatActivity {
                 vhandler.sendMessage(message);
                 if (value < 50) {
                     value = value + 60;
+                    alarmlog("졸음운전알람");
                     // sleeppush가 "on"일 때만 알람을 받는다
                     if (sleeppushcheck.equals("o")) {
 
@@ -523,6 +524,23 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             //setUi(input.getContents());
+        }
+    }
+
+    class AlarmAsync extends AsyncTask<String, Void, Void> {
+
+        public Void result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String url = strings[0];
+            HttpConnect.getString(url); //result는 JSON
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
         }
     }
 
@@ -649,7 +667,7 @@ public class HomeActivity extends AppCompatActivity {
 
                                     if (initialLoad > avgLoad + 500) {
                                         Log.d("[Load]", "[Event]: initial Load: " + initialLoad + " // " + "avg Load" + avgLoad);
-
+                                        alarmlog("적재물낙하알람");
                                         if (dialogLoad == 1) {
                                             dialogLoad += 1;
                                             _runOnUiThread(new Runnable() {
@@ -961,6 +979,17 @@ public class HomeActivity extends AppCompatActivity {
             sendDataFrame(df);
         }
     }
+
+    // 제어한 내용을 센서 측으로 tcp/ip 통신으로 내려보내줌
+    public void alarmlog(String alarm) {
+        String urlstr = "http://" + ip + "/webServer/alarmlog.mc";
+        String alarmUrl = urlstr + "?carnum=" + carnum + "&alarm=" + alarm;
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        AlarmAsync alarmAsync = new AlarmAsync();
+        alarmAsync.execute(alarmUrl);
+    }
+
 
   /*
        FCM 통신

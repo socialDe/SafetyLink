@@ -55,7 +55,7 @@ import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static String ip = "192.168.0.37";
+    public static String ip = "192.168.0.103";
 
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
@@ -283,7 +283,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setTitle("Login");
+            progressDialog.setTitle("로그인 중 입니다");
             progressDialog.setCancelable(false);
             progressDialog.show();
         }

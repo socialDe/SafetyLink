@@ -12,6 +12,7 @@ public class CarVO {
 	private String carimg;
 	private String caroiltype;
 	private String tablettoken;
+	private String fcmType;
 
 	public CarVO() {
 		super();
@@ -19,6 +20,14 @@ public class CarVO {
 
 	public CarVO(String userid) {
 		this.userid = userid;
+	}
+
+	public CarVO(int carid, String userid, String carnum, String fcmType) {
+		super();
+		this.carid = carid;
+		this.userid = userid;
+		this.carnum = carnum;
+		this.fcmType = fcmType;
 	}
 
 	public CarVO(String carnum, String tablettoken) {
@@ -139,6 +148,14 @@ public class CarVO {
 		this.carimg = carimg;
 		this.caroiltype = caroiltype;
 		this.tablettoken = tablettoken;
+	}
+
+	public String getFcmType() {
+		return fcmType;
+	}
+
+	public void setFcmType(String fcmType) {
+		this.fcmType = fcmType;
 	}
 
 	public int getCarid() {

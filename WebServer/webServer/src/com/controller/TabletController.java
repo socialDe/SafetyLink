@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.biz.FcmLog;
 import com.frame.Biz;
 import com.vo.CarSensorVO;
 import com.vo.CarVO;
@@ -35,13 +37,16 @@ public class TabletController {
 	@Resource(name = "ubiz")
 	Biz<String, String, UsersVO> ubiz;
 
+	@Autowired
+	FcmLog<CarVO> fcmLog;
+
 	// 현재 시간 계산
 	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd/HH:mm:ss");
 	Calendar time = Calendar.getInstance();
 	String timenow = format.format(time.getTime());
-		
+
 	@RequestMapping("/getTabletSensor.mc")
-	public void androidWithRequest(HttpServletRequest request, HttpServletResponse res) throws Exception {
+	public void getTabletSensor(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
 
@@ -55,14 +60,14 @@ public class TabletController {
 		}
 
 		storeContents(cs, contents);
-		
-		System.out.println("modify:"+cs);
+
+		System.out.println("modify:" + cs);
 
 		sbiz.modify(cs);
 	}
 
 	@RequestMapping("/getTabletSensors.mc")
-	public void androidWithRequests(HttpServletRequest request, HttpServletResponse res) throws Exception {
+	public void getTabletSensors(HttpServletRequest request, HttpServletResponse res) throws Exception {
 		String carnum = request.getParameter("carnum");
 		String contents = request.getParameter("contents");
 		String fuel = request.getParameter("fuel");
@@ -81,14 +86,14 @@ public class TabletController {
 
 		sbiz.modify(cs);
 	}
-	
+
 	public void storeContents(CarSensorVO cs, String contents) {
 
 		String contentsSensor = contents.substring(4, 8);
 		int contentsData = Integer.parseInt(contents.substring(8));
 
 		if (contentsSensor.equals("0001")) {
-			cs.setTemper(contentsData/100);
+			cs.setTemper(contentsData / 100);
 		} else if (contentsSensor.equals("0002")) {
 			cs.setCrash(String.valueOf(contentsData));
 		} else if (contentsSensor.equals("0003")) {
@@ -103,7 +108,7 @@ public class TabletController {
 		} else if (contentsSensor.equals("0007")) {
 			cs.setFuel(contentsData);
 		} else if (contentsSensor.equals("0021")) {
-			cs.setAircon(String.valueOf(contentsData/100));
+			cs.setAircon(String.valueOf(contentsData / 100));
 		} else if (contentsSensor.equals("0031")) {
 			cs.setStarting(String.valueOf(contentsData));
 		} else if (contentsSensor.equals("0032")) {
@@ -116,7 +121,7 @@ public class TabletController {
 		System.out.println(cs);
 
 	}
-	
+
 	// Tablet 을 켰을 때 상태를 가져와줌(Tablet을 늦게 켰을 경우, 오류 방지)
 	@RequestMapping("/getstatus.mc")
 	@ResponseBody
@@ -127,11 +132,11 @@ public class TabletController {
 
 		CarSensorVO car = new CarSensorVO();
 		car = sbiz.get(carid);
-		
+
 		JSONArray ja = new JSONArray();
 
 		JSONObject data = new JSONObject();
-			
+
 		data.put("starting", car.getStarting());
 		data.put("door", car.getDoor());
 		data.put("moving", car.getMoving());
@@ -140,10 +145,10 @@ public class TabletController {
 		data.put("temper", car.getTemper());
 		data.put("aircon", car.getAircon());
 		data.put("freight", car.getFreight());
-			
+
 		ja.add(data);
-		
-		System.out.println("getstatus:"+ja.toJSONString());
+
+		System.out.println("getstatus:" + ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -152,8 +157,7 @@ public class TabletController {
 		out.print(ja.toJSONString());
 		out.close();
 	}
-	
-	
+
 	// Tablet 을 켰을 때 push상태를 가져와줌
 	@RequestMapping("/getpush.mc")
 	@ResponseBody
@@ -161,24 +165,23 @@ public class TabletController {
 
 		String carnum = request.getParameter("carnum");
 		int carid = cbiz.carfromnumber(carnum).getCarid();
-		
+
 		String userid = cbiz.get(carid).getUserid();
 
 		UsersVO user = new UsersVO();
 		user = ubiz.get(userid);
-		
+
 		JSONArray ja = new JSONArray();
 
 		JSONObject data = new JSONObject();
-		
-		data.put("accpushcheck", user.getAccpushcheck());	
+
+		data.put("accpushcheck", user.getAccpushcheck());
 		data.put("droppushcheck", user.getDroppushcheck());
 		data.put("sleeppushcheck", user.getSleeppushcheck());
 
-			
 		ja.add(data);
-		
-		System.out.println("getpush:"+ja.toJSONString());
+
+		System.out.println("getpush:" + ja.toJSONString());
 
 		res.setCharacterEncoding("UTF-8");
 		res.setContentType("application/json");
@@ -187,14 +190,12 @@ public class TabletController {
 		out.print(ja.toJSONString());
 		out.close();
 	}
-	
-	
 
 	@RequestMapping("/getMovingcar.mc")
-	public void getMovingcar(HttpServletRequest request, HttpServletResponse res){
+	public void getMovingcar(HttpServletRequest request, HttpServletResponse res) {
 		String carnum = request.getParameter("carnum");
 		System.out.println(carnum);
-		
+
 		CarSensorVO carinfo = null;
 		CarVO car = null;
 		String userid = "";
@@ -207,24 +208,29 @@ public class TabletController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		// 이 부분에 수정할 코드를 넣는다
-		if(carinfo != null) {
+		if (carinfo != null) {
 			PrintWriter out = null;
 			try {
 				out = res.getWriter();
 				out.print("crush");
+
+				// FcmLog
+				// 차량에서 모바일로 보내는 푸쉬(큰충돌)
+				CarVO fcmlogcar = new CarVO(car.getCarid(), userid, carnum, "대형사고알람");
+				fcmLog.fcmlog(fcmlogcar);
+
 			} catch (IOException e) {
 				// e.printStackTrace();
 			} finally {
 				out.close();
 			}
-		}else {
+		} else {
 
 			String token = user.getMobiletoken();
 //			String token = "eHnFzYYCfFY:APA91bFIvkdWxZbiyG_MbUi7kwv1mLVeVLRam-0VD4HKCm4WBVuy2aGsYRr-WzS1Ji7GlVxi7ThepII1G3DjUY40sCYfTHDHfUfGXWudsNMprTZxFQe8mGv7LRLqQeFXyKeGIy3wh1NG";
-			
-			
+
 			// FCM으로 차량 제어
 			URL url = null;
 			try {
@@ -252,10 +258,10 @@ public class TabletController {
 			// create notification message into JSON format
 			JSONObject message = new JSONObject();
 
-			System.out.println("token:"+token);
+			System.out.println("token:" + token);
 
 			message.put("to", token);
-			//message.put("to", "/topics/car");
+			// message.put("to", "/topics/car");
 			message.put("priority", "high");
 
 			JSONObject notification = new JSONObject();
@@ -280,9 +286,12 @@ public class TabletController {
 				System.out.println("Error while writing outputstream to firebase sending to ManageApp | IOException");
 				e.printStackTrace();
 			}
-			
-			
-			
+
+			// FcmLog
+			// 차량에서 모바일로 보내는 푸쉬(충돌)
+			CarVO fcmlogcar = new CarVO(car.getCarid(), userid, carnum, "차량충돌알람");
+			fcmLog.fcmlog(fcmlogcar);
+
 ////////////////////////////////////////////////////////////////
 //			// FCM으로 모바일 제어
 //			URL url = null;
@@ -343,4 +352,24 @@ public class TabletController {
 //			
 		}
 	}
+
+	@RequestMapping("/alarmlog.mc")
+	@ResponseBody
+	public void alarmlog(HttpServletRequest request, HttpServletResponse res) throws Exception {
+
+		String carnum = request.getParameter("carnum");
+		String alarm = request.getParameter("alarm");
+		int carid = cbiz.carfromnumber(carnum).getCarid();
+
+		CarVO car = new CarVO();
+		car = cbiz.get(carid);
+		
+		// FcmLog
+		// 차량에서 모바일로 보내는 푸쉬(충돌)
+		CarVO fcmlogcar = new CarVO(car.getCarid(), car.getUserid(), carnum, alarm);
+		fcmLog.fcmlog(fcmlogcar);
+
+		
+	}
+
 }
