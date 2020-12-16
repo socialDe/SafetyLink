@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class CarDetailActivity extends AppCompatActivity {
     TextView textView_carNum, textView_carModel, textView_carType, textView_carYear, textView_fuelType;
     Button button_modify, button_delete, button_modifyx;
     ImageView imgView_carimg;
+    ImageButton imageButton_back1;
 
     CarModifyAsync carModifyAsync;
     CarDeleteAsync carDeleteAsync;
@@ -84,6 +86,14 @@ public class CarDetailActivity extends AppCompatActivity {
             imgView_carimg.setImageResource(R.drawable.car3);
         }
         textView_fuelType.setText(car.getCaroiltype());
+
+        imageButton_back1 = findViewById(R.id.imageButton_back1);
+        imageButton_back1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     } // onCreate;
 

@@ -230,11 +230,15 @@ public class CarRegisterActivity extends AppCompatActivity {
         String fueltype = textView_fuelType.getText().toString();
         String carname = editText_carName.getText().toString();
 
-        String url = "http://" + ip + "/webServer/usercarregisterimpl.mc";
-        url += "?userid="+user.getUserid()+"&carnum=" + carnum + "&carmodel=" + carmodel + "&cartype=" + cartype +
-                "&caryear=" + caryear + "&fueltype=" + fueltype + "&carname=" + carname;
-        userCarRegisterAsync = new UserCarRegisterAsync();
-        userCarRegisterAsync.execute(url);
+//        if(carname.equals("") || carname == null || carname.equals(null)){
+//            Toast.makeText(this, "차량 이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+//        } else{
+            String url = "http://" + ip + "/webServer/usercarregisterimpl.mc";
+            url += "?userid="+user.getUserid()+"&carnum=" + carnum + "&carmodel=" + carmodel + "&cartype=" + cartype +
+                    "&caryear=" + caryear + "&fueltype=" + fueltype + "&carname=" + carname;
+            userCarRegisterAsync = new UserCarRegisterAsync();
+            userCarRegisterAsync.execute(url);
+//        }
     }
 
     class UserCarRegisterAsync extends AsyncTask<String, Void, Void> {

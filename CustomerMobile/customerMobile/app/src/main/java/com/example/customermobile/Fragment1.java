@@ -45,6 +45,10 @@ public class Fragment1 extends Fragment {
     int targetTemper;
     TemperTimer temperTimer;
 
+//    public static Fragment1 newInstance() {
+//        return new Fragment1();
+//    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -210,7 +214,6 @@ public class Fragment1 extends Fragment {
             }
         }) ;
 
-
         return viewGroup;
     } // end onCreate
 
@@ -259,6 +262,11 @@ public class Fragment1 extends Fragment {
             imageView_car.setImageResource(imglist[2]);
         }
 
+        if(textView_carName.getText().toString().equals("(null)")){
+            textView_carName.setVisibility(View.GONE);
+        } else {
+            textView_carName.setVisibility(View.VISIBLE);
+        }
 
         Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum+" "+carimg);
 

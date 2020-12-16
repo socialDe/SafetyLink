@@ -79,6 +79,8 @@ public class TabletController {
 		storeContents(cs, contents);
 		storeContents(cs, fuel);
 
+		System.out.println("modify:"+cs);
+		
 		sbiz.modify(cs);
 	}
 	

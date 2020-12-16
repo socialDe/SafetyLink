@@ -17,12 +17,9 @@
 	<!-- 1. Database Setting -->
  	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
  		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
- 		<property name="url" value="jdbc:oracle:thin:@127.0.0.1:1521:xe"/>
- 		
- 		<property name="url" value="jdbc:oracle:thin:@database-1.clfethz48cd4.ap-northeast-2.rds.amazonaws.com:1521:ORCL"/>
- 		 
- 		<property name="username" value="admin"/>
- 		<property name="password" value="11111111"/>
+ 		<property name="url" value="jdbc:oracle:thin:@192.168.25.35:1521:xe"/>
+ 		<property name="username" value="userdb"/>
+ 		<property name="password" value="111111"/>
  	</bean>
 
 	<!-- 2. Transaction Setting -->

@@ -13,7 +13,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
@@ -67,7 +66,7 @@ public class HomeActivity extends AppCompatActivity {
             imageButton_startingOn, imageButton_startingOff, imageButton_doorOn, imageButton_doorOff;
     TextView textView_velocity, textView_oil, textView_heartbeat, textView_maxoil, textView_time;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
-    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_door, imageView_weather, imageView_starting, imageView_moving, imageView_heartbeat, imageView_velocity;
+    ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_weather, imageView_moving, imageView_heartbeat, imageView_velocity;
 
     // TCP/IP Server
     ServerSocket serverSocket;
@@ -211,6 +210,8 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        // db에서 상태 가져옴
+        getStatus();
 
         // 심장박동
         hthread = new HeartbeatThread();
@@ -219,7 +220,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // 주행화면
         movingcar = new MovingCar();
-        movingcar.start();
+//        movingcar.start();
         mhandler = new MoveHandler();
 
         moveStart = new MoveStart();
@@ -283,18 +284,17 @@ public class HomeActivity extends AppCompatActivity {
                 if (startingcode == 0) {
                     startingcode = 1;
                     setUi("CA00003100000001");
-                    //getSensor("CA00003100000001");
+                    getSensor("CA00003100000001");
                     tabletSendDataFrame("CA00003100000001");
                     ColorMatrix matrix = new ColorMatrix();
                     matrix.setSaturation(0);
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOff.setColorFilter(filter);
                     imageButton_startingOn.setColorFilter(null);
-                    hthread = new HeartbeatThread();
-                    hthread.start();
                 }
             }
         });
+
 //        전원 OFF 버튼 클릭 이벤트
         imageButton_startingOff.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -302,14 +302,13 @@ public class HomeActivity extends AppCompatActivity {
                 if (startingcode == 1) {
                     startingcode = 0;
                     setUi("CA00003100000000");
-                    //getSensor("CA00003100000000");
+                    getSensor("CA00003100000000");
                     tabletSendDataFrame("CA00003100000000");
                     ColorMatrix matrix = new ColorMatrix();
                     matrix.setSaturation(0);
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOn.setColorFilter(filter);
                     imageButton_startingOff.setColorFilter(null);
-                    hthread.running = false;
                 }
             }
         });
@@ -320,7 +319,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (doorcode == 0) {
                     doorcode = 1;
                     setUi("CA00003300000001");
-                    //getSensor("CA00003300000001");
+                    getSensor("CA00003300000001");
                     tabletSendDataFrame("CA00003300000001");
                 }
             }
@@ -332,14 +331,12 @@ public class HomeActivity extends AppCompatActivity {
                 if (doorcode == 1) {
                     doorcode = 0;
                     setUi("CA00003300000000");
-                    //getSensor("CA00003300000000");
+                    getSensor("CA00003300000000");
                     tabletSendDataFrame("CA00003300000000");
 
                 }
             }
         });
-
-        getStatus();
 
         Thread t1 = new Thread(new PushCheckThread());
         t1.start();
@@ -410,7 +407,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (a == 0) {
                     value = value - (r.nextInt(5) + 1);
                 } else if (a == 1) {
-                    value = value + (r.nextInt(5) + 1);
+                    value = value - (r.nextInt(5) + 1);
                 }
                 Message message = vhandler.obtainMessage();
                 bundle.putInt("value", value);
@@ -420,7 +417,6 @@ public class HomeActivity extends AppCompatActivity {
                     value = value + 60;
                     // sleeppush가 "on"일 때만 알람을 받는다
                     if (sleeppushcheck.equals("o")) {
-
                         final MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.mp);
                         mediaPlayer.start(); //노래 재생
                         runOnUiThread(new Runnable() {
@@ -436,7 +432,7 @@ public class HomeActivity extends AppCompatActivity {
                                                 // 누르기 전에도 thread가 다시 돌면서 ValueHandler로 값을 보내고,
                                                 // 높아진 심박수가 보여진다.
                                             }
-                                        });
+                                        }).setCancelable(false);
                                 alertDialog.create().show();
                             }
                         });
@@ -452,6 +448,11 @@ public class HomeActivity extends AppCompatActivity {
                 }
 
             } // while end
+            Message message = vhandler.obtainMessage();
+            bundle.putInt("value", 0);
+            message.setData(bundle);
+            vhandler.sendMessage(message);
+            // Thread가 끝날 때 다시 0으로 만들어줌
         }
     }
 
@@ -489,7 +490,7 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onFinish() {
             setUi("CA0000210000" + String.valueOf(targetTemp) + "00");
-            //getSensor("CA0000210000" + String.valueOf(targetTemp) + "00");
+            getSensor("CA0000210000" + String.valueOf(targetTemp) + "00");
             tabletSendDataFrame("CA0000210000" + String.valueOf(targetTemp) + "00");
 
             Toast t = Toast.makeText(HomeActivity.this, "목표온도가 " + targetTemp + "로 변경됩니다!", Toast.LENGTH_SHORT);
@@ -1062,8 +1063,7 @@ public class HomeActivity extends AppCompatActivity {
 
     public void getSensors(String contents, String fuel) {
         String url = "http://" + ip + "/webServer/getTabletSensor.mc";
-        int fuelInt = Integer.parseInt(fuel);
-        url += "?carnum=" + carnum + "&contents=" + contents + "&fuel=" + fuelInt;
+        url += "?carnum=" + carnum + "&contents=" + contents + "&fuel=" + fuel;
         httpAsyncTask = new HttpAsyncTask();
         // Thread 안에서 thread가 돌아갈 땐 Handler을 사용해야 한다
         Handler mHandler = new Handler(Looper.getMainLooper());
@@ -1170,8 +1170,9 @@ public class HomeActivity extends AppCompatActivity {
                         moveStop.start();
                         moveStart.whilemove = false;
                     }
-                    int oil = jo.getInt("fuel");
-                    textView_oil.setText(oil / 100 + "");
+                    double oil = jo.getDouble("fuel");
+                    oil = oil / 100;
+                    textView_oil.setText(oil + "");
                     String maxoil = jo.getString("fuelmax");
                     textView_maxoil.setText(maxoil + "L");
                     String temper = jo.getString("temper");
@@ -1197,6 +1198,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            hthread.start();
             Random r = new Random();
             while (whilemove) {
                 v = v + r.nextInt(5);
@@ -1217,11 +1219,11 @@ public class HomeActivity extends AppCompatActivity {
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
                         doorcode = 0;
-                        setUi("CA00003300000000"); // Tablet UI에 설정
+                        setUi("CA00003300000000"); // Tablet UI에 속도 30 넘을 때 문 닫기 설정
                         if (fuel >= 10 && fuel < 100) {
-                            //getSensors("CA00003300000000", "CA0000070000"+String.valueOf(fuel*100)); // DB에 저장
+                            getSensors("CA00003300000000", "CA0000070000"+String.valueOf(Math.round(fuel*10))+"0"); // DB에 저장
                         } else if (fuel < 10) {
-                            //getSensors("CA00003300000000", "CA000007000"+String.valueOf(fuel*1000)); // DB에 저장
+                            getSensors("CA00003300000000", "CA000007000"+String.valueOf(Math.round(fuel*10))+"0"); // DB에 저장
                         }
 
                         tabletSendDataFrame("CA00003300000000"); // TCP/IP로 전송
@@ -1246,7 +1248,7 @@ public class HomeActivity extends AppCompatActivity {
                         fuel = fuel - 0.2;
                         bundle.putDouble("fuel", fuel);
                         msg.setData(bundle);
-                        //getSensor("CA0000070000"+String.valueOf(fuel*100));
+                        getSensor("CA0000070000"+String.valueOf(Math.round(fuel*10))+"0");
 
                     }
                     msg.setData(bundle);
@@ -1283,7 +1285,7 @@ public class HomeActivity extends AppCompatActivity {
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
-                    //getSensor("CA0000070000"+String.valueOf(fuel*100));
+                    getSensor("CA0000070000"+String.valueOf(Math.round(fuel*10))+"0");
                     velocityhandler.sendMessage(msg);
                 } else if (v < 80) { // 이 부분은 80~120으로 왔다갔다 할까 고민하느라 넣어둠
                     fuel = fuel - 0.3;
@@ -1304,7 +1306,7 @@ public class HomeActivity extends AppCompatActivity {
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
-                    //getSensor("CA0000070000"+String.valueOf(fuel*100));
+                    getSensor("CA0000070000"+String.valueOf(Math.round(fuel*10))+"0");
                     velocityhandler.sendMessage(msg);
                 }
             }
@@ -1342,6 +1344,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            hthread.running = false;
             Random r = new Random();
             while (whilestop) {
                 v = v - r.nextInt(8);
@@ -1377,6 +1380,7 @@ public class HomeActivity extends AppCompatActivity {
                 while(whilestop) {
                     v = v - r.nextInt(4);
                     if (v <= 0) {
+                        hthread.running = false;
                         v = 0;
                         Message message = vhandler.obtainMessage();
                         bundle.putInt("end",1);
@@ -1387,6 +1391,7 @@ public class HomeActivity extends AppCompatActivity {
                         bundle.putInt("velocity", v);
                         msg.setData(bundle);
                         velocityhandler.sendMessage(msg);
+
                         break;
                     }
 
@@ -1536,10 +1541,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-    }
+
 
 
     Runnable timeThread = new Runnable() {
@@ -1632,6 +1634,17 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        getSensor("CA00000700005000");
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        System.exit(0);
+    }
 
 }
 
