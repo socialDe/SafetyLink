@@ -10,6 +10,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -43,10 +44,13 @@ public class MapActivity extends AppCompatActivity {
     double mLatitude;  //위도
     double mLongitude; //경도
 
+    SharedPreferences sp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        getSupportActionBar().hide();
 
         // Permission Check
         String[] permission = {
@@ -62,6 +66,8 @@ public class MapActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        sp = getSharedPreferences("car",MODE_PRIVATE);
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
