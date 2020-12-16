@@ -125,16 +125,4 @@ public class MapActivity extends AppCompatActivity {
             gMap.setMyLocationEnabled(false);
         }
     }
-
-    public void clickbt(View v){
-        if(v.getId() == R.id.imageButton_control){
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }else if (v.getId() == R.id.imageButton_map){
-
-        }else  if (v.getId() == R.id.imageButton_setting){
-
-        }
-    }
 }
