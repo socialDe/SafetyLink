@@ -60,14 +60,14 @@
 	
 	
 	<!-- 1. Database Setting -->
-
- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
- 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
- 		<property name="url" value="jdbc:oracle:thin:@192.168.0.60:1521:xe"/>
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"			
+			value="oracle.jdbc.driver.OracleDriver" />    <!-- Oracle -->
+ 		<property name="url" value="jdbc:oracle:thin:@192.168.25.35:1521:xe"/>
  		<property name="username" value="userdb"/>
  		<property name="password" value="111111"/>
- 	</bean>
-
+	</bean>
 
 	<!-- 2. Transaction Setting -->
 	<bean id="txManager"

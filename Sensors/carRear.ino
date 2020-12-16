@@ -11,9 +11,9 @@
 LiquidCrystal lcd(6, 5, 23, 22, 21, 13);
 float goaltemp = 0;
 
-const int Pin = A0; // 적외선 센서
+const int pirPin = A11; // 적외선 센서
 const int tempPin = A1; // 온도 센서
-
+float preTemp = 0.0; // 이전 온도 데이터
 
 // LoadCell scale Function
 HX711 scale;
@@ -31,6 +31,7 @@ void setup()
   Serial.println("Press - or z to decrease calibration factor");
 
   // Pin setting
+  pinMode(pirPin, INPUT);
   lcd.begin(16, 2);
   
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
@@ -49,13 +50,23 @@ void setup()
 void loop() 
 {
   int temp = analogRead(tempPin);
+  int pir = digitalRead(pirPin);
   
   // 센싱
   // 온도 센서 작동
   float tempF = ((5.0 * temp)/1024.0) * 100; // 현재 온도
-  String pretemp = "0001";
-  pretemp += tempF;
-  Serial.println(pretemp);
+  if(preTemp != tempF){
+    preTemp = tempF;
+    String strtemp = "0001";
+    strtemp += tempF;
+    Serial.println(strtemp);
+    delay(500);
+  }
+
+  // 적외선 센서 작동
+  if(pir == HIGH){
+    Serial.println("000400000001");
+  }
 
   String cmd = Serial.readString();
 
@@ -69,7 +80,8 @@ void loop()
   }else if(cmd.substring(0,4) == "0032"){
     //주행 or Stop 명령
     if(cmd.substring(11,12) == "1"){
-      Serial.write("00059999");
+      Serial.println("00059999");
+      delay(500);
     }
   }
 

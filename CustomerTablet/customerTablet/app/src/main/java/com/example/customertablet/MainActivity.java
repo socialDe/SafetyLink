@@ -19,11 +19,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.customertablet.network.HttpConnect;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.vo.CarVO;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String ip = "192.168.0.60";
+    public static String ip = "192.168.25.35";
 
     HttpAsyncTask httpAsyncTask;
     EditText editText_carNum, editText_carYear, editText_carModel;
@@ -33,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
     // dropdown 목록을 위해 정의
     String[] carType = {"승용차", "승합차", "트럭"};
     String[] oilType = {"휘발유", "경유", "전기차", "LPG", "수소차", "하이브리드"};
+    SharedPreferences sp;
 
-
+    CarVO car;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
         httpAsyncTask = new HttpAsyncTask();
         httpAsyncTask.execute(url);
+
+        car = new CarVO(num,carType,model,Integer.parseInt(year),oilType);
+
     }
 
     /*
@@ -181,7 +187,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             String url = strings[0].toString();
-            String result = com.example.customertablet.network.HttpConnect.getString(url);
+            String result = HttpConnect.getString(url);
+            Log.d("[TAG]","result:"+result);
             return result;
         }
 
@@ -195,7 +202,13 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences pref = getSharedPreferences("token", MODE_PRIVATE);
             final String cartype = pref.getString("cartype","");
             progressDialog.dismiss();
+            Log.d("[LOG]","s:"+s);
             //String result = s.trim();
+            if(s == null){
+                Toast.makeText(MainActivity.this, "회원가입 오류! 관리자에게 문의하세요", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (s.equals("fail")) {
                 // 차량 등록 실패
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -215,6 +228,16 @@ public class MainActivity extends AppCompatActivity {
                 android.app.AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle("차량 등록");
                 builder.setMessage("차량이 등록되었습니다.");
+
+                sp = getSharedPreferences("car", MODE_PRIVATE);
+                SharedPreferences.Editor edit = sp.edit();
+                edit.putString("caryear", String.valueOf(car.getCaryear()));
+                edit.putString("carmodel", car.getCarmodel());
+                edit.putString("cartype", car.getCartype());
+                edit.putString("carnum", car.getCarnum());
+                edit.putString("caroiltype", car.getCaroiltype());
+                edit.commit();
+
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

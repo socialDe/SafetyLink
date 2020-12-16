@@ -98,9 +98,9 @@ public class SendAndReceiveSerialCan implements SerialPortEventListener {
 		}else if(sendId.equals("0420CA03")) {
 			df.setSender("CarRear");
 		}else if(sendId.equals("0420AD01")) {
-			df.setSender("CustomerTablet");
+			df.setSender("Tablet");
 		}else if(sendId.equals("0420AD02")) {
-			df.setSender("CustomerMobile");
+			df.setSender("Mobile");
 		}
 		
 		if (code.equals("U")) {

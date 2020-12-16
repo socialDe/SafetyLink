@@ -4,9 +4,12 @@ import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 public class HttpConnect {
@@ -25,11 +28,23 @@ public class HttpConnect {
             Log.d("[Log]", "is: ");
             result = convertStr(is);
             Log.d("[Log]", "result: " + result);
-        }catch(Exception e){
-            Log.d("[Log]", "Exception!!");
+        } catch (MalformedURLException e) {
+            // 1. 잘못된 url
+            Log.d("[Log]", "잘못된 url");
+            e.printStackTrace();
+        } catch( SocketTimeoutException e){
+            // 2. 타임아웃
+            Log.d("[Log]", "타임아웃");
+            e.printStackTrace();
+        } catch (IOException e) {
+            //3.  네트웍 문제
+            Log.d("[Log]", "네트웍 문제");
+            e.printStackTrace();
+        } catch( Exception e){
+            // 4. 기타 문제
+            Log.d("[Log]", "기타 문제");
             e.printStackTrace();
         }
-
         return result;
     }
 
