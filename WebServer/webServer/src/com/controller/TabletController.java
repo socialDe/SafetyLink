@@ -365,7 +365,7 @@ public class TabletController {
 		car = cbiz.get(carid);
 		
 		// FcmLog
-		// 차량에서 모바일로 보내는 푸쉬(충돌)
+		// 차량에서 모바일로 보내는 푸쉬(적재물 및 졸음)
 		CarVO fcmlogcar = new CarVO(car.getCarid(), car.getUserid(), carnum, alarm);
 		fcmLog.fcmlog(fcmlogcar);
 
