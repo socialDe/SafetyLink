@@ -18,6 +18,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.customertablet.HomeActivity;
@@ -37,6 +38,8 @@ public class MapActivity extends AppCompatActivity {
     GoogleMap gMap;
     LocationManager locationManager;
 
+    ImageButton imageButton_mapBack;
+
     double mLatitude;  //위도
     double mLongitude; //경도
 
@@ -51,6 +54,14 @@ public class MapActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_COARSE_LOCATION
         };
         ActivityCompat.requestPermissions(this, permission, 101);
+
+        imageButton_mapBack = findViewById(R.id.imageButton_mapBack);
+        imageButton_mapBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -71,7 +82,6 @@ public class MapActivity extends AppCompatActivity {
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, myLocation);
 
-                Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -87,7 +97,7 @@ public class MapActivity extends AppCompatActivity {
                 mLatitude = 37;
                 mLongitude = 127;
             }
-//            gMap.addMarker(new MarkerOptions().position(latLng).title("My Point").snippet("xxx"));
+//            Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
     }
