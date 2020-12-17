@@ -126,7 +126,7 @@ public class TabletController {
 
 		String carnum = request.getParameter("carnum");
 		int carid = cbiz.carfromnumber(carnum).getCarid();
-
+		System.out.println("차번호"+carid);
 		CarSensorVO car = new CarSensorVO();
 		car = sbiz.get(carid);
 		

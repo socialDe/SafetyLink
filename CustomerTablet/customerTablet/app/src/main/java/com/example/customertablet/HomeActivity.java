@@ -13,6 +13,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
@@ -52,8 +54,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -580,11 +584,18 @@ public class HomeActivity extends AppCompatActivity {
                             ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                             imageView_moving.setImageResource(R.drawable.stopcar);
                             imageView_moving.setColorFilter(filter);
-                            movingcar.moving = false;
+                            moveStart.whilemove = false;
+                            moveStart.join();
+                            moveStop = new MoveStop();
+                            moveStop.start();
+
                         } else if (runData.equals("00000001")) {
                             // 주행 시작
-                            MovingCar movingcar = new MovingCar();
-                            movingcar.start();
+                            imageView_moving.setColorFilter(null);
+                            moveStop.whilestop = false;
+                            moveStop.join();
+                            moveStart = new MoveStart();
+                            moveStart.start();
                         }
                     }
 
@@ -828,23 +839,23 @@ public class HomeActivity extends AppCompatActivity {
                 // 주행
                 else if (contentsSensor.equals("0032")) {
                     if (String.valueOf(contentsData).equals("1")) { // 주행여부 ex)1,0
-                        movingcar = new MovingCar();
-                        movingcar.start();
-                        imageView_moving.setColorFilter(null);
-                        moveStart = new MoveStart();
-                        moveStart.start();
-                        moveStop.whilestop = false;
-
+//                        movingcar = new MovingCar();
+//                        movingcar.start();
+//                        imageView_moving.setColorFilter(null);
+//                        moveStart = new MoveStart();
+//                        moveStart.start();
+//                        moveStop.whilestop = false;
+//
                     } else if (String.valueOf(contentsData).equals("0")) {
-                        imageView_moving.setImageResource(R.drawable.stopcar);
-                        ColorMatrix matrix = new ColorMatrix();
-                        matrix.setSaturation(0);
-                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                        imageView_moving.setColorFilter(filter);
-                        movingcar.moving = false;
-                        moveStop = new MoveStop();
-                        moveStop.start();
-                        moveStart.whilemove = false;
+//                        imageView_moving.setImageResource(R.drawable.stopcar);
+//                        ColorMatrix matrix = new ColorMatrix();
+//                        matrix.setSaturation(0);
+//                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+//                        imageView_moving.setColorFilter(filter);
+//                        movingcar.moving = false;
+//                        moveStop = new MoveStop();
+//                        moveStop.start();
+//                        moveStart.whilemove = false;
                     }
 
                     //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
@@ -1031,7 +1042,6 @@ public class HomeActivity extends AppCompatActivity {
                 builder.setContentTitle(title);
                 builder.setContentText(carid + " " + contents);
 
-
                 if (carid.equals("verify")) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(HomeActivity.this);
                     alertDialog.setTitle(Integer.parseInt(contents) + "")
@@ -1040,6 +1050,9 @@ public class HomeActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialog, int which) {
                                 }
                             });
+
+
+
                     alertDialog.create().show();
                     builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                     Notification noti = builder.build();
@@ -1048,6 +1061,7 @@ public class HomeActivity extends AppCompatActivity {
                     Notification noti = builder.build();
                     manager.notify(1, noti);
                 }
+
 
 
             }
@@ -1163,21 +1177,21 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     String moving = jo.getString("moving");
                     if (moving.equals("1")) {
-                        movingcar = new MovingCar();
-                        movingcar.start();
+                        moveStop.whilestop = false;
+                        moveStop.join();
                         moveStart = new MoveStart();
                         moveStart.start();
-                        moveStop.whilestop = false;
+
                     } else if (moving.equals("0")) { // 잘 작동되는지 확인할 것
                         imageView_moving.setImageResource(R.drawable.stopcar);
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setColorFilter(filter);
-                        movingcar.moving = false;
+                        moveStart = new MoveStart();
+                        moveStart.join();
                         moveStop = new MoveStop();
                         moveStop.start();
-                        moveStart.whilemove = false;
                     }
                     double oil = jo.getDouble("fuel");
                     oil = oil / 100;
@@ -1191,14 +1205,13 @@ public class HomeActivity extends AppCompatActivity {
 
                     tire.start(); // tire 공기압 받아옴
                 }
-            } catch (JSONException e) {
+            } catch (JSONException | InterruptedException e) {
                 e.printStackTrace();
             }
 
         }
     }
 
-    // 속도
     class MoveStart extends Thread {
         int v = Integer.parseInt(textView_velocity.getText().toString());
         double fuel = Double.parseDouble(textView_oil.getText().toString());
@@ -1207,7 +1220,19 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            movingcar.moving = false;
+            hthread.running = false;
+            try {
+                movingcar.join();
+                hthread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            movingcar = new MovingCar();
+            movingcar.start();
+            hthread = new HeartbeatThread();
             hthread.start();
+
             Random r = new Random();
             while (whilemove) {
                 v = v + r.nextInt(5);
@@ -1289,6 +1314,11 @@ public class HomeActivity extends AppCompatActivity {
                         msg.setData(bundle);
                         velocityhandler.sendMessage(msg);
                         whilemove = false;
+                        try {
+                            moveStart.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         moveStop = new MoveStop();
                         moveStop.start();
                         // moving으로 바꿀 때, imageView도 바꿔주자
@@ -1310,6 +1340,11 @@ public class HomeActivity extends AppCompatActivity {
                         msg.setData(bundle);
                         velocityhandler.sendMessage(msg);
                         whilemove = false;
+                        try {
+                            moveStart.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         moveStop = new MoveStop();
                         moveStop.start();
                         // moving으로 바꿀 때, imageView도 바꿔주자
@@ -1338,6 +1373,7 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    imageView_moving.setColorFilter(null);
                     textView_velocity.setText(v + "");
                     textView_oil.setText(num + "");
                 }
@@ -1353,14 +1389,13 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            hthread.running = false;
             Random r = new Random();
             while (whilestop) {
                 v = v - r.nextInt(8);
-                Message msg = velocityhandler.obtainMessage();
+                Message msg = downvelocityhandler.obtainMessage();
                 bundle.putInt("velocity", v);
                 msg.setData(bundle);
-                velocityhandler.sendMessage(msg);
+                downvelocityhandler.sendMessage(msg);
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
@@ -1373,10 +1408,10 @@ public class HomeActivity extends AppCompatActivity {
             }
             while (whilestop) {
                 v = v - r.nextInt(7);
-                Message msg = velocityhandler.obtainMessage();
+                Message msg = downvelocityhandler.obtainMessage();
                 bundle.putInt("velocity", v);
                 msg.setData(bundle);
-                velocityhandler.sendMessage(msg);
+                downvelocityhandler.sendMessage(msg);
                 try {
                     Thread.sleep(400);
                 } catch (InterruptedException e) {
@@ -1386,43 +1421,48 @@ public class HomeActivity extends AppCompatActivity {
                     break;
                 }
             }
-                while(whilestop) {
-                    v = v - r.nextInt(4);
-                    if (v <= 0) {
-                        hthread.running = false;
-                        v = 0;
-                        Message message = vhandler.obtainMessage();
-                        bundle.putInt("end",1);
-                        message.setData(bundle);
-                        vhandler.sendMessage(message); // 속도가 0이 되면 심박수 0으로 만들어줌
+            while(whilestop) {
+                v = v - r.nextInt(4);
+                Message msg = downvelocityhandler.obtainMessage();
+                Log.d("[Server]", v+"");
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                downvelocityhandler.sendMessage(msg);
+                if (v <= 0) {
+                    v = 0;
+                    Message message = vhandler.obtainMessage();
+                    bundle.putInt("end",1);
+                    message.setData(bundle);
+                    vhandler.sendMessage(message); // 속도가 0이 되면 심박수 0으로 만들어줌
 
-                        Message msg = velocityhandler.obtainMessage();
-                        bundle.putInt("velocity", v);
-                        msg.setData(bundle);
-                        velocityhandler.sendMessage(msg);
-
-                        break;
+                    movingcar.moving = false;
+                    hthread.running = false;
+                    try {
+                        movingcar.join();
+                        hthread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
-                    Message msg = velocityhandler.obtainMessage();
+                    Message msg1 = downvelocityhandler.obtainMessage();
                     bundle.putInt("velocity", v);
-                    msg.setData(bundle);
-                    velocityhandler.sendMessage(msg);
+                    msg1.setData(bundle);
+                    downvelocityhandler.sendMessage(msg1);
+
                     getSensor("CA00003200000000");
                     tabletSendDataFrame("CA00003200000000");
                     break;
                 }
-                Message msg = velocityhandler.obtainMessage();
-                bundle.putInt("velocity", v);
-                msg.setData(bundle);
-                velocityhandler.sendMessage(msg);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
+
+            }
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
+    }
 
 
     class DownVelocityHandler extends Handler {
@@ -1430,16 +1470,18 @@ public class HomeActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             Bundle bundle = msg.getData();
-            int v = bundle.getInt("velocity");
-            if (v <= 0) {
-                v = 0;
-                imageView_moving.setImageResource(R.drawable.stopcar);
-            }
-            final int finalV = v;
+            final int v = bundle.getInt("velocity");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    textView_velocity.setText(finalV + "");
+                    if(v <= 0){
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageView_moving.setColorFilter(filter);
+                        imageView_moving.setImageResource(R.drawable.stopcar);
+                    }
+                    textView_velocity.setText(v+"");
                 }
             });
 
@@ -1643,15 +1685,44 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    private class DownloadFilesTask extends AsyncTask<String,Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap bmp = null;
+            try {
+                String img_url = strings[0]; //url of the image
+                URL url = new URL(img_url);
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+        }
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         getSensor("CA00000700005000");
+        finish();
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
+        getSensor("CA00000700005000");
+        finish();
         System.exit(0);
     }
 

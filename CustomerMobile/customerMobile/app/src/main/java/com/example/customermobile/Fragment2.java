@@ -107,9 +107,10 @@ public class Fragment2 extends Fragment implements CarActivity.OnBackPressedList
         activity.getCarData();
 //        activity.replaceFragment(Fragment1.newInstance()); // 이건 다른 방법
 
-//        toolbar_title.setText("Home");
-//        getActivity().getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.container, fragment1).commit();
+//        toolbar_title.setText("Home"); // 얘도 다른애
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.container, fragment1).commit();
         // Activity 에서도 뭔가 처리하고 싶은 내용이 있다면 하단 문장처럼 호출해주면 됩니다.
 //         activity.onBackPressed();
     }

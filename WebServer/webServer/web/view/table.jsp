@@ -28,8 +28,89 @@
     	text-align: center;
     	margin: auto;
     }
-    </style> 
+	/*Popup CSS*/
+	.mkpopup {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 99999999; /* Sit on top */
+		padding-top: 100px; /* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+	/* Modal Content */
+	.mkpopup-content {
+		background-color: #fefefe;
+		margin: auto;
+		padding: 20px;
+		border: 1px solid #888;
+		width: 100%;
+		max-width:700px;
+	}
+	/* The Close Button */
+	.mkpopupclose {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+	.mkpopupclose:hover, .mkpopupclose:focus {
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	input[type="text"], textarea{width:100%; border:1px solid #cccccc; margin-bottom:10px; padding:5px;}    
+    </style>
+    <script>
+	function openmkpopup(){
+		//document.getElementById("mkpopup").style.display = "block";
+		// $("#token").text(document.getElementById('id').innerHTML);
+		// open할 때 DB정보 넣어주자
+	}
+	
+	function closmkpopup(){
+		//document.getElementById("mkpopup").style.display = "none";
+		// close할 때 DB정보를 flush?? 같이 불러온 정보 비우는 기능 사용
+	}
+		</script>    
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript">
+   
+    /* Image Preview Start // 이 버전의 jquery가 있어야 사진 미리보기 가능 */
+    $(function() {
+        $("#mf").on('change', function(){
+            readURL(this);
+        });
+    });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+                $('#fcmImage').attr('src', e.target.result);
+            }
+          reader.readAsDataURL(input.files[0]);
+        }
+    }
+	/* Image Preview End */ 
+	
+	/* popup button Start */
+	/* $(document).ready(function(){
+	$("#fcmtomobile").click(function(){
+		var url = 'fcmpopup.mc';
+		var name = 'target';
+		var option = 'width=300px, height=300px, left=400px, top=400px, menubar=0, location=0, status=0';
+		window.open(url, name, option)
+	});
+	}) */
+	/* popup button End */
+    </script> 
 </head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-default top-navbar" role="navigation">
@@ -155,7 +236,8 @@
 	                                    	<td>${user.usersex}</td>
 	                                    	<td>${user.userphone}</td>
 	                                    	<td>${user.userbirth}</td>
-	                                    	<td><button>Push</button></td>
+	                                    	<td><button type="button" onclick="openmkpopup();" href="#" data-target="#mkpopup" data-toggle="modal" data-id="${user.userid}"
+	                                    	 data-token="${user.mobiletoken}" id="sendfcmtouser">Push</button></td>
                                     	</tr>
                                     </c:forEach>
                                     </tbody>
@@ -166,6 +248,119 @@
                     </div>
                     <!--End Advanced Tables -->
                 </div>
+                <!-- The Popup Modal -->
+<div id="mkpopup" class="mkpopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<!-- Modal content DB 연동 문제로 추후 작업 예정 -->
+	<div class="mkpopup-content">
+		<span class="mkpopupclose" onclick="closmkpopup();" aria-hidden="true" data-dismiss="modal">&times;</span>
+			<h3 name="id" value="${user.userid }">Send FCM </h3> <!-- **에 사용자의 이름 or 아이디 -->
+			<div class="input-field col s2"></div>
+				<form method="post" name="popupcontact" onsubmit="popupvalidation();" action="fcmpopupsend.mc" enctype="multipart/form-data">
+							<div class="row">
+        						<div class="input-field col s2"></div>
+        						<div class="input-field col s8">
+         							<textarea placeholder="" id="token" type="text" class="materialize-textarea" name="token" value="${user.mobiletoken }"></textarea>
+          								<label for="first_name"></label> <!-- db에서 토큰을 받아옴 -->
+          						</div>
+        						<div class="input-field col s2"></div>
+      						</div>
+							<div class="row">
+        						<div class="input-field col s2"></div>
+        						<div class="input-field col s8">
+         							<textarea placeholder="" id="title" type="text" class="materialize-textarea" name="title"></textarea>
+          								<label for="first_name">Title</label>
+          						</div>
+        						<div class="input-field col s2"></div>
+      						</div>
+      						<div class="row">
+								<div class="input-field col s2"></div>
+								<div class="input-field col s8">
+									<textarea id="contents" class="materialize-textarea" name="contents"></textarea>
+										<label for="textarea1">Contents</label>
+								</div>
+								<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<input type="file" name="mf" id="mf"> <!-- 파일 첨부하는 버튼, 보안상의 이유로 value를 넣을 수 없다.. -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<img src="img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	                  		<div class="row">
+	  						<div class="input-field col s7"></div>
+	                 		<div class="input-field col s1">
+                 					<input type="submit" value="Send Push" class="waves-effect waves-light btn-primary btn-large">
+	                 		</div>
+	                 		<div class="input-field col s3"></div>
+	                  		</div>
+				</form>
+		<div class="clearfix"></div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+<!-- Modal Popup End -->
+			<div class="col-lg-12">
+			 	<div class="card">
+                    <div class="card-action text-center" style="font-size:40px;'">
+						FCM 전송
+                    </div>
+                    <div class="card-content">
+    					<form class="col s12" action="fcmsendall.mc" method="post" role="form" enctype="multipart/form-data">
+      						<div class="row">
+        						<div class="input-field col s2"></div>
+        						<div class="input-field col s8">
+         							<textarea placeholder="" id="title" type="text" class="materialize-textarea" name="title"></textarea>
+          								<label for="first_name">Title</label>
+          						</div>
+        						<div class="input-field col s2"></div>
+      						</div>
+      						<div class="row">
+								<div class="input-field col s2"></div>
+								<div class="input-field col s8">
+									<textarea id="contents" class="materialize-textarea" name="contents"></textarea>
+										<label for="textarea1">Contents</label>
+								</div>
+								<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<input type="file" name="mf" id="mf"> <!-- 파일 첨부하는 버튼, 보안상의 이유로 value를 넣을 수 없다.. -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<img src="img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	                  		<div class="input-field col s8"></div>
+	                 		<div class="input-field col s1">
+                 					<input type="submit" value="Send Push" class="waves-effect waves-light btn-primary btn-large">
+	  						</div>
+	                 		<div class="input-field col s3"></div>
+	                 		</div>
+	                 		
+    					</form>
+    <!-- FCM Page End -->
+    
+						<div class="clearBoth">
+						</div>
+  					</div>
+    			</div>
+ 			</div>	
+
             </div>
                 
          
@@ -177,7 +372,7 @@
          <!-- /. PAGE WRAPPER  -->
      <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
- 
+ x`
 
     <!-- jQuery Js -->
     <script src="view/assets/js/jquery-1.10.2.js"></script>

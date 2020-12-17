@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.frame.Biz;
+import com.google.firebase.auth.UserInfo;
 import com.vo.UsersVO;
 
 @Controller
@@ -67,7 +68,6 @@ public class MainController {
             mv.addObject("freight", freight);
             mv.addObject("accident", accident);
             mv.addObject("baby", baby);
-            
             ArrayList<UsersVO> usersInfo = new ArrayList<>();
             try {
 				usersInfo = ubiz.get();

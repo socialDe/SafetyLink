@@ -67,7 +67,7 @@ public class TruckActivity extends AppCompatActivity {
     TextView textView_velocity, textView_oil, textView_heartbeat, textView_maxoil, textView_time, textView_freight;
     TextView textView_temp, textView_targetTemp, textView_weatherTemp, textView_address, textView_todayDate, textView_weather;
     ImageView imageView_frtire, imageView_fltire, imageView_rrtire, imageView_rltire, imageView_rltire2, imageView_rltire3
-            ,imageView_weather, imageView_moving, imageView_heartbeat, imageView_velocity;
+            ,imageView_weather, imageView_tmoving, imageView_heartbeat, imageView_velocity;
 
     // TCP/IP Server
     ServerSocket serverSocket;
@@ -173,7 +173,7 @@ public class TruckActivity extends AppCompatActivity {
         imageView_rltire2 = findViewById(R.id.imageView_rlTire2);
         imageView_rltire3 = findViewById(R.id.imageView_rlTire3);
         imageView_weather = findViewById(R.id.imageView_weather);
-        imageView_moving = findViewById(R.id.imageView_moving);
+        imageView_tmoving = findViewById(R.id.imageView_tmoving);
         imageView_heartbeat = findViewById(R.id.imageView_heartbeat);
         imageView_velocity = findViewById(R.id.imageView_velocity);
         //gif 추가
@@ -295,6 +295,14 @@ public class TruckActivity extends AppCompatActivity {
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOff.setColorFilter(filter);
                     imageButton_startingOn.setColorFilter(null);
+//                    moveStop.whilestop = false;
+//                    try {
+//                        moveStop.join();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    moveStart = new MoveStart();
+//                    moveStart.start();                   // TEST용
                 }
             }
         });
@@ -312,6 +320,14 @@ public class TruckActivity extends AppCompatActivity {
                     ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                     imageButton_startingOn.setColorFilter(filter);
                     imageButton_startingOff.setColorFilter(null);
+//                    moveStart.whilemove = false;
+//                    try {
+//                        moveStart.join();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                    moveStop = new MoveStop();
+//                    moveStop.start();              // TEST 용
                 }
             }
         });
@@ -381,11 +397,11 @@ public class TruckActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (move == 1) {
-                        imageView_moving.setImageResource(R.drawable.redcar3);
+                        imageView_tmoving.setImageResource(R.drawable.redcar3);
                     } else if (move == 2) {
-                        imageView_moving.setImageResource(R.drawable.redcar2);
+                        imageView_tmoving.setImageResource(R.drawable.redcar2);
                     } else if (move == 3) {
-                        imageView_moving.setImageResource(R.drawable.redcar1);
+                        imageView_tmoving.setImageResource(R.drawable.redcar1);
                     }
                 }
             });
@@ -410,7 +426,7 @@ public class TruckActivity extends AppCompatActivity {
                 if (a == 0) {
                     value = value - (r.nextInt(5) + 1);
                 } else if (a == 1) {
-                    value = value - (r.nextInt(5) + 1);
+                    value = value + (r.nextInt(5) + 1);
                 }
                 Message message = vhandler.obtainMessage();
                 bundle.putInt("value", value);
@@ -569,13 +585,20 @@ public class TruckActivity extends AppCompatActivity {
                             ColorMatrix matrix = new ColorMatrix();
                             matrix.setSaturation(0);
                             ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                            imageView_moving.setImageResource(R.drawable.stopcar);
-                            imageView_moving.setColorFilter(filter);
-                            movingcar.moving = false;
+                            imageView_tmoving.setImageResource(R.drawable.stopcar);
+                            imageView_tmoving.setColorFilter(filter);
+                            moveStart.whilemove = false;
+                            moveStart.join();
+                            moveStop = new MoveStop();
+                            moveStop.start();
+
                         } else if (runData.equals("00000001")) {
                             // 주행 시작
-                            MovingCar movingcar = new MovingCar();
-                            movingcar.start();
+                            imageView_tmoving.setColorFilter(null);
+                            moveStop.whilestop = false;
+                            moveStop.join();
+                            moveStart = new MoveStart();
+                            moveStart.start();
                         }
                     }
 
@@ -820,23 +843,23 @@ public class TruckActivity extends AppCompatActivity {
                 // 주행
                 else if (contentsSensor.equals("0032")) {
                     if (String.valueOf(contentsData).equals("1")) { // 주행여부 ex)1,0
-                        movingcar = new MovingCar();
-                        movingcar.start();
-                        imageView_moving.setColorFilter(null);
-                        moveStart = new MoveStart();
-                        moveStart.start();
-                        moveStop.whilestop = false;
+//                        movingcar = new MovingCar();
+//                        movingcar.start();
+//                        imageView_tmoving.setColorFilter(null);
+//                        moveStop.whilestop = false;
+//                        moveStart = new MoveStart();
+//                        moveStart.start();
 
                     } else if (String.valueOf(contentsData).equals("0")) {
-                        imageView_moving.setImageResource(R.drawable.stopcar);
-                        ColorMatrix matrix = new ColorMatrix();
-                        matrix.setSaturation(0);
-                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                        imageView_moving.setColorFilter(filter);
-                        movingcar.moving = false;
-                        moveStop = new MoveStop();
-                        moveStop.start();
-                        moveStart.whilemove = false;
+//                        imageView_tmoving.setImageResource(R.drawable.stopcar);
+//                        ColorMatrix matrix = new ColorMatrix();
+//                        matrix.setSaturation(0);
+//                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+//                        imageView_tmoving.setColorFilter(filter);
+//                        movingcar.moving = false;
+//                        moveStart.whilemove = false;
+//                        moveStop = new MoveStop();
+//                        moveStop.start();
                     }
 
                     //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
@@ -1155,21 +1178,21 @@ public class TruckActivity extends AppCompatActivity {
                     }
                     String moving = jo.getString("moving");
                     if (moving.equals("1")) {
-                        movingcar = new MovingCar();
-                        movingcar.start();
+                        moveStop.whilestop = false;
+                        moveStop.join();
                         moveStart = new MoveStart();
                         moveStart.start();
-                        moveStop.whilestop = false;
+
                     } else if (moving.equals("0")) { // 잘 작동되는지 확인할 것
-                        imageView_moving.setImageResource(R.drawable.stopcar);
+                        imageView_tmoving.setImageResource(R.drawable.stopcar);
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-                        imageView_moving.setColorFilter(filter);
-                        movingcar.moving = false;
+                        imageView_tmoving.setColorFilter(filter);
+                        moveStart = new MoveStart();
+                        moveStart.join();
                         moveStop = new MoveStop();
                         moveStop.start();
-                        moveStart.whilemove = false;
                     }
                     double oil = jo.getDouble("fuel");
                     oil = oil / 100;
@@ -1183,7 +1206,7 @@ public class TruckActivity extends AppCompatActivity {
 
                     tire.start(); // tire 공기압 받아옴
                 }
-            } catch (JSONException e) {
+            } catch (JSONException | InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -1199,7 +1222,19 @@ public class TruckActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            movingcar.moving = false;
+            hthread.running = false;
+            try {
+                movingcar.join();
+                hthread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            movingcar = new MovingCar();
+            movingcar.start();
+            hthread = new HeartbeatThread();
             hthread.start();
+
             Random r = new Random();
             while (whilemove) {
                 v = v + r.nextInt(5);
@@ -1281,6 +1316,11 @@ public class TruckActivity extends AppCompatActivity {
                         msg.setData(bundle);
                         velocityhandler.sendMessage(msg);
                         whilemove = false;
+                        try {
+                            moveStart.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         moveStop = new MoveStop();
                         moveStop.start();
                         // moving으로 바꿀 때, imageView도 바꿔주자
@@ -1302,6 +1342,11 @@ public class TruckActivity extends AppCompatActivity {
                         msg.setData(bundle);
                         velocityhandler.sendMessage(msg);
                         whilemove = false;
+                        try {
+                            moveStart.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         moveStop = new MoveStop();
                         moveStop.start();
                         // moving으로 바꿀 때, imageView도 바꿔주자
@@ -1330,6 +1375,7 @@ public class TruckActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    imageView_tmoving.setColorFilter(null);
                     textView_velocity.setText(v + "");
                     textView_oil.setText(num + "");
                 }
@@ -1345,14 +1391,13 @@ public class TruckActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            hthread.running = false;
             Random r = new Random();
             while (whilestop) {
                 v = v - r.nextInt(8);
-                Message msg = velocityhandler.obtainMessage();
+                Message msg = downvelocityhandler.obtainMessage();
                 bundle.putInt("velocity", v);
                 msg.setData(bundle);
-                velocityhandler.sendMessage(msg);
+                downvelocityhandler.sendMessage(msg);
                 try {
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
@@ -1365,10 +1410,10 @@ public class TruckActivity extends AppCompatActivity {
             }
             while (whilestop) {
                 v = v - r.nextInt(7);
-                Message msg = velocityhandler.obtainMessage();
+                Message msg = downvelocityhandler.obtainMessage();
                 bundle.putInt("velocity", v);
                 msg.setData(bundle);
-                velocityhandler.sendMessage(msg);
+                downvelocityhandler.sendMessage(msg);
                 try {
                     Thread.sleep(400);
                 } catch (InterruptedException e) {
@@ -1380,6 +1425,11 @@ public class TruckActivity extends AppCompatActivity {
             }
             while(whilestop) {
                 v = v - r.nextInt(4);
+                Message msg = downvelocityhandler.obtainMessage();
+                Log.d("[Server]", v+"");
+                bundle.putInt("velocity", v);
+                msg.setData(bundle);
+                downvelocityhandler.sendMessage(msg);
                 if (v <= 0) {
                     v = 0;
                     Message message = vhandler.obtainMessage();
@@ -1387,25 +1437,27 @@ public class TruckActivity extends AppCompatActivity {
                     message.setData(bundle);
                     vhandler.sendMessage(message); // 속도가 0이 되면 심박수 0으로 만들어줌
 
-                    Message msg = velocityhandler.obtainMessage();
+                    movingcar.moving = false;
+                    hthread.running = false;
+                    try {
+                        movingcar.join();
+                        hthread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Message msg1 = downvelocityhandler.obtainMessage();
                     bundle.putInt("velocity", v);
-                    msg.setData(bundle);
-                    velocityhandler.sendMessage(msg);
+                    msg1.setData(bundle);
+                    downvelocityhandler.sendMessage(msg1);
+
+                    getSensor("CA00003200000000");
+                    tabletSendDataFrame("CA00003200000000");
                     break;
                 }
 
-                Message msg = velocityhandler.obtainMessage();
-                bundle.putInt("velocity", v);
-                msg.setData(bundle);
-                velocityhandler.sendMessage(msg);
-                getSensor("CA00003200000000");
-                tabletSendDataFrame("CA00003200000000");
-                break;
+
             }
-            Message msg = velocityhandler.obtainMessage();
-            bundle.putInt("velocity", v);
-            msg.setData(bundle);
-            velocityhandler.sendMessage(msg);
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -1420,16 +1472,18 @@ public class TruckActivity extends AppCompatActivity {
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             Bundle bundle = msg.getData();
-            int v = bundle.getInt("velocity");
-            if (v <= 0) {
-                v = 0;
-                imageView_moving.setImageResource(R.drawable.stopcar);
-            }
-            final int finalV = v;
+            final int v = bundle.getInt("velocity");
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    textView_velocity.setText(finalV + "");
+                        if(v <= 0){
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageView_tmoving.setColorFilter(filter);
+                        imageView_tmoving.setImageResource(R.drawable.stopcar);
+                    }
+                    textView_velocity.setText(v+"");
                 }
             });
 
@@ -1676,12 +1730,15 @@ public class TruckActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         getSensor("CA00000700005000");
-        android.os.Process.killProcess(android.os.Process.myPid());
+        finish();
+//        android.os.Process.killProcess(android.os.Process.myPid()); // 강제 종료
     }
 
     @Override
     public void onDestroy(){
         super.onDestroy();
+        getSensor("CA00000700005000");
+        finish();
         System.exit(0);
     }
 
