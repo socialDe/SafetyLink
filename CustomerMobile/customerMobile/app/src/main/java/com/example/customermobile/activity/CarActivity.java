@@ -24,6 +24,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -62,6 +64,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -572,7 +577,6 @@ public class CarActivity extends AppCompatActivity {
 
         }
 
-
     }
 
     // FCM 수신
@@ -582,8 +586,9 @@ public class CarActivity extends AppCompatActivity {
             if (intent != null) {
                 String carid = intent.getStringExtra("carid");
                 String contents = intent.getStringExtra("contents");
-
-                Log.d("[FCM]", "carid:" + carid + " contents:" + contents);
+                String img = intent.getStringExtra("img");
+                new DownloadFilesTask().execute(ip+"webServer/img/"+img);
+                Log.d("[FCM]","carid:"+carid+" contents:"+ contents + "img :"+ img);
 
                 vibrate(300, 5);
                 Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -653,8 +658,6 @@ public class CarActivity extends AppCompatActivity {
                     }
                 }
 
-
-                builder.setSmallIcon(R.mipmap.saftylink1_logo_round);
                 Notification noti = builder.build();
 
                 manager.notify(1, noti);
@@ -840,6 +843,32 @@ public class CarActivity extends AppCompatActivity {
                     android.os.Process.killProcess(android.os.Process.myPid());
                 }
             }
+        }
+
+    }
+    private class DownloadFilesTask extends AsyncTask<String,Void, Bitmap> {
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap bmp = null;
+            try {
+                String img_url = strings[0]; //url of the image
+                URL url = new URL(img_url);
+                bmp = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bmp;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
         }
     }
 
