@@ -1,6 +1,5 @@
 package com.example.customertablet;
 
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
