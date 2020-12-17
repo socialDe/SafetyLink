@@ -579,7 +579,6 @@ public class CarActivity extends AppCompatActivity {
 
         }
 
-
     }
 
     // FCM 수신

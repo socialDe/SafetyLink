@@ -2,8 +2,10 @@ package com.example.customermobile.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -304,10 +306,26 @@ public class MyPageActivity extends AppCompatActivity {
     }
 
     public void deleteBt(View v){
+        android.app.AlertDialog.Builder builder = new AlertDialog.Builder(MyPageActivity.this);
+        builder.setTitle("회원 탈퇴");
+        builder.setMessage("회원 정보를 삭제하시겠습니까?");
 
-    String url = "http://" + ip + "/webServer/userdeleteimpl.mc?id="+user.getUserid();
-    deleteAsync = new DeleteAsync();
-    deleteAsync.execute(url);
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String url = "http://" + ip + "/webServer/userdeleteimpl.mc?id="+user.getUserid();
+                deleteAsync = new DeleteAsync();
+                deleteAsync.execute(url);
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+
 }
 
 

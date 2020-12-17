@@ -67,7 +67,7 @@ public class FcmController {
 
 			// set my firebase server key
 			conn.setRequestProperty("Authorization", "key="
-					+ "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
+					+ "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
 			// create notification message into JSON format
 			JSONObject message = new JSONObject();
 			message.put("to", "/topics/car");
@@ -75,13 +75,12 @@ public class FcmController {
 			message.put("priority", "high");
 			JSONObject notification = new JSONObject();
 			notification.put("title", title);
-			notification.put("body", contents);
+			notification.put("body", "전체 FCM 메시지");
 			message.put("notification", notification);
 			
 			JSONObject data = new JSONObject();
-			data.put("img", img);
-			data.put("control", "control1");
-			data.put("data", 100);
+			data.put("carid", img);
+			data.put("contents", contents);
 			message.put("data", data);
 
 
@@ -139,7 +138,7 @@ public class FcmController {
 
 			// set my firebase server key
 			conn.setRequestProperty("Authorization", "key="
-					+ "AAAAK89FyMY:APA91bGxNwkQC6S_QQAKbn3COepWgndhyyjynT8ZvIEarTaGpEfMA1SPFo-ReN8b9uO21R1OfSOpNhfYbQaeohKP_sKzsgVTxu7K5tmzcjEfHzlgXRFrB1r0uqhfxLp4p836lbKw_iaN");
+					+ "AAAAeDPCqVw:APA91bH08TNojrp8rdBiVAsIcwTeK5k6ITDZ4q8k5t-FRdEEQiRbFb5I46TAt-0NDg7xQsf9MxTZ7muyKtEeK__IygsotH3G4c4_e--VdDXRub-6H_mL9qetJu7fA-1XR9ip0xG-Q-4i");
 			// create notification message into JSON format
 			JSONObject message = new JSONObject();
 			message.put("to", token);

@@ -3,8 +3,10 @@ package com.example.customermobile.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -132,11 +134,29 @@ public class CarDetailActivity extends AppCompatActivity {
     }
 
     public void DeleteBt(View v) {
-        String url = "http://" + ip + "/webServer/cardeleteimpl.mc";
-        url += "?carid=" + car.getCarid();
+        // 차량 등록 취소
+        android.app.AlertDialog.Builder builder = new AlertDialog.Builder(CarDetailActivity.this);
+        builder.setTitle("차량 등록 취소");
+        builder.setMessage("차량 연동을 취소하시겠습니까?");
 
-        carDeleteAsync = new CarDeleteAsync();
-        carDeleteAsync.execute(url);
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String url = "http://" + ip + "/webServer/cardeleteimpl.mc";
+                url += "?carid=" + car.getCarid();
+
+                carDeleteAsync = new CarDeleteAsync();
+                carDeleteAsync.execute(url);
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+
     }
 
     class CarDeleteAsync extends AsyncTask<String, Void, Void> {

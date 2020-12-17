@@ -108,6 +108,44 @@
 	});
 	}) */
 	/* popup button End */
+	
+	//Modal Popup으로 user 정보를 전달
+	
+	                        $('#sendFcm').click(function(){
+                        	console.log($(this).data('id'));
+                        	$("input[name='shop_name']").val($(this).data('id'));
+                        	console.log($(this).data('booking'));
+                        	$("input[name='booking_no']").val($(this).data('booking'));
+                        });
+	
+	 $('#sendFcm').click(function(){
+          console.log($(this).data('id'));
+          $("input[name='shop_name']").val($(this).data('id'));
+          console.log($(this).data('booking'));
+          $("input[name='booking_no']").val($(this).data('booking'));
+                        	
+    //server로부터 해당 리뷰의 정보를 받아와 유저에게 보여줍니다.
+          booking_no =$(this).data('booking');
+          console.log(booking_no);
+          var contents="";
+          $.ajax({
+          url : 'getReview2.mc',
+          data : {'booking_no':booking_no},
+          error : function(request,status,error) {
+          console.log("error");
+          console.log(request.responseText);
+          console.log(" error = "+error)
+          alert("code= "+request.status+" message = "+ request.responseText +" error = "+error);
+             },
+          success : function(data) {
+          console.log("success");
+          console.log(data);
+          console.log(typeof(data));
+          $("input[name='review_contents']").val(data.review_contents);
+             }
+          });
+       });
+	
     </script> 
 </head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -236,7 +274,7 @@
 	                                    	<td>${user.usersex}</td>
 	                                    	<td>${user.userphone}</td>
 	                                    	<td>${user.userbirth}</td>
-	                                    	<td><button type="button" onclick="openmkpopup();" href="#" data-target="#mkpopup" data-toggle="modal" data-id="${user.userid}"
+	                                    	<td><button type="button" id="sendFcm" onclick="openmkpopup();" href="#" data-target="#mkpopup" data-toggle="modal" data-id="${user.userid}"
 	                                    	 data-token="${user.mobiletoken}" id="sendfcmtouser">Push</button></td>
                                     	</tr>
                                     </c:forEach>
