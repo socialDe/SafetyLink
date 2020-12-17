@@ -8,6 +8,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.AlertDialog;
@@ -47,6 +49,7 @@ import com.example.customermobile.vo.UsersVO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
@@ -123,7 +126,7 @@ public class CarActivity extends AppCompatActivity {
         Intent getintent = getIntent();
         user = null;
         user = (UsersVO) getintent.getSerializableExtra("user");
-
+        user = getNowUser();
         sp = getSharedPreferences("user", MODE_PRIVATE);
 
         // intent 정보가 없을 경우, sp로 회원정보 가져오기
@@ -142,8 +145,8 @@ public class CarActivity extends AppCompatActivity {
             String usersubject = sp.getString("usersubject", "");
             String babypushcheck = sp.getString("babypushcheck", "");
             String accpushcheck = sp.getString("accpushcheck", "");
-            String sleeppushcheck = sp.getString("sleeppushcheck","");
-            String droppushcheck = sp.getString("droppushcheck","");
+            String sleeppushcheck = sp.getString("sleeppushcheck", "");
+            String droppushcheck = sp.getString("droppushcheck", "");
             String mobiletoken = sp.getString("mobiletoken", "");
 
             // String 변수를 Date로 변환
@@ -245,23 +248,25 @@ public class CarActivity extends AppCompatActivity {
         carDataTimer.start();
 
         alermBabyTimer = new AlermBabyTimer(10000, 1000);
-    }// end onCreat
+//        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//        fragmentTransaction.add(R.id.container, Fragment1.newInstance()).commit();
+
+    }// end onCreate
 
 
-
-    public UsersVO getNowUser(){
+    public UsersVO getNowUser() {
         return user;
     }
 
     // 현재 선택된 차량ID를 Fragment로 제공
-    public int getNowCarId(){
-        System.out.println("nowcarID: "+nowcarid);
+    public int getNowCarId() {
+        System.out.println("nowcarID: " + nowcarid);
         return nowcarid;
     }
 
     // 현재 선택된 차량데이터를 Fragment로 제공
-    public CarVO getNowCar(){
-        System.out.println("nowcar: "+nowCar);
+    public CarVO getNowCar() {
+        System.out.println("nowcar: " + nowCar);
         return nowCar;
     }
 
@@ -413,6 +418,7 @@ public class CarActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+
                 fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
 
 
@@ -501,7 +507,7 @@ public class CarActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper(),carsensorlist.get(carlistnum).getAircon());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper(), carsensorlist.get(carlistnum).getAircon());
 
         }
     }
@@ -531,13 +537,13 @@ public class CarActivity extends AppCompatActivity {
         if (carlistnum - 1 >= 0) {
             carlistnum = carlistnum - 1;
             fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper(),carsensorlist.get(carlistnum).getAircon());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper(), carsensorlist.get(carlistnum).getAircon());
             nowcarid = carlist.get(carlistnum).getCarid();
             nowCar = carlist.get(carlistnum);
         } else {
             carlistnum = maxnum;
             fragment1.setCarData(carlist.get(maxnum).getCarname(), carlist.get(maxnum).getCarmodel(), carlist.get(maxnum).getCarnum(), carlist.get(maxnum).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(), carsensorlist.get(maxnum).getFuel(), carsensorlist.get(maxnum).getStarting(), carsensorlist.get(maxnum).getDoor(), carsensorlist.get(maxnum).getTemper(),carsensorlist.get(carlistnum).getAircon());
+            fragment1.setCarSensorData(carsensorlist.get(maxnum).getMoving(), carsensorlist.get(maxnum).getFuel(), carsensorlist.get(maxnum).getStarting(), carsensorlist.get(maxnum).getDoor(), carsensorlist.get(maxnum).getTemper(), carsensorlist.get(carlistnum).getAircon());
             nowcarid = carlist.get(maxnum).getCarid();
             nowCar = carlist.get(maxnum);
 
@@ -547,21 +553,20 @@ public class CarActivity extends AppCompatActivity {
     }
 
 
-
     public void clickcarright() {
         int maxnum = carlist.size() - 1;
 
         if (carlistnum + 1 <= maxnum) {
             carlistnum = carlistnum + 1;
             fragment1.setCarData(carlist.get(carlistnum).getCarname(), carlist.get(carlistnum).getCarmodel(), carlist.get(carlistnum).getCarnum(), carlist.get(carlistnum).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper(),carsensorlist.get(carlistnum).getAircon());
+            fragment1.setCarSensorData(carsensorlist.get(carlistnum).getMoving(), carsensorlist.get(carlistnum).getFuel(), carsensorlist.get(carlistnum).getStarting(), carsensorlist.get(carlistnum).getDoor(), carsensorlist.get(carlistnum).getTemper(), carsensorlist.get(carlistnum).getAircon());
             nowcarid = carlist.get(carlistnum).getCarid();
             nowCar = carlist.get(carlistnum);
 
         } else {
             carlistnum = 0;
             fragment1.setCarData(carlist.get(0).getCarname(), carlist.get(0).getCarmodel(), carlist.get(0).getCarnum(), carlist.get(0).getCarimg());
-            fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper(),carsensorlist.get(carlistnum).getAircon());
+            fragment1.setCarSensorData(carsensorlist.get(0).getMoving(), carsensorlist.get(0).getFuel(), carsensorlist.get(0).getStarting(), carsensorlist.get(0).getDoor(), carsensorlist.get(0).getTemper(), carsensorlist.get(carlistnum).getAircon());
             nowcarid = carlist.get(0).getCarid();
             nowCar = carlist.get(0);
 
@@ -578,7 +583,7 @@ public class CarActivity extends AppCompatActivity {
                 String carid = intent.getStringExtra("carid");
                 String contents = intent.getStringExtra("contents");
 
-                Log.d("[FCM]","carid:"+carid+" contents:"+ contents);
+                Log.d("[FCM]", "carid:" + carid + " contents:" + contents);
 
                 vibrate(300, 5);
                 Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -607,26 +612,26 @@ public class CarActivity extends AppCompatActivity {
                 builder.setContentIntent(pendingIntent);
 
                 String whereFcmCarName = "";
-                for(CarVO car: carlist){
-                    if(car.getCarid() == Integer.parseInt(carid)){
+                for (CarVO car : carlist) {
+                    if (car.getCarid() == Integer.parseInt(carid)) {
                         whereFcmCarName = car.getCarname();
                     }
                 }
 
                 // FCM 분기
-                if(contents.substring(4,8).equals("0004")){
-                    if(contents.substring(contents.length()-1,contents.length()).equals("1")){
+                if (contents.substring(4, 8).equals("0004")) {
+                    if (contents.substring(contents.length() - 1, contents.length()).equals("1")) {
                         alermBabyTimer.start();
 
                         uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                         ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
                         ringtone.play();
 
-                        builder.setContentTitle("\'"+whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다");
+                        builder.setContentTitle("\'" + whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다");
 
                         AlertDialog.Builder builder2 = new AlertDialog.Builder(CarActivity.this);
                         builder2.setTitle("확인 알람");
-                        builder2.setMessage("\'"+whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다\n확인을 바로 눌러주세요!");
+                        builder2.setMessage("\'" + whereFcmCarName + "\'" + "에서 " + "영유아가 감지되었습니다\n확인을 바로 눌러주세요!");
                         builder2.setIcon(R.mipmap.saftylink1_logo_round);
 
                         builder2.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -638,13 +643,13 @@ public class CarActivity extends AppCompatActivity {
                         AlertDialog dialog = builder2.create();
                         dialog.show();
                     }
-                } else if(contents.substring(4,8).equals("0003")){
-                    if(contents.substring(contents.length()-1,contents.length()).equals("2")){
+                } else if (contents.substring(4, 8).equals("0003")) {
+                    if (contents.substring(contents.length() - 1, contents.length()).equals("2")) {
                         uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                         ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
                         ringtone.play();
 
-                        builder.setContentTitle("\'"+ whereFcmCarName + "\'" + "에서 " + "충돌이 발생했습니다");
+                        builder.setContentTitle("\'" + whereFcmCarName + "\'" + "에서 " + "충돌이 발생했습니다");
                     }
                 }
 
@@ -714,6 +719,8 @@ public class CarActivity extends AppCompatActivity {
 
                 builder.show();
             }
+
+
         }
     }
 
@@ -786,6 +793,61 @@ public class CarActivity extends AppCompatActivity {
         httpAsyncTask.execute(url);
         super.onDestroy();
     }
+
+    // 뒤로가기 버튼 입력시간이 담길 long 객체
+    private long pressedTime = 0;
+
+    // 리스너 생성
+    public interface OnBackPressedListener {
+        public void onBack();
+    }
+
+    // 리스너 객체 생성
+    private OnBackPressedListener mBackListener;
+
+    // 리스너 설정 메소드
+    public void setOnBackPressedListener(OnBackPressedListener listener) {
+        mBackListener = listener;
+    }
+
+    // 뒤로가기 버튼을 눌렀을 때의 오버라이드 메소드
+    @Override
+    public void onBackPressed() {
+
+        // 다른 Fragment 에서 리스너를 설정했을 때 처리됩니다.
+        if (mBackListener != null) {
+            mBackListener.onBack();
+            Log.e("!!!", "Listener is not null");
+            // 리스너가 설정되지 않은 상태(예를들어 메인Fragment)라면
+            // 뒤로가기 버튼을 연속적으로 두번 눌렀을 때 앱이 종료됩니다.
+        } else {
+            Log.e("!!!", "Listener is null");
+            if (pressedTime == 0) {
+                Snackbar.make(findViewById(R.id.fragment1),
+                        " 한 번 더 누르면 종료됩니다.", Snackbar.LENGTH_LONG).show();
+                pressedTime = System.currentTimeMillis();
+            } else {
+                int seconds = (int) (System.currentTimeMillis() - pressedTime);
+
+                if (seconds > 2000) {
+                    Snackbar.make(findViewById(R.id.fragment1),
+                            " 한 번 더 누르면 종료됩니다.", Snackbar.LENGTH_LONG).show();
+                    pressedTime = 0;
+                } else {
+                    super.onBackPressed();
+                    Log.e("!!!", "onBackPressed : finish, killProcess");
+                    finish();
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
+            }
+        }
+    }
+
+//    public void replaceFragment(Fragment fragment) {
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.container, fragment).commit();      // Fragment로 사용할 MainActivity내의 layout공간을 선택합니다.
+//    }
 
 //    @Override
 //    public void onBackPressed(){

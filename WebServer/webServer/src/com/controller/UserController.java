@@ -6,19 +6,23 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.frame.Biz;
 import com.vo.AdminVO;
+import com.vo.CarVO;
 import com.vo.UsersVO;
 
 @Controller
@@ -351,7 +355,84 @@ public class UserController {
 			System.out.println("사용자 안전 기능 변경:"+userid+"님의"+func+"기능"+value+" set Completed.");
 			out.close();
 		}
-		
-		
 	}
+	
+	@RequestMapping("/usermodifyimpl.mc")
+	public void carmodifyimpl(HttpServletRequest request) throws Exception {
+		String id = request.getParameter("id");
+		String pwd = request.getParameter("pwd");
+		String name = request.getParameter("name");
+		String sex = request.getParameter("sex");
+		String phone = request.getParameter("phone");
+		String strbirth = request.getParameter("birth");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		Date userbirth = sdf.parse(strbirth);
+		
+		System.out.println(id+" "+pwd+" "+name+" "+sex+" "+phone+" "+userbirth);
+		
+		UsersVO dbuser = null;
+		try {
+			dbuser = ubiz.get(id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		dbuser.setUserpwd(pwd);
+		dbuser.setUsername(name);
+		dbuser.setUsersex(sex);
+		dbuser.setUserphone(phone);
+		dbuser.setUserbirth(userbirth);
+		
+		System.out.println(dbuser);
+		
+		ubiz.modify(dbuser);
+	}
+	
+	@RequestMapping("/userdata.mc")
+	@ResponseBody
+	public void cardata(HttpServletRequest request, HttpServletResponse res) throws Exception {
+		String id = request.getParameter("id");
+
+		UsersVO user = new UsersVO();
+		user = ubiz.get(id);
+		
+		JSONArray ja = new JSONArray();
+
+		JSONObject data = new JSONObject();
+			
+		data.put("pwd", user.getUserpwd());
+		data.put("name", user.getUsername());
+		data.put("sex", user.getUsersex());
+		data.put("phone", user.getUserphone());
+		
+        SimpleDateFormat sdf = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+        try {
+            Date userbirth = sdf.parse(user.getUserbirth().toString());
+            SimpleDateFormat newsdf = new SimpleDateFormat("yyyy/MM/dd");
+            String newbirth = newsdf.format(userbirth);
+            data.put("birth", newbirth);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+		
+			
+		ja.add(data);
+		
+		System.out.println("getstatus:"+ja.toJSONString());
+
+		res.setCharacterEncoding("UTF-8");
+		res.setContentType("application/json");
+		PrintWriter out = res.getWriter();
+		System.out.println(ja);
+		out.print(ja.toJSONString());
+		out.close();
+	}
+	
+	@RequestMapping("/userdeleteimpl.mc")
+	public void cardeleteimpl(HttpServletRequest request) throws Exception {
+		String userid = request.getParameter("id");
+		
+		System.out.println(userid);
+		ubiz.remove(userid);
+	}
+	
 }

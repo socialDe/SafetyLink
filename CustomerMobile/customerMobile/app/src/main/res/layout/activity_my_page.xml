@@ -200,7 +200,7 @@
                     android:text="남" />
 
                 <RadioButton
-                    android:id="@+id/mypage_rb_registerWomen"
+                    android:id="@+id/mypage_rb_registerWoman"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="여" />
@@ -304,15 +304,16 @@
                     android:layout_weight="1"
                     android:ems="10"
                     android:enabled="false"
-                    android:inputType="date" />
+                    android:inputType="date"
+                    android:textColor="#000000" />
 
                 <Button
-                    android:id="@+id/button_registerBirth"
+                    android:id="@+id/mypage_bt_registerBirth"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginLeft="16dp"
                     android:foreground="@drawable/btn_calendar"
-                    android:onClick="clickbt" />
+                    android:onClick="dateBt" />
             </LinearLayout>
 
         </LinearLayout>
@@ -326,25 +327,27 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button_modify_car"
+            android:id="@+id/mypage_bt_modify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:layout_marginRight="25dp"
             android:layout_weight="1"
+            android:onClick="modifyBt"
             android:text="수정" />
 
         <Button
-            android:id="@+id/button_delete_car"
+            android:id="@+id/mypage_bt_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="25dp"
             android:layout_weight="1"
             android:backgroundTint="#F80000"
+            android:onClick="deleteBt"
             android:text="삭제" />
 
         <Button
-            android:id="@+id/button_modifyx_car"
+            android:id="@+id/mypage_bt_modifyx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="25dp"

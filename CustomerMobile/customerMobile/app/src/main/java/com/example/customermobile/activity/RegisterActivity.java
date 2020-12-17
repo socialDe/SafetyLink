@@ -60,7 +60,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         edit_registerid = findViewById(R.id.editText_registerId);
         edit_registerpwd = findViewById(R.id.editText_registerPwd);
-        edit_registerpwdcon = findViewById(R.id.editText_registerPwdCon);
+        edit_registerpwdcon = findViewById(R.id.editText_registerPwdCon); // 나중에 얘네 지워놓고 맞출 때만 정보 수정 가능
         edit_registername = findViewById(R.id.editText_registerName);
         edit_registerphone1 = findViewById(R.id.editText_registerPhone1);
         edit_registerphone2 = findViewById(R.id.editText_registerPhone2);

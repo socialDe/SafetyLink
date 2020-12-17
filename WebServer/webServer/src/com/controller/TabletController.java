@@ -84,6 +84,8 @@ public class TabletController {
 		storeContents(cs, contents);
 		storeContents(cs, fuel);
 
+		System.out.println("modify:"+cs);
+		
 		sbiz.modify(cs);
 	}
 
@@ -216,10 +218,10 @@ public class TabletController {
 				out = res.getWriter();
 				out.print("crush");
 
-				// FcmLog
-				// 차량에서 모바일로 보내는 푸쉬(큰충돌)
-				CarVO fcmlogcar = new CarVO(car.getCarid(), userid, carnum, "대형사고알람");
-				fcmLog.fcmlog(fcmlogcar);
+//				// FcmLog
+//				// 차량에서 모바일로 보내는 푸쉬(큰충돌)
+//				CarVO fcmlogcar = new CarVO(car.getCarid(), userid, carnum, "대형사고알람");
+//				fcmLog.fcmlog(fcmlogcar);
 
 			} catch (IOException e) {
 				// e.printStackTrace();
