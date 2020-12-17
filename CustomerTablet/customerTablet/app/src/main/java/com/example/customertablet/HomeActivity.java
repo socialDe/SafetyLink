@@ -1,6 +1,6 @@
 package com.example.customertablet;
 
-
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -851,23 +851,26 @@ public class HomeActivity extends AppCompatActivity {
                 }
                 // 주행
                 else if (contentsSensor.equals("0032")) {
-//                    if (String.valueOf(contentsData).equals("1")) { // 주행여부 ex)1,0
-//                        imageView_moving.setColorFilter(null);
-//                        moveStop.whilestop = false;
-//                        moveStart = new MoveStart();
-//                        moveStart.start();
-//
-//
-//                    } else if (String.valueOf(contentsData).equals("0")) {
-//                        imageView_moving.setImageResource(R.drawable.stopcar);
-//                        ColorMatrix matrix = new ColorMatrix();
-//                        matrix.setSaturation(0);
-//                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
-//                        imageView_moving.setColorFilter(filter);
-//                        moveStop = new MoveStop();
-//                        moveStop.start();
-//                        moveStart.whilemove = false;
-//                    }
+                    if (String.valueOf(contentsData).equals("1")) { // 주행여부 ex)1,0
+                        imageView_moving.setColorFilter(null);
+                        moveStop.whilestop = false;
+                        moveStart = new MoveStart();
+                        moveStart.start();
+                        MovingCar movingcar = new MovingCar();
+                        movingcar.start();
+
+
+                    } else if (String.valueOf(contentsData).equals("0")) {
+                        imageView_moving.setImageResource(R.drawable.stopcar);
+                        ColorMatrix matrix = new ColorMatrix();
+                        matrix.setSaturation(0);
+                        ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
+                        imageView_moving.setColorFilter(filter);
+                        moveStop = new MoveStop();
+                        moveStop.start();
+                        movingcar.moving = false;
+                        moveStart.whilemove = false;
+                    }
 
                     //time.getTime() 주행시작시간 ex) 시간값형태로 나올듯
                 }
@@ -1242,8 +1245,6 @@ public class HomeActivity extends AppCompatActivity {
             hthread = new HeartbeatThread();
             hthread.start();
             Random r = new Random();
-            movingcar = new MovingCar();
-            movingcar.start();
             while (whilemove) {
                 v = v + r.nextInt(5);
                 Message msg = velocityhandler.obtainMessage();
@@ -1447,7 +1448,7 @@ public class HomeActivity extends AppCompatActivity {
                     velocityhandler.sendMessage(msg);
                     getSensor("CA00003200000000");
                     tabletSendDataFrame("CA00003200000000");
-                    break;
+
                 }
                 Message msg = velocityhandler.obtainMessage();
                 bundle.putInt("velocity", v);

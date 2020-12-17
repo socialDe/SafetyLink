@@ -52,13 +52,6 @@ public class MapActivity extends AppCompatActivity {
         setContentView(R.layout.activity_map);
         getSupportActionBar().hide();
 
-        // Permission Check
-        String[] permission = {
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        };
-        ActivityCompat.requestPermissions(this, permission, 101);
-
         imageButton_mapBack = findViewById(R.id.imageButton_mapBack);
         imageButton_mapBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +79,15 @@ public class MapActivity extends AppCompatActivity {
                 gMap.setMyLocationEnabled(true);
                 MyLocation myLocation = new MyLocation();
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, myLocation);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, myLocation);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 0, myLocation);
+                LatLng latLng = new LatLng(mLatitude, mLongitude);
+                if(mLatitude == 0 && mLongitude == 0){
+                    mLatitude = 37;
+                    mLongitude = 126;
+                }
+//            Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
             }
         });
@@ -101,7 +102,7 @@ public class MapActivity extends AppCompatActivity {
             LatLng latLng = new LatLng(mLatitude, mLongitude);
             if(mLatitude == 0 && mLongitude == 0){
                 mLatitude = 37;
-                mLongitude = 127;
+                mLongitude = 126;
             }
 //            Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
             gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
