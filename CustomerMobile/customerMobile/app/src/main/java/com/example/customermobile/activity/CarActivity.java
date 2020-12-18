@@ -259,7 +259,7 @@ public class CarActivity extends AppCompatActivity {
             checkRunTimePermission();
         }
 
-    }// end onCreat
+    }// end onCreate
 
 
     public UsersVO getNowUser(){

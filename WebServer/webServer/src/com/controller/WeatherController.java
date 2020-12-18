@@ -37,30 +37,35 @@ public class WeatherController {
                 PrintWriter out = response.getWriter();
                 System.out.println("jsonstr: "+jsonstr.toString());
                 
+                if(nx != null && ny != null && nx != "0" && ny != "0") {
+                	JSONParser parser = new JSONParser();
+                	Object obj = new Object();
+                	try {
+                		obj = parser.parse(jsonstr);
+                	} catch (ParseException e) {
+                		e.printStackTrace();
+                	}
+                	JSONObject jsonObj = (JSONObject)obj;
+                	Object responseObj = jsonObj.get("response");
+                	JSONObject responseJSONObj = (JSONObject)responseObj;
+                	Object bodyObj = responseJSONObj.get("body");
+                	JSONObject bodyJSONObj = (JSONObject) bodyObj;
+                	Object items = bodyJSONObj.get("items");
+                	JSONObject itemsJSON = (JSONObject) items;
+                	Object item = itemsJSON.get("item");
+                	JSONArray itemJA = (JSONArray)item;
+                	
+                	String temperature = ((JSONObject)itemJA.get(6)).get("fcstValue").toString();
+                	String pty = ((JSONObject)itemJA.get(1)).get("fcstValue").toString();
+                	String sky = ((JSONObject)itemJA.get(5)).get("fcstValue").toString();
+                	
+                	System.out.println("temperature:"+temperature+"pty:"+pty+"sky:"+sky);
+                	out.print("temperature:"+temperature+"pty:"+pty+"sky:"+sky);
+                }else {
+                	System.out.println("Weather.mc: 위치 정보 없이 날씨 정보 요청을 받았습니다.");
+                }
                 
-                JSONParser parser = new JSONParser();
-                Object obj = new Object();
-                try {
-					obj = parser.parse(jsonstr);
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-                JSONObject jsonObj = (JSONObject)obj;
-                Object responseObj = jsonObj.get("response");
-                JSONObject responseJSONObj = (JSONObject)responseObj;
-                Object bodyObj = responseJSONObj.get("body");
-                JSONObject bodyJSONObj = (JSONObject) bodyObj;
-                Object items = bodyJSONObj.get("items");
-                JSONObject itemsJSON = (JSONObject) items;
-                Object item = itemsJSON.get("item");
-                JSONArray itemJA = (JSONArray)item;
                 
-                String temperature = ((JSONObject)itemJA.get(6)).get("fcstValue").toString();
-                String pty = ((JSONObject)itemJA.get(1)).get("fcstValue").toString();
-                String sky = ((JSONObject)itemJA.get(5)).get("fcstValue").toString();
-                
-                System.out.println("temperature:"+temperature+"pty:"+pty+"sky:"+sky);
-                out.print("temperature:"+temperature+"pty:"+pty+"sky:"+sky);
                 
                 
                 

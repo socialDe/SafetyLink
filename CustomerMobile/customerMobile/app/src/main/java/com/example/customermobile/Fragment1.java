@@ -451,23 +451,6 @@ public class Fragment1 extends Fragment {
 
     }
 
-//    public void getWeather(){
-//        String nx = String.valueOf(Math.round(lat));
-//        String ny = String.valueOf(Math.round(lon));
-//        String weatherResult = ((CarActivity)getActivity()).getWeather(nx,ny);
-//        Log.d("[Weather]","weatherResult: "+weatherResult);
-
-//        int tempStartIndex = weatherResult.indexOf(":")+1;
-//        int tempEndIndex = weatherResult.indexOf("p");
-//        int ptyIndex = weatherResult.indexOf("y")+2;
-//        int skyIndex = weatherResult.length()-2;
-
-//        temperature = weatherResult.substring(tempStartIndex, tempEndIndex);
-//        pty = weatherResult.substring(ptyIndex, ptyIndex+1);
-//        sky = weatherResult.substring(skyIndex);
-//
-//        Log.d("[Weather]","Temp: "+temperature+" pty: "+pty+" sky"+sky);
-//    }
 
     public void getWeather(String nx, String ny) {
         String urlstr = "http://" + ip + "/webServer/weather.mc";
