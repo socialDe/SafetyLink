@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Track Material Design Bootstrap Admin Template</title>
+    <title>Safety Link</title>
 	
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<link rel="stylesheet" href="view/assets/materialize/css/materialize.min.css" media="screen,projection" />
@@ -28,8 +28,127 @@
     	text-align: center;
     	margin: auto;
     }
-    </style> 
+	/*Popup CSS*/
+	.mkpopup {
+		display: none; /* Hidden by default */
+		position: fixed; /* Stay in place */
+		z-index: 99999999; /* Sit on top */
+		padding-top: 100px; /* Location of the box */
+		left: 0;
+		top: 0;
+		width: 100%; /* Full width */
+		height: 100%; /* Full height */
+		overflow: auto; /* Enable scroll if needed */
+		background-color: rgb(0,0,0); /* Fallback color */
+		background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+	}
+	/* Modal Content */
+	.mkpopup-content {
+		background-color: #fefefe;
+		margin: auto;
+		padding: 20px;
+		border: 1px solid #888;
+		width: 100%;
+		max-width:700px;
+	}
+	/* The Close Button */
+	.mkpopupclose {
+		color: #aaaaaa;
+		float: right;
+		font-size: 28px;
+		font-weight: bold;
+	}
+	.mkpopupclose:hover, .mkpopupclose:focus {
+		color: #000;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	input[type="text"], textarea{width:100%; border:1px solid #cccccc; margin-bottom:10px; padding:5px;}    
+    </style>
+    <script>
+	function openmkpopup(){
+		//document.getElementById("mkpopup").style.display = "block";
+		// $("#token").text(document.getElementById('id').innerHTML);
+		// open할 때 DB정보 넣어주자
+	}
+	
+	function closmkpopup(){
+		//document.getElementById("mkpopup").style.display = "none";
+		// close할 때 DB정보를 flush?? 같이 불러온 정보 비우는 기능 사용
+	}
+		</script>    
+    
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript">
+   
+    /* Image Preview Start // 이 버전의 jquery가 있어야 사진 미리보기 가능 */
+    $(function() {
+        $("#mf").on('change', function(){
+            readURL(this);
+        });
+    });
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+                $('#fcmImage').attr('src', e.target.result);
+            }
+          reader.readAsDataURL(input.files[0]);
+        }
+    }
+	/* Image Preview End */ 
+	
+	/* popup button Start */
+	/* $(document).ready(function(){
+	$("#fcmtomobile").click(function(){
+		var url = 'fcmpopup.mc';
+		var name = 'target';
+		var option = 'width=300px, height=300px, left=400px, top=400px, menubar=0, location=0, status=0';
+		window.open(url, name, option)
+	});
+	}) */
+	/* popup button End */
+	
+	//Modal Popup으로 user 정보를 전달
+	
+	                        $('#sendFcm').click(function(){
+                        	console.log($(this).data('id'));
+                        	$("input[name='shop_name']").val($(this).data('id'));
+                        	console.log($(this).data('booking'));
+                        	$("input[name='booking_no']").val($(this).data('booking'));
+                        });
+	
+	 $('#sendFcm').click(function(){
+          console.log($(this).data('id'));
+          $("input[name='shop_name']").val($(this).data('id'));
+          console.log($(this).data('booking'));
+          $("input[name='booking_no']").val($(this).data('booking'));
+                        	
+    //server로부터 해당 리뷰의 정보를 받아와 유저에게 보여줍니다.
+          booking_no =$(this).data('booking');
+          console.log(booking_no);
+          var contents="";
+          $.ajax({
+          url : 'getReview2.mc',
+          data : {'booking_no':booking_no},
+          error : function(request,status,error) {
+          console.log("error");
+          console.log(request.responseText);
+          console.log(" error = "+error)
+          alert("code= "+request.status+" message = "+ request.responseText +" error = "+error);
+             },
+          success : function(data) {
+          console.log("success");
+          console.log(data);
+          console.log(typeof(data));
+          $("input[name='review_contents']").val(data.review_contents);
+             }
+          });
+       });
+	
+    </script> 
 </head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <body>
     <div id="wrapper">
         <nav class="navbar navbar-default top-navbar" role="navigation">
@@ -40,256 +159,84 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand waves-effect waves-dark" href="index.html"><i class="large material-icons">track_changes</i> <strong>target</strong></a>
+                <a class="navbar-brand waves-effect waves-dark" href="main.mc"><img src="img/logo_name.png" width="175px" height="35px" style="display: inline;"></a>
 				
 		<div id="sideNav" href=""><i class="material-icons dp48">toc</i></div>
             </div>
 
-            <ul class="nav navbar-top-links navbar-right"> 
-				<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown4"><i class="fa fa-envelope fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>				
-				<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown3"><i class="fa fa-tasks fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-				<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown2"><i class="fa fa-bell fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
-				  <li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1"><i class="fa fa-user fa-fw"></i> <b>John Doe</b> <i class="material-icons right">arrow_drop_down</i></a></li>
-            </ul>
+		<ul class="nav navbar-top-links navbar-right">
+			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown2"><i class="fa fa-tasks fa-fw"></i> <i class="material-icons right">arrow_drop_down</i></a></li>
+			<li><a class="dropdown-button waves-effect waves-dark" href="#!" data-activates="dropdown1"><i class="fa fa-user fa-fw"></i> <b>${admin.adminname }</b><i class="material-icons right">arrow_drop_down</i></a></li>
+		</ul>
         </nav>
 		<!-- Dropdown Structure -->
-<ul id="dropdown1" class="dropdown-content">
-<li><a href="#"><i class="fa fa-user fa-fw"></i> My Profile</a>
-</li>
-<li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-</li> 
-<li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-</li>
-</ul>
-<ul id="dropdown2" class="dropdown-content w250">
-  <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-comment fa-fw"></i> New Comment
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                    <span class="pull-right text-muted small">12 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-tasks fa-fw"></i> New Task
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                    <span class="pull-right text-muted small">4 min</span>
-                                </div>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>See All Alerts</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-</ul>
-<ul id="dropdown3" class="dropdown-content dropdown-tasks w250">
-<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 1</strong>
-					<span class="pull-right text-muted">60% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-						<span class="sr-only">60% Complete (success)</span>
+		<ul id="dropdown1" class="dropdown-content">
+			<li><a href="logout.mc"><i class="fa fa-sign-out fa-fw"></i> Logout</a></li>
+		</ul>
+	<ul id="dropdown2" class="dropdown-content dropdown-tasks w250">
+		<li><a href="#">
+				<div>
+					<p><strong>졸음 경보</strong> <span class="pull-right text-muted">${sleep } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="${sleep }" aria-valuemin="0" aria-valuemax="100" style="width: ${sleep }%">
+							<span class="sr-only">${sleep } cases (success)</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 2</strong>
-					<span class="pull-right text-muted">28% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="28" aria-valuemin="0" aria-valuemax="100" style="width: 28%">
-						<span class="sr-only">28% Complete</span>
+		</a></li>
+		<li class="divider"></li>
+		<li><a href="#">
+				<div>
+					<p><strong>영유아 경보</strong> <span class="pull-right text-muted">${baby } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="${baby }" aria-valuemin="0" aria-valuemax="100" style="width: ${baby }%">
+							<span class="sr-only">${baby } cases</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 3</strong>
-					<span class="pull-right text-muted">60% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-						<span class="sr-only">60% Complete (warning)</span>
+		</a></li>
+		<li class="divider"></li>
+		<li><a href="#">
+				<div>
+					<p><strong>적재물 낙하 경보</strong> <span class="pull-right text-muted">${freight } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="${freight } " aria-valuemin="0" aria-valuemax="100" style="width: ${freight }%">
+							<span class="sr-only">${freight } cases (warning)</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-		<a href="#">
-			<div>
-				<p>
-					<strong>Task 4</strong>
-					<span class="pull-right text-muted">85% Complete</span>
-				</p>
-				<div class="progress progress-striped active">
-					<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" style="width: 85%">
-						<span class="sr-only">85% Complete (danger)</span>
+		</a></li>
+		<li class="divider"></li>
+		<li><a href="#">
+				<div>
+					<p><strong>교통 사고</strong> <span class="pull-right text-muted">${accident } cases</span></p>
+					<div class="progress progress-striped active">
+						<div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="${accident }" aria-valuemin="0" aria-valuemax="100" style="width: ${accident }%">
+							<span class="sr-only">${accident } cases (danger)</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		</a>
-	</li>
-	<li class="divider"></li>
-	<li>
-</ul>   
-<ul id="dropdown4" class="dropdown-content dropdown-tasks w250 taskList">
-  <li>
-                                <div>
-                                    <strong>John Doe</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Today</em>
-                                    </span>
-                                </div>
-                                <p>Lorem Ipsum has been the industry's standard dummy text ever since the 1500s...</p>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <p>Lorem Ipsum has been the industry's standard dummy text ever since an kwilnw...</p>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>John Smith</strong>
-                                    <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                                </div>
-                                <p>Lorem Ipsum has been the industry's standard dummy text ever since the...</p>
-                            </a>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <a class="text-center" href="#">
-                                <strong>Read All Messages</strong>
-                                <i class="fa fa-angle-right"></i>
-                            </a>
-                        </li>
-</ul>   
-	   <!--/. NAV TOP  -->
+		</a></li>
+		<li class="divider"></li>
+		<li>
+	</ul>
         <!--/. NAV TOP  -->
-        <nav class="navbar-default navbar-side" role="navigation">
-            <div class="sidebar-collapse">
-                <ul class="nav" id="main-menu">
+	<nav class="navbar-default navbar-side" role="navigation">
+		<div class="sidebar-collapse">
+			<ul class="nav" id="main-menu">
+				<li><a href="dashboard.mc" class="waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+				<li><a href="chart.mc" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
+				<li><a href="table.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-table"></i> Tables</a></li>
+			</ul>
 
-                    <li>
-                        <a href="index.html" class="waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="ui-elements.html" class="waves-effect waves-dark"><i class="fa fa-desktop"></i> UI Elements</a>
-                    </li>
-					<li>
-                        <a href="chart.html" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a>
-                    </li>
-                    <li>
-                        <a href="tab-panel.html" class="waves-effect waves-dark"><i class="fa fa-qrcode"></i> Tabs & Panels</a>
-                    </li>
-                    
-                    <li>
-                        <a href="table.html" class="active-menu waves-effect waves-dark"><i class="fa fa-table"></i> Responsive Tables</a>
-                    </li>
-                    <li>
-                        <a href="form.html" class="waves-effect waves-dark"><i class="fa fa-edit"></i> Forms </a>
-                    </li>
+		</div>
 
-
-                    <li>
-                        <a href="#" class="waves-effect waves-dark"><i class="fa fa-sitemap"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link</a>
-                            </li>
-                            <li>
-                                <a href="#">Second Level Link<span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Third Level Link</a>
-                                    </li>
-
-                                </ul>
-
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="empty.html" class="waves-effect waves-dark"><i class="fa fa-fw fa-file"></i> Empty Page</a>
-                    </li>
-                </ul>
-
-            </div>
-
-        </nav>
+	</nav>
         <!-- /. NAV SIDE  -->
         <div id="page-wrapper" >
 		  <div class="header"> 
                         <h1 class="page-header">
-                            Tables Page
+                            Tables
                         </h1>
 						<ol class="breadcrumb">
 					  <li><a href="#">Home</a></li>
@@ -305,9 +252,7 @@
                 <div class="col-md-12">
                     <!-- Advanced Tables -->
                     <div class="card">
-                        <div class="card-action">
-                             회원 목록
-                        </div>
+                        <div class="card-action"> 회원 목록</div>
                         <div class="card-content">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover" id="dataTables-example">
@@ -329,7 +274,8 @@
 	                                    	<td>${user.usersex}</td>
 	                                    	<td>${user.userphone}</td>
 	                                    	<td>${user.userbirth}</td>
-	                                    	<td><button>Push</button></td>
+	                                    	<td><button type="button" id="sendFcm" onclick="openmkpopup();" href="#" data-target="#mkpopup" data-toggle="modal" data-id="${user.userid}"
+	                                    	 data-token="${user.mobiletoken}" id="sendfcmtouser">Push</button></td>
                                     	</tr>
                                     </c:forEach>
                                     </tbody>
@@ -340,6 +286,119 @@
                     </div>
                     <!--End Advanced Tables -->
                 </div>
+                <!-- The Popup Modal -->
+<div id="mkpopup" class="mkpopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<!-- Modal content DB 연동 문제로 추후 작업 예정 -->
+	<div class="mkpopup-content">
+		<span class="mkpopupclose" onclick="closmkpopup();" aria-hidden="true" data-dismiss="modal">&times;</span>
+			<h3 name="id" value="${user.userid }">Send FCM </h3> <!-- **에 사용자의 이름 or 아이디 -->
+			<div class="input-field col s2"></div>
+				<form method="post" name="popupcontact" onsubmit="popupvalidation();" action="fcmpopupsend.mc" enctype="multipart/form-data">
+							<div class="row">
+        						<div class="input-field col s2"></div>
+        						<div class="input-field col s8">
+         							<textarea placeholder="" id="token" type="text" class="materialize-textarea" name="token" value="${user.mobiletoken }"></textarea>
+          								<label for="first_name"></label> <!-- db에서 토큰을 받아옴 -->
+          						</div>
+        						<div class="input-field col s2"></div>
+      						</div>
+							<div class="row">
+        						<div class="input-field col s2"></div>
+        						<div class="input-field col s8">
+         							<textarea placeholder="" id="title" type="text" class="materialize-textarea" name="title"></textarea>
+          								<label for="first_name">Title</label>
+          						</div>
+        						<div class="input-field col s2"></div>
+      						</div>
+      						<div class="row">
+								<div class="input-field col s2"></div>
+								<div class="input-field col s8">
+									<textarea id="contents" class="materialize-textarea" name="contents"></textarea>
+										<label for="textarea1">Contents</label>
+								</div>
+								<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<input type="file" name="mf" id="mf"> <!-- 파일 첨부하는 버튼, 보안상의 이유로 value를 넣을 수 없다.. -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<img src="img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	                  		<div class="row">
+	  						<div class="input-field col s7"></div>
+	                 		<div class="input-field col s1">
+                 					<input type="submit" value="Send Push" class="waves-effect waves-light btn-primary btn-large">
+	                 		</div>
+	                 		<div class="input-field col s3"></div>
+	                  		</div>
+				</form>
+		<div class="clearfix"></div>
+	</div>
+	<div class="clearfix"></div>
+</div>
+<!-- Modal Popup End -->
+			<div class="col-lg-12">
+			 	<div class="card">
+                    <div class="card-action text-center" style="font-size:40px;'">
+						FCM 전송
+                    </div>
+                    <div class="card-content">
+    					<form class="col s12" action="fcmsendall.mc" method="post" role="form" enctype="multipart/form-data">
+      						<div class="row">
+        						<div class="input-field col s2"></div>
+        						<div class="input-field col s8">
+         							<textarea placeholder="" id="title" type="text" class="materialize-textarea" name="title"></textarea>
+          								<label for="first_name">Title</label>
+          						</div>
+        						<div class="input-field col s2"></div>
+      						</div>
+      						<div class="row">
+								<div class="input-field col s2"></div>
+								<div class="input-field col s8">
+									<textarea id="contents" class="materialize-textarea" name="contents"></textarea>
+										<label for="textarea1">Contents</label>
+								</div>
+								<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<input type="file" name="mf" id="mf"> <!-- 파일 첨부하는 버튼, 보안상의 이유로 value를 넣을 수 없다.. -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	  							<div class="input-field col s2"></div>
+	  							<div class="input-field col s8">
+	  								<img src="img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
+	  							</div>
+	  							<div class="input-field col s2"></div>
+	  						</div>
+	  						<div class="row">
+	                  		<div class="input-field col s8"></div>
+	                 		<div class="input-field col s1">
+                 					<input type="submit" value="Send Push" class="waves-effect waves-light btn-primary btn-large">
+	  						</div>
+	                 		<div class="input-field col s3"></div>
+	                 		</div>
+	                 		
+    					</form>
+    <!-- FCM Page End -->
+    
+						<div class="clearBoth">
+						</div>
+  					</div>
+    			</div>
+ 			</div>	
+
             </div>
                 
          
@@ -351,7 +410,7 @@
          <!-- /. PAGE WRAPPER  -->
      <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
- 
+ x`
 
     <!-- jQuery Js -->
     <script src="view/assets/js/jquery-1.10.2.js"></script>

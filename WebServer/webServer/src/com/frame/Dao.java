@@ -10,6 +10,7 @@ public interface Dao<K1,K2,V> {
 	public ArrayList<V> selectall() throws Exception;
 	public ArrayList<V> selectcarsfromuser(K2 k) throws Exception;
 	public V selectfromkeys(K1 k1, K2 k2) throws Exception;
-	public V caridfromnumber(String k) throws Exception;
+	public V carfromnumber(String k) throws Exception;
 	public ArrayList<V> selectdrivingcars(K2 k) throws Exception;
+	public V movingcarfromnumber(String k) throws Exception;
 }

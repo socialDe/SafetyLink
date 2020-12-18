@@ -17,7 +17,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.TruckFuncSetActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC-MKfESR2mNLWpWFtd4ZoHHhUwvKi63hE" />
+
+        <activity android:name=".activity.MyPageActivity"></activity>
+        <activity android:name=".activity.CarDetailActivity" />
+        <activity android:name=".activity.TruckFuncSetActivity" />
         <activity android:name=".activity.CarRegisterActivity" /> <!-- FService 추가 -->
         <service android:name=".MyFService">
             <intent-filter>
@@ -33,6 +40,8 @@
         <activity android:name=".activity.RegisterActivity" />
         <activity android:name=".activity.SocialRegisterActivity" />
         <activity android:name=".activity.NonTruckFuncSetActivity" />
+        <activity android:name=".activity.CarManagementActivity" />
+        <activity android:name=".activity.CarAddActivity" />
         <activity
             android:name=".activity.LoginActivity"
             android:windowSoftInputMode="adjustResize">

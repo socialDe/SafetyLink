@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -55,7 +57,8 @@ import java.util.Date;
 
 public class LoginActivity extends AppCompatActivity {
 
-    public static String ip = "192.168.0.38";
+
+    public static String ip = "192.168.10.100";
 
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
@@ -81,6 +84,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Permission Check
+        String[] permission = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        };
+        ActivityCompat.requestPermissions(this, permission, 101);
 
         // 앱 실행시 디바이스 토큰 불러오기
         getToken();
@@ -283,7 +293,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             progressDialog = new ProgressDialog(LoginActivity.this);
-            progressDialog.setTitle("Login");
+            progressDialog.setTitle("로그인 중 입니다");
             progressDialog.setCancelable(false);
             progressDialog.show();
         }
@@ -451,13 +461,13 @@ public class LoginActivity extends AppCompatActivity {
             // userid가 car를 갖고있지 않으면 차량을 등록하는 화면으로 넘긴다
             if (s == null || s.equals("[]")) {
                 Intent intent = new Intent(getApplicationContext(), CarRegisterActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.putExtra("user", user);
                 startActivity(intent);
             } else {
                 Intent intent = new Intent(getApplicationContext(), CarActivity.class);
                 intent.putExtra("user", user);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 Toast t = Toast.makeText(LoginActivity.this, user.getUsername() + "님 환영합니다", Toast.LENGTH_SHORT);
                 t.setGravity(Gravity.BOTTOM, 0, 150);

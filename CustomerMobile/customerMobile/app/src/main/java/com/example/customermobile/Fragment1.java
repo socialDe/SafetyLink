@@ -63,6 +63,11 @@ public class Fragment1 extends Fragment {
     HttpAsyncTaskWeather httpAsyncTaskWeather;
     String weatherResult;
 
+//    public static Fragment1 newInstance() {
+//        return new Fragment1();
+//    }
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
@@ -115,6 +120,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(startingSW == 0){
+                    CarActivity.carDataTimer.start();
                     startingSW = 1;
 
                     ((CarActivity)getActivity()).sendfcm("CA00003100000001");
@@ -131,6 +137,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(startingSW == 1){
+                    CarActivity.carDataTimer.start();
                     startingSW = 0;
 
                     ((CarActivity)getActivity()).sendfcm("CA00003100000000");
@@ -148,6 +155,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(doorSW == 0) {
+                    CarActivity.carDataTimer.start();
                     doorSW = 1;
 
                     ((CarActivity) getActivity()).sendfcm("CA00003300000001");
@@ -165,6 +173,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onClick(View v) {
                 if(doorSW == 1) {
+                    CarActivity.carDataTimer.start();
                     doorSW = 0;
 
                     ((CarActivity)getActivity()).sendfcm("CA00003300000000");
@@ -186,6 +195,7 @@ public class Fragment1 extends Fragment {
 
             @Override
             public void onClick(View v) {
+                CarActivity.carDataTimer.start();
 
                 ((CarActivity)getActivity()).carDataTimer.cancel();
 
@@ -222,7 +232,6 @@ public class Fragment1 extends Fragment {
 
             }
         }) ;
-
 
 
         // GPS 위치 정보 수신
@@ -287,6 +296,11 @@ public class Fragment1 extends Fragment {
             imageView_car.setImageResource(imglist[2]);
         }
 
+        if(textView_carName.getText().toString().equals("(null)")){
+            textView_carName.setVisibility(View.GONE);
+        } else {
+            textView_carName.setVisibility(View.VISIBLE);
+        }
 
         Log.d("[TAG]", "setCarData OK"+" "+carname+" "+carmodel+" "+carnum+" "+carimg);
 
@@ -302,8 +316,8 @@ public class Fragment1 extends Fragment {
             textView_moving.setText("정차");
             textView_moving.setTextColor(Color.RED);
         }
-        textView_fuel.setText(String.valueOf(fuel));
-        textView_possibleDistance.setText(String.valueOf(fuel*12));
+        textView_fuel.setText(String.valueOf(fuel/100));
+        textView_possibleDistance.setText(String.valueOf(fuel*12/100));
         textView_targetTemper.setText(aircon);
         // 현재 타겟온도 가져오기
         targetTemper = Integer.parseInt(textView_targetTemper.getText().toString());

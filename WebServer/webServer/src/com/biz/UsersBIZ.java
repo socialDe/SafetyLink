@@ -62,11 +62,17 @@ public class UsersBIZ implements Biz<String,String,UsersVO> {
 	}
 
 	@Override
-	public UsersVO caridfromnumber(String k) throws Exception {
+	public UsersVO carfromnumber(String k) throws Exception {
 		return null;
 	
 	}
 	public ArrayList<UsersVO> getdrivingcars(String k) throws Exception {
+		return null;
+	}
+
+	@Override
+	public UsersVO movingcarfromnumber(String k) throws Exception {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

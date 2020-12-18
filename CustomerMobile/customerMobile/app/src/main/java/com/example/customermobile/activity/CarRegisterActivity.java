@@ -151,11 +151,11 @@ public class CarRegisterActivity extends AppCompatActivity {
 
     }// end oncreate
 
-    public void bt_checkNum(View v){
-        Log.d("[LOG]", "carnum:"+carnum);
+    public void bt_checkNum(View v) {
+        Log.d("[LOG]", "carnum:" + carnum);
         //인증번호 생성
         Random r = new Random();
-        number = r.nextInt(9000)+1000;
+        number = r.nextInt(9000) + 1000;
         carnum = editText_carNum.getText().toString();
 
         SendNumberFcm(carnum, number);
@@ -165,7 +165,7 @@ public class CarRegisterActivity extends AppCompatActivity {
     // 인증번호 보내는 fcm
     public void SendNumberFcm(String carnum, int number) {
         String urlstr = "http://" + ip + "/webServer/sendnumberfcm.mc";
-        String conrtolUrl = urlstr + "?carnum=" + carnum +"&number=" + number;
+        String conrtolUrl = urlstr + "?carnum=" + carnum + "&number=" + number;
 
         Log.d("[TEST]", conrtolUrl);
 
@@ -185,13 +185,13 @@ public class CarRegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            if(s.equals("notExist")){
-                Toast.makeText(CarRegisterActivity.this,"등록된 차량번호가 아닙니다.",Toast.LENGTH_SHORT).show();
+            if (s.equals("notExist")) {
+                Toast.makeText(CarRegisterActivity.this, "등록된 차량번호가 아닙니다.", Toast.LENGTH_SHORT).show();
 
-            }else if(s.equals("alreadyExist")){
-                Toast.makeText(CarRegisterActivity.this,"이미 등록된 차량번호 입니다.",Toast.LENGTH_SHORT).show();
+            } else if (s.equals("alreadyExist")) {
+                Toast.makeText(CarRegisterActivity.this, "이미 등록된 차량번호 입니다.", Toast.LENGTH_SHORT).show();
 
-            }else{
+            } else {
                 final EditText edittext = new EditText(CarRegisterActivity.this);
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CarRegisterActivity.this);
                 alertDialog.setTitle("인증번호")
@@ -199,20 +199,20 @@ public class CarRegisterActivity extends AppCompatActivity {
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if(edittext.getText().toString().equals(number+"")){
+                                if (edittext.getText().toString().equals(number + "")) {
                                     String url = "http://" + ip + "/webServer/carnumcheckimpl.mc";
                                     url += "?carnum=" + carnum;
                                     carNumCheckAsync = new CarNumCheckAsync();
                                     carNumCheckAsync.execute(url);
-                                } else{
-                                    Toast.makeText(CarRegisterActivity.this,"번호가 틀렸습니다",Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(CarRegisterActivity.this, "번호가 틀렸습니다", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(CarRegisterActivity.this,"취소되었습니다",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CarRegisterActivity.this, "취소되었습니다", Toast.LENGTH_SHORT).show();
                             }
                         });
                 alertDialog.create().show();
@@ -222,7 +222,7 @@ public class CarRegisterActivity extends AppCompatActivity {
 
     }
 
-    public void bt_register(View v){
+    public void bt_register(View v) {
         String carnum = editText_carNum.getText().toString();
         String carmodel = textView_carModel.getText().toString();
         String cartype = textView_carType.getText().toString();
@@ -230,11 +230,15 @@ public class CarRegisterActivity extends AppCompatActivity {
         String fueltype = textView_fuelType.getText().toString();
         String carname = editText_carName.getText().toString();
 
+//        if(carname.equals("") || carname == null || carname.equals(null)){
+//            Toast.makeText(this, "차량 이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+//        } else{
         String url = "http://" + ip + "/webServer/usercarregisterimpl.mc";
-        url += "?userid="+user.getUserid()+"&carnum=" + carnum + "&carmodel=" + carmodel + "&cartype=" + cartype +
+        url += "?userid=" + user.getUserid() + "&carnum=" + carnum + "&carmodel=" + carmodel + "&cartype=" + cartype +
                 "&caryear=" + caryear + "&fueltype=" + fueltype + "&carname=" + carname;
         userCarRegisterAsync = new UserCarRegisterAsync();
         userCarRegisterAsync.execute(url);
+//        }
     }
 
     class UserCarRegisterAsync extends AsyncTask<String, Void, Void> {
@@ -251,8 +255,8 @@ public class CarRegisterActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             Intent intent = new Intent(getApplicationContext(), CarActivity.class);
-            intent.putExtra("user",user);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra("user", user);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         }
     }
@@ -313,6 +317,7 @@ public class CarRegisterActivity extends AppCompatActivity {
                 });
 
                 builder.show();
+
             }
         }
     }
@@ -372,7 +377,7 @@ public class CarRegisterActivity extends AppCompatActivity {
                     }
                     textView_carType.setText(cartype);
                     int caryear = Integer.parseInt(jo.getString("caryear"));
-                    textView_carYear.setText(caryear+"");
+                    textView_carYear.setText(caryear + "");
                     String fueltype = jo.getString("fueltype");
                     textView_fuelType.setText(fueltype);
                     layout_carInfo.setVisibility(View.VISIBLE);

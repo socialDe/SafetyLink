@@ -50,7 +50,6 @@ public class ChartController {
 			String type_check, String searchBasis, String regionLists, String startPeriod, String endPeriod,
 			String timeLists1, String timeLists2) {
 		
-		
 		ArrayList<LineData> lineDatas = new ArrayList<>();
 		
 		// For Test
@@ -2354,7 +2353,7 @@ public class ChartController {
 				
 				data = new JSONObject();
 				data.put("fcmnum", "5");
-				data.put("fcmtype", "영유아 낙하 경보");
+				data.put("fcmtype", "영유아 경보");
 				data.put("carnum", "89라1234");
 				data.put("date", "2020-12-15");
 				data.put("time", "20:23:15");

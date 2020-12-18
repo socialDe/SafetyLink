@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class Util {
 	// 받아온 데이터를 서버에 이미지를 올린다.
 	public static void saveFile(MultipartFile mf) {
-		String dir = "C:\\spring\\RRS2\\web\\img\\";
+		String dir = "C:\\SafetyLink\\WebServer\\webServer\\web\\img\\";
 		byte [] data;
 		String imgname = mf.getOriginalFilename();
 		try {
@@ -22,7 +22,7 @@ public class Util {
 	}
 	//comment용 사진
 	public static void saveCommentFile(MultipartFile mf) {
-		String dir = "C:\\spring\\RRS2\\web\\img\\comment\\";
+		String dir = "C:\\SafetyLink\\WebServer\\webServer\\web\\img\\comment\\";
 		byte [] data;
 		String imgname = mf.getOriginalFilename();
 		try {

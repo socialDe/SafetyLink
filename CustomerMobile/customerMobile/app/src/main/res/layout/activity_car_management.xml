@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:gravity="top"
+    android:layout_gravity="bottom"
+    android:foregroundGravity="bottom|center_vertical"
+    android:gravity="start"
     android:orientation="vertical"
     tools:context=".activity.CarRegisterActivity">
 
@@ -13,6 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
+        android:foregroundGravity="top"
+        android:gravity="top"
         android:orientation="horizontal">
 
         <ImageButton
@@ -78,44 +81,45 @@
 
     <ListView
         android:id="@+id/listView_carList"
-        android:layout_width="wrap_content"
-        android:layout_height="368dp" />
+        android:layout_width="match_parent"
+        android:layout_height="468dp" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView_car"
+        android:id="@+id/cardView_addCar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_height="86dp"
+        android:layout_gravity="bottom|end"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginRight="10dp"
         android:layout_marginBottom="10dp"
+        android:foregroundGravity="bottom"
         app:cardCornerRadius="30dp">
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButton_addCar"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
             android:background="#00FFFFFF"
             app:srcCompat="@android:drawable/ic_input_add" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_height="84dp"
+            android:layout_gravity="bottom|center|end"
+            android:gravity="bottom">
 
             <TextView
                 android:id="@+id/textView_carName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="100dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
+                android:layout_gravity="bottom|center"
+                android:layout_marginLeft="80dp"
+                android:layout_marginRight="80dp"
                 android:fontFamily="sans-serif-black"
-                android:gravity="center|fill_horizontal"
+                android:foregroundGravity="bottom|center"
+                android:gravity="bottom|center"
                 android:text="자동차를 등록해주세요"
                 android:textColor="#000000"
                 android:textSize="23sp" />

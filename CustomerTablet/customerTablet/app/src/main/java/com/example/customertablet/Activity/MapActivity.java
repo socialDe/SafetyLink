@@ -10,6 +10,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -18,6 +19,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.customertablet.HomeActivity;
@@ -37,20 +39,28 @@ public class MapActivity extends AppCompatActivity {
     GoogleMap gMap;
     LocationManager locationManager;
 
+    ImageButton imageButton_mapBack;
+
     double mLatitude;  //위도
     double mLongitude; //경도
+
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        getSupportActionBar().hide();
 
-        // Permission Check
-        String[] permission = {
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-        };
-        ActivityCompat.requestPermissions(this, permission, 101);
+        imageButton_mapBack = findViewById(R.id.imageButton_mapBack);
+        imageButton_mapBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        sp = getSharedPreferences("car",MODE_PRIVATE);
 
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
@@ -65,13 +75,20 @@ public class MapActivity extends AppCompatActivity {
                         && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
-                gMap.setMyLocationEnabled(true);
 
+                gMap.setMyLocationEnabled(true);
                 MyLocation myLocation = new MyLocation();
                 locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, myLocation);
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 0, myLocation);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 100, 0, myLocation);
+                LatLng latLng = new LatLng(mLatitude, mLongitude);
+                if(mLatitude == 0 && mLongitude == 0){
+                    mLatitude = 37;
+                    mLongitude = 126;
+                }
+//            Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
+                gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-                Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -80,12 +97,15 @@ public class MapActivity extends AppCompatActivity {
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
-            double lat = location.getLatitude();
-            double lon = location.getLongitude();
-
-            LatLng latLng = new LatLng(lat, lon);
-//            gMap.addMarker(new MarkerOptions().position(latLng).title("My Point").snippet("xxx"));
-            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            mLatitude = location.getLatitude();
+            mLongitude = location.getLongitude();
+            LatLng latLng = new LatLng(mLatitude, mLongitude);
+            if(mLatitude == 0 && mLongitude == 0){
+                mLatitude = 37;
+                mLongitude = 126;
+            }
+//            Toast.makeText(getApplicationContext(), "latlng: " + mLatitude + ", "+ mLongitude, Toast.LENGTH_SHORT).show();
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
     }
 
@@ -104,18 +124,6 @@ public class MapActivity extends AppCompatActivity {
         super.onPause();
         if(gMap != null){
             gMap.setMyLocationEnabled(false);
-        }
-    }
-
-    public void clickbt(View v){
-        if(v.getId() == R.id.imageButton_control){
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        }else if (v.getId() == R.id.imageButton_map){
-
-        }else  if (v.getId() == R.id.imageButton_setting){
-
         }
     }
 }

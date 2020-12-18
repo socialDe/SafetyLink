@@ -1,5 +1,6 @@
 package com.example.customertablet;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.customertablet.network.HttpConnect;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -44,15 +46,35 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        // Permission Check
+        String[] permission = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+        };
+        ActivityCompat.requestPermissions(this, permission, 101);
+
         // token 비교를 위한 SharedPreferences 사용 준비
         SharedPreferences pref = getSharedPreferences("token", MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         // token이 그대로면 바로 조회/제어 화면으로 이동
         if (pref.getString("token", "").equals(FirebaseInstanceId.getInstance().getToken())) {
-            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-            startActivity(intent);
+            if(pref.getString("cartype","").equals("p")){
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(intent);
+                finish();
+            } else if(pref.getString("cartype","").equals("v")) {
+                Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                startActivity(intent);
+                finish();
+            } else if(pref.getString("cartype", "").equals("t")){
+                Intent intent = new Intent(getApplicationContext(), TruckActivity.class);
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(MainActivity.this, "cartype error", Toast.LENGTH_SHORT);
+            }
             // 다시 들어가지 못하게 종료
-            finish();
         } else if (pref.getString("token", "").equals("") || pref.getString("token", "") == null) {
             // token이 null이면 그대로 차량 등록을 진행한다
         } else{
@@ -147,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("num", num+"");
         editor.putString("token", token);
+        editor.putString("cartype", carType);
         editor.commit();
         String url = "http://"+ip+"/webServer/carregisterimpl.mc";
         url += "?userid=" + userid + "&num=" + num + "&cartype=" + carType + "&model=" + model + "&year=" + year + "&img=" + img + "&oilType=" + oilType + "&token=" + token;
@@ -186,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
+            SharedPreferences pref = getSharedPreferences("token", MODE_PRIVATE);
+            final String cartype = pref.getString("cartype","");
             progressDialog.dismiss();
             Log.d("[LOG]","s:"+s);
             //String result = s.trim();
@@ -226,10 +251,22 @@ public class MainActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        startActivity(intent);
-                        // 다시 들어가지 못하게 종료
-                        finish();
+                        Log.d("[Server]", String.valueOf(carType));
+                        if(cartype.equals("p")){
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else if(cartype.equals("v")) {
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else if(cartype.equals("t")){
+                            Intent intent = new Intent(getApplicationContext(), TruckActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(MainActivity.this, "cartype error", Toast.LENGTH_SHORT);
+                        }
                     }
                 });
 
@@ -244,10 +281,21 @@ public class MainActivity extends AppCompatActivity {
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                        startActivity(intent);
-                        // 다시 들어가지 못하게 종료
-                        finish();
+                        if(cartype.equals("p")){
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else if(cartype.equals("v")) {
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else if(cartype.equals("t")){
+                            Intent intent = new Intent(getApplicationContext(), TruckActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(MainActivity.this, "cartype error", Toast.LENGTH_SHORT);
+                        }
                     }
                 });
 
