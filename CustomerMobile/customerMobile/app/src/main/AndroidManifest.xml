@@ -37,6 +37,7 @@
         <activity android:name=".activity.SocialRegisterActivity" />
         <activity android:name=".activity.NonTruckFuncSetActivity" />
         <activity android:name=".activity.CarManagementActivity" />
+        <activity android:name=".activity.CarAddActivity" />
         <activity
             android:name=".activity.LoginActivity"
             android:windowSoftInputMode="adjustResize">
