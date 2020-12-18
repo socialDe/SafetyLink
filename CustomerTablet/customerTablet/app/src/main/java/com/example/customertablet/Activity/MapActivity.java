@@ -126,5 +126,4 @@ public class MapActivity extends AppCompatActivity {
             gMap.setMyLocationEnabled(false);
         }
     }
-
 }
