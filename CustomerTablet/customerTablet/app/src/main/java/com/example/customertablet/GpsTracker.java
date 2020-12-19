@@ -182,6 +182,12 @@ public class GpsTracker extends Service implements LocationListener {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         Log.d("[Weather]", "Changed Location is lat:"+lat +" lng: "+lng);
+
+        String nx = String.valueOf(Math.round(lat));
+        String ny = String.valueOf(Math.round(lng));
+
+        // 날씨 정보 수신
+        ((HomeActivity)HomeActivity.hContext).getWeather(nx, ny);
     }
 
     @Override

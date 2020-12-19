@@ -166,6 +166,8 @@ public class HomeActivity extends AppCompatActivity {
     HttpAsyncTaskWeather httpAsyncTaskWeather;
     String weatherResult;
 
+    public static Context hContext;
+
 
     String accpushcheck = "o";
     String droppushcheck = "o";
@@ -418,6 +420,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // 날씨 정보 수신
         getWeather(nx, ny);
+        hContext = this;
 
     }
 
