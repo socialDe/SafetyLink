@@ -1,7 +1,6 @@
 package com.example.customertablet;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 
 import android.app.AlertDialog;
 import android.app.Notification;
@@ -26,8 +25,6 @@ import android.graphics.ColorMatrixColorFilter;
 import android.icu.text.SimpleDateFormat;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -37,7 +34,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -57,8 +53,6 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.df.DataFrame;
 import com.example.customertablet.Activity.MapActivity;
 import com.example.customertablet.network.HttpConnect;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -412,14 +406,9 @@ public class HomeActivity extends AppCompatActivity {
             checkRunTimePermission();
         }
 
-        // 위치 정보 수신
-        getGPS();
+        // 위치 정보 수신 & 날씨 정보 수
+        getGPSandWeather();
 
-        String nx = String.valueOf(Math.round(lat));
-        String ny = String.valueOf(Math.round(lng));
-
-        // 날씨 정보 수신
-        getWeather(nx, ny);
         hContext = this;
 
     }
@@ -1835,7 +1824,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-    public void getGPS(){
+    public void getGPSandWeather(){
         gpsTracker = new GpsTracker(HomeActivity.this);
 
         lat = gpsTracker.getLatitude();
@@ -1847,6 +1836,12 @@ public class HomeActivity extends AppCompatActivity {
         }else if(address.contains("가")){
             textView_address.setText(address.substring(5, address.lastIndexOf("가")+1));
         }
+
+        String nx = String.valueOf(Math.round(lat));
+        String ny = String.valueOf(Math.round(lng));
+
+        // 날씨 정보 수신
+        getWeather(nx, ny);
 
 //        Toast.makeText(HomeActivity.this, "현재위치 \n위도 " + lat + "\n경도 " + lng, Toast.LENGTH_LONG).show();
     }
