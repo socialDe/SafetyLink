@@ -6,49 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<<<<<<< HEAD
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/mapimageButton_control"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="clickbt"
-                app:srcCompat="@drawable/car_control" />
-
-            <ImageButton
-                android:id="@+id/mapimageButton_map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="clickbt"
-                app:srcCompat="@drawable/car_map" />
-
-            <ImageButton
-                android:id="@+id/mapimageButton_setting"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:onClick="clickbt"
-                app:srcCompat="@drawable/car_setting" />
-
-        </LinearLayout>
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-=======
     <com.google.android.gms.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
@@ -70,6 +27,5 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/backbutton" />
->>>>>>> 03e83ce9b61c456e4a6996751b52786b6ef33d23
 
 </androidx.constraintlayout.widget.ConstraintLayout>

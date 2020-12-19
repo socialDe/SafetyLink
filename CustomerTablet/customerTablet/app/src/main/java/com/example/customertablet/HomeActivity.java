@@ -37,6 +37,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -149,19 +150,21 @@ public class HomeActivity extends AppCompatActivity {
     Tire tire;
 
 
-    // GPS
-    double dLatitude;
-    double dLongitude;
-    String lat;
-    String lng;
-
-    LocationManager locationManager;
-
+    // GPS 위치 정보 수신
     private GpsTracker gpsTracker;
     private static final int GPS_ENABLE_REQUEST_CODE = 2001;
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     String[] REQUIRED_PERMISSIONS  = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    double lat;
+    double lng;
 
+
+    // 날씨 정보 수신
+    String temperature;
+    String pty;
+    String sky;
+    HttpAsyncTaskWeather httpAsyncTaskWeather;
+    String weatherResult;
 
 
     String accpushcheck = "o";
@@ -395,262 +398,32 @@ public class HomeActivity extends AppCompatActivity {
 
 
         // GPS 위치 정보 수신
-
-//        if (!checkLocationServicesStatus()) {
-//            showDialogForLocationServiceSetting();
-//        }else {
-//            checkRunTimePermission();
-//        }
-//
-//        gpsTracker = new GpsTracker(HomeActivity.this);
-//
-//        dLatitude = gpsTracker.getLatitude();
-//        dLongitude = gpsTracker.getLongitude();
-//
-////        String address = getCurrentAddress(latitude, longitude);
-//
-//
-//        Toast.makeText(HomeActivity.this, "현재위치 \n위도 " + dLatitude + "\n경도 " + dLongitude, Toast.LENGTH_LONG).show();
-
-
         // Permission Check
         String[] permission = {
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         };
         ActivityCompat.requestPermissions(this, permission, 101);
+        if (!checkLocationServicesStatus()) {
+            showDialogForLocationServiceSetting();
+        }else {
+            checkRunTimePermission();
+        }
 
-
+        // 위치 정보 수신
         getGPS();
 
+        String nx = String.valueOf(Math.round(lat));
+        String ny = String.valueOf(Math.round(lng));
 
+        // 날씨 정보 수신
+        getWeather(nx, ny);
 
     }
 
     /*
      * end OnCreate
      */
-    public void getGPS(){
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        MyLocation myLocation = new MyLocation();
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 0, myLocation);
-
-    }
-
-    class MyLocation implements LocationListener {
-
-        @Override
-        public void onLocationChanged(@NonNull Location location) {
-            dLatitude = location.getLatitude();
-            dLongitude = location.getLongitude();
-            LatLng latLng = new LatLng(dLatitude, dLongitude);
-            if(dLatitude == 0 && dLongitude == 0){
-                dLatitude = 37;
-                dLongitude = 127;
-            }
-            Toast.makeText(getApplicationContext(), "latlng: " + dLatitude + ", "+ dLongitude, Toast.LENGTH_SHORT).show();
-
-        }
-    }
-
-    /*
-     * ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드입니다.
-     */
-//    @Override
-//    public void onRequestPermissionsResult(int permsRequestCode,
-//                                           @NonNull String[] permissions,
-//                                           @NonNull int[] grandResults) {
-//
-//        if ( permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
-//
-//            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
-//
-//            boolean check_result = true;
-//
-//
-//            // 모든 퍼미션을 허용했는지 체크합니다.
-//
-//            for (int result : grandResults) {
-//                if (result != PackageManager.PERMISSION_GRANTED) {
-//                    check_result = false;
-//                    break;
-//                }
-//            }
-//
-//
-//            if ( check_result ) {
-//
-//                //위치 값을 가져올 수 있음
-//                ;
-//            }
-//            else {
-//                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
-//
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, REQUIRED_PERMISSIONS[0])
-//                        || ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, REQUIRED_PERMISSIONS[1])) {
-//
-//                    Toast.makeText(HomeActivity.this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show();
-//                    finish();
-//
-//
-//                }else {
-//
-//                    Toast.makeText(HomeActivity.this, "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ", Toast.LENGTH_LONG).show();
-//
-//                }
-//            }
-//
-//        }
-//    }
-//
-//    void checkRunTimePermission(){
-//
-//        //런타임 퍼미션 처리
-//        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
-//        int hasFineLocationPermission = ContextCompat.checkSelfPermission(HomeActivity.this,
-//                Manifest.permission.ACCESS_FINE_LOCATION);
-//        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(HomeActivity.this,
-//                Manifest.permission.ACCESS_COARSE_LOCATION);
-//
-//
-//        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
-//                hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
-//
-//            // 2. 이미 퍼미션을 가지고 있다면
-//            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
-//
-//
-//            // 3.  위치 값을 가져올 수 있음
-//
-//
-//
-//        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
-//
-//            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, REQUIRED_PERMISSIONS[0])) {
-//
-//                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
-//                Toast.makeText(HomeActivity.this, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
-//                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-//                ActivityCompat.requestPermissions(HomeActivity.this, REQUIRED_PERMISSIONS,
-//                        PERMISSIONS_REQUEST_CODE);
-//
-//
-//            } else {
-//                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
-//                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
-//                ActivityCompat.requestPermissions(HomeActivity.this, REQUIRED_PERMISSIONS,
-//                        PERMISSIONS_REQUEST_CODE);
-//            }
-//
-//        }
-//
-//    }
-//
-//
-//    public String getCurrentAddress( double latitude, double longitude) {
-//
-//        //지오코더... GPS를 주소로 변환
-//        Geocoder geocoder = new Geocoder(HomeActivity.this, Locale.getDefault());
-//
-//        List<Address> addresses;
-//
-//        try {
-//
-//            addresses = geocoder.getFromLocation(
-//                    latitude,
-//                    longitude,
-//                    7);
-//        } catch (IOException ioException) {
-//            //네트워크 문제
-//            Toast.makeText(HomeActivity.this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
-//            return "지오코더 서비스 사용불가";
-//        } catch (IllegalArgumentException illegalArgumentException) {
-//            Toast.makeText(HomeActivity.this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
-//            return "잘못된 GPS 좌표";
-//
-//        }
-//
-//
-//
-//        if (addresses == null || addresses.size() == 0) {
-//            Toast.makeText(HomeActivity.this, "주소 미발견", Toast.LENGTH_LONG).show();
-//            return "주소 미발견";
-//
-//        }
-//
-//        Address address = addresses.get(0);
-//        return address.getAddressLine(0).toString()+"\n";
-//
-//    }
-//
-//
-//    //여기부터는 GPS 활성화를 위한 메소드들
-//    private void showDialogForLocationServiceSetting() {
-//
-//        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
-//        builder.setTitle("위치 서비스 비활성화");
-//        builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
-//                + "위치 설정을 수정하실래요?");
-//        builder.setCancelable(true);
-//        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int id) {
-//                Intent callGPSSettingIntent
-//                        = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE);
-//            }
-//        });
-//        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int id) {
-//                dialog.cancel();
-//            }
-//        });
-//        builder.create().show();
-//    }
-//
-//
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        switch (requestCode) {
-//
-//            case GPS_ENABLE_REQUEST_CODE:
-//
-//                //사용자가 GPS 활성 시켰는지 검사
-//                if (checkLocationServicesStatus()) {
-//                    if (checkLocationServicesStatus()) {
-//
-//                        Log.d("[Weather]", "onActivityResult : GPS 활성화 되있음");
-//                        checkRunTimePermission();
-//                        return;
-//                    }
-//                }
-//
-//                break;
-//        }
-//    }
-//
-//    public boolean checkLocationServicesStatus() {
-//        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-//
-//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
-//                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-//    }
-
-    /*
-     * End GPS 위치 정보 수
-     */
-
-
-
 
     class MovingCar extends Thread {
         boolean moving = true;
@@ -2057,6 +1830,312 @@ public class HomeActivity extends AppCompatActivity {
         finish();
         System.exit(0);
     }
+
+
+    public void getGPS(){
+        gpsTracker = new GpsTracker(HomeActivity.this);
+
+        lat = gpsTracker.getLatitude();
+        lng = gpsTracker.getLongitude();
+
+        String address = getCurrentAddress(lat, lng);
+        if(address.contains("동")){
+            textView_address.setText(address.substring(5, address.lastIndexOf("동")+1));
+        }else if(address.contains("가")){
+            textView_address.setText(address.substring(5, address.lastIndexOf("가")+1));
+        }
+
+//        Toast.makeText(HomeActivity.this, "현재위치 \n위도 " + lat + "\n경도 " + lng, Toast.LENGTH_LONG).show();
+    }
+
+
+    /*
+     * ActivityCompat.requestPermissions를 사용한 퍼미션 요청의 결과를 리턴받는 메소드입니다.
+     */
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grandResults) {
+
+        if ( permsRequestCode == PERMISSIONS_REQUEST_CODE && grandResults.length == REQUIRED_PERMISSIONS.length) {
+
+            // 요청 코드가 PERMISSIONS_REQUEST_CODE 이고, 요청한 퍼미션 개수만큼 수신되었다면
+
+            boolean check_result = true;
+
+
+            // 모든 퍼미션을 허용했는지 체크합니다.
+
+            for (int result : grandResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    check_result = false;
+                    break;
+                }
+            }
+
+
+            if ( check_result ) {
+
+                //위치 값을 가져올 수 있음
+
+            }
+            else {
+                // 거부한 퍼미션이 있다면 앱을 사용할 수 없는 이유를 설명해주고 앱을 종료합니다.2 가지 경우가 있습니다.
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, REQUIRED_PERMISSIONS[0])
+                        || ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, REQUIRED_PERMISSIONS[1])) {
+
+                    Toast.makeText(HomeActivity.this, "퍼미션이 거부되었습니다. 앱을 다시 실행하여 퍼미션을 허용해주세요.", Toast.LENGTH_LONG).show();
+                    finish();
+
+
+                }else {
+
+                    Toast.makeText(HomeActivity.this, "퍼미션이 거부되었습니다. 설정(앱 정보)에서 퍼미션을 허용해야 합니다. ", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+        }
+    }
+
+    void checkRunTimePermission(){
+
+        //런타임 퍼미션 처리
+        // 1. 위치 퍼미션을 가지고 있는지 체크합니다.
+        int hasFineLocationPermission = ContextCompat.checkSelfPermission(HomeActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        int hasCoarseLocationPermission = ContextCompat.checkSelfPermission(HomeActivity.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+
+
+        if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
+                hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
+
+            // 2. 이미 퍼미션을 가지고 있다면
+            // ( 안드로이드 6.0 이하 버전은 런타임 퍼미션이 필요없기 때문에 이미 허용된 걸로 인식합니다.)
+
+
+            // 3.  위치 값을 가져올 수 있음
+
+
+
+        } else {  //2. 퍼미션 요청을 허용한 적이 없다면 퍼미션 요청이 필요합니다. 2가지 경우(3-1, 4-1)가 있습니다.
+
+            // 3-1. 사용자가 퍼미션 거부를 한 적이 있는 경우에는
+            if (ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, REQUIRED_PERMISSIONS[0])) {
+
+                // 3-2. 요청을 진행하기 전에 사용자가에게 퍼미션이 필요한 이유를 설명해줄 필요가 있습니다.
+                Toast.makeText(HomeActivity.this, "이 앱을 실행하려면 위치 접근 권한이 필요합니다.", Toast.LENGTH_LONG).show();
+                // 3-3. 사용자게에 퍼미션 요청을 합니다. 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(HomeActivity.this, REQUIRED_PERMISSIONS,
+                        PERMISSIONS_REQUEST_CODE);
+
+
+            } else {
+                // 4-1. 사용자가 퍼미션 거부를 한 적이 없는 경우에는 퍼미션 요청을 바로 합니다.
+                // 요청 결과는 onRequestPermissionResult에서 수신됩니다.
+                ActivityCompat.requestPermissions(HomeActivity.this, REQUIRED_PERMISSIONS,
+                        PERMISSIONS_REQUEST_CODE);
+            }
+
+        }
+
+    }
+
+    //여기부터는 GPS 활성화를 위한 메소드들
+    private void showDialogForLocationServiceSetting() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(HomeActivity.this);
+        builder.setTitle("위치 서비스 비활성화");
+        builder.setMessage("앱을 사용하기 위해서는 위치 서비스가 필요합니다.\n"
+                + "위치 설정을 수정하시겠습니까?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("설정", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                Intent callGPSSettingIntent
+                        = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivityForResult(callGPSSettingIntent, GPS_ENABLE_REQUEST_CODE);
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+
+            case GPS_ENABLE_REQUEST_CODE:
+
+                //사용자가 GPS 활성 시켰는지 검사
+                if (checkLocationServicesStatus()) {
+                    if (checkLocationServicesStatus()) {
+
+                        Log.d("@@@", "onActivityResult : GPS 활성화 되있음");
+                        checkRunTimePermission();
+                        return;
+                    }
+                }
+
+                break;
+        }
+    }
+
+    public boolean checkLocationServicesStatus() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    /*
+     * 수집한 위치 정보 -> 주소 체계 변환 및 날씨 정보 수신
+     */
+
+    public String getCurrentAddress( double latitude, double longitude) {
+
+        //지오코더... GPS를 주소로 변환
+        Geocoder geocoder = new Geocoder(HomeActivity.this, Locale.getDefault());
+
+        List<Address> addresses;
+
+        try {
+
+            addresses = geocoder.getFromLocation(
+                    latitude,
+                    longitude,
+                    7);
+        } catch (IOException ioException) {
+            //네트워크 문제
+            Toast.makeText(HomeActivity.this, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
+            return "지오코더 서비스 사용불가";
+        } catch (IllegalArgumentException illegalArgumentException) {
+            Toast.makeText(HomeActivity.this, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
+            return "잘못된 GPS 좌표";
+
+        }
+
+
+
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(HomeActivity.this, "주소 미발견", Toast.LENGTH_LONG).show();
+            return "주소 미발견";
+
+        }
+
+        Address address = addresses.get(0);
+        return address.getAddressLine(0).toString()+"\n";
+
+    }
+
+
+    public void getWeather(String nx, String ny) {
+        String urlstr = "http://" + ip + "/webServer/weather.mc";
+        String xyUrl = "?nx=" + nx + "&ny=" + ny;
+
+
+        Log.d("[Weather]", urlstr+xyUrl);
+
+        // AsyncTask를 통해 HttpURLConnection 수행.
+        httpAsyncTaskWeather = new HttpAsyncTaskWeather();
+        httpAsyncTaskWeather.execute(urlstr+xyUrl);
+
+    }
+
+
+    class HttpAsyncTaskWeather extends AsyncTask<String, String, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String url = strings[0].toString();
+            String result = HttpConnect.getString(url);
+            return result;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            weatherResult = s.trim();
+
+            int tempStartIndex = weatherResult.indexOf(":")+1;
+            int tempEndIndex = weatherResult.lastIndexOf("p");
+            int ptyIndex = weatherResult.indexOf("y")+2;
+            int skyIndex = weatherResult.length()-1;
+
+            temperature = weatherResult.substring(tempStartIndex, tempEndIndex);
+            pty = weatherResult.substring(ptyIndex, ptyIndex+1);
+            sky = weatherResult.substring(skyIndex);
+
+            Log.d("[Weather]","Temp: "+temperature+" pty: "+pty+" sky"+sky);
+
+            Log.d("[Weather]",temperature);
+            Log.d("[Weather]",pty);
+            Log.d("[Weather]",sky);
+            textView_weatherTemp.setText(temperature);
+
+            if(pty.equals("0")){ //(0) 비 없음  / 맑음(1), 구름많음(3), 흐림(4)
+                if(sky.equals("1")){
+                    textView_weather.setText("맑음");
+                    imageView_weather.setBackground(null);
+                    imageView_weather.setImageResource(R.drawable.sun);
+                    Log.d("[Weather]","0, 1 Set");
+                }else if(sky.equals("3")){
+                    textView_weather.setText("구름많음");
+                    imageView_weather.setBackground(null);
+                    imageView_weather.setImageResource(R.drawable.cloudsun);
+                    Log.d("[Weather]","0, 3 Set");
+                }else if(sky.equals("4")){
+                    textView_weather.setText("흐림");
+                    imageView_weather.setBackground(null);
+                    imageView_weather.setImageResource(R.drawable.cloud);
+                    Log.d("[Weather]","0, 4 Set");
+                }
+            }else if(pty.equals("1") || pty.equals("5")){ // 비, 빗방울
+                textView_weather.setText("비");
+                imageView_weather.setBackground(null);
+                imageView_weather.setImageResource(R.drawable.umbrella);
+                Log.d("[Weather]","1, 5 Set");
+            }else if(pty.equals("2") || pty.equals("6")){ // 비, 눈 동반 or 빗방울/눈날림 동반
+                textView_weather.setText("비, 눈");
+                imageView_weather.setBackground(null);
+                imageView_weather.setImageResource(R.drawable.cloudrain);
+                Log.d("[Weather]","2, 6 Set");
+            }else if(pty.equals("3") || pty.equals("7")){ // 눈, 눈날림
+                textView_weather.setText("눈");
+                imageView_weather.setBackground(null);
+                imageView_weather.setImageResource(R.drawable.snowflake);
+                Log.d("[Weather]","3, 7 Set");
+            }else if(pty.equals("4")){ // 소나기
+                textView_weather.setText("소나기");
+                imageView_weather.setBackground(null);
+                imageView_weather.setImageResource(R.drawable.cloudsunrain);
+                Log.d("[Weather]","4 Set");
+            }
+        }
+    }
+
+    /*
+     * End 수집한 위치 정보 -> 주소 체계 변환 및 날씨 정보 수신
+     */
 
 }
 

@@ -52,14 +52,12 @@ public class Fragment1 extends Fragment {
     private GpsTracker gpsTracker;
     private Context context;
     double lat;
-    double lon;
+    double lng;
 
     // 날씨 정보 수신
     String temperature;
     String pty;
     String sky;
-
-    // 날씨 정보 수신
     HttpAsyncTaskWeather httpAsyncTaskWeather;
     String weatherResult;
 
@@ -239,7 +237,7 @@ public class Fragment1 extends Fragment {
         getGPS();
 
         String nx = String.valueOf(Math.round(lat));
-        String ny = String.valueOf(Math.round(lon));
+        String ny = String.valueOf(Math.round(lng));
 
         // 날씨 정보 수신
         getWeather(nx, ny);
@@ -421,12 +419,16 @@ public class Fragment1 extends Fragment {
         gpsTracker = new GpsTracker(context);
 
         lat = gpsTracker.getLatitude();
-        lon = gpsTracker.getLongitude();
+        lng = gpsTracker.getLongitude();
 
-        String address = getCurrentAddress(lat, lon);
-        textView_address.setText(address.substring(5, address.lastIndexOf("동")+1));
+        String address = getCurrentAddress(lat, lng);
+        if(address.contains("동")){
+            textView_address.setText(address.substring(5, address.lastIndexOf("동")+1));
+        }else if(address.contains("가")){
+            textView_address.setText(address.substring(5, address.lastIndexOf("가")+1));
+        }
 
-        Toast.makeText(context, "현재위치 \n위도 " + lat + "\n경도 " + lon, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "현재위치 \n위도 " + lat + "\n경도 " + lng, Toast.LENGTH_LONG).show();
     }
 
     public String getCurrentAddress( double latitude, double longitude) {
@@ -522,31 +524,38 @@ public class Fragment1 extends Fragment {
             if(pty.equals("0")){ //(0) 비 없음  / 맑음(1), 구름많음(3), 흐림(4)
                 if(sky.equals("1")){
                     textView_weather.setText("맑음");
+                    imageView_weather.setBackground(null);
                     imageView_weather.setImageResource(R.drawable.sun);
                     Log.d("[Weather]","0, 1 Set");
                 }else if(sky.equals("3")){
                     textView_weather.setText("구름많음");
+                    imageView_weather.setBackground(null);
                     imageView_weather.setImageResource(R.drawable.cloudsun);
                     Log.d("[Weather]","0, 3 Set");
                 }else if(sky.equals("4")){
                     textView_weather.setText("흐림");
+                    imageView_weather.setBackground(null);
                     imageView_weather.setImageResource(R.drawable.cloud);
                     Log.d("[Weather]","0, 4 Set");
                 }
             }else if(pty.equals("1") || pty.equals("5")){ // 비, 빗방울
                 textView_weather.setText("비");
+                imageView_weather.setBackground(null);
                 imageView_weather.setImageResource(R.drawable.umbrella);
                 Log.d("[Weather]","1, 5 Set");
             }else if(pty.equals("2") || pty.equals("6")){ // 비, 눈 동반 or 빗방울/눈날림 동반
                 textView_weather.setText("비, 눈");
+                imageView_weather.setBackground(null);
                 imageView_weather.setImageResource(R.drawable.cloudrain);
                 Log.d("[Weather]","2, 6 Set");
             }else if(pty.equals("3") || pty.equals("7")){ // 눈, 눈날림
                 textView_weather.setText("눈");
+                imageView_weather.setBackground(null);
                 imageView_weather.setImageResource(R.drawable.snowflake);
                 Log.d("[Weather]","3, 7 Set");
             }else if(pty.equals("4")){ // 소나기
                 textView_weather.setText("소나기");
+                imageView_weather.setBackground(null);
                 imageView_weather.setImageResource(R.drawable.cloudsunrain);
                 Log.d("[Weather]","4 Set");
             }

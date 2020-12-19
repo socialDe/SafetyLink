@@ -27,7 +27,7 @@ import com.vo.CarVO;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String ip = "192.168.10.100";
+    public static String ip = "15.165.195.250:8080";
 
     HttpAsyncTask httpAsyncTask;
     EditText editText_carNum, editText_carYear, editText_carModel;

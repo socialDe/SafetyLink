@@ -58,7 +58,7 @@ import java.util.Date;
 public class LoginActivity extends AppCompatActivity {
 
 
-    public static String ip = "192.168.10.100";
+    public static String ip = "15.165.195.250:8080";
 
     HttpAsyncTask httpAsyncTask; // HTTP 전송 데이터
     SharedPreferences sp; // 자동 로그인
