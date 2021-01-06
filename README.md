@@ -10,12 +10,12 @@
 
 #### Contents
 
-1. [What is Safety Link?](# What is Safety Link?)
+1. [What is Safety Link?](#what-is-safety-link?)
 
-2. [Diagram](# Diagram)
-3. [Feature](# Feature)
-4. [Software Stacks](# Software Stacks)
-5. [ETC](# ETC)
+2. [Diagram](#diagram)
+3. [Feature](#feature)
+4. [Software Stacks](#software-stacks)
+5. [ETC](#etc)
 
 
 
