@@ -1,18 +1,10 @@
 ![finallogo_04](md-images/finallogo_04.png)
 
-https://img.shields.io/gitter/room/socialDe/SafetyLink
-
-https://img.shields.io/github/languages/count/socialDe/SafetyLink
-
-https://img.shields.io/github/languages/top/socialDe/SafetyLink
-
-https://img.shields.io/github/languages/code-size/socialDe/SafetyLink
-
-https://img.shields.io/github/repo-size/socialDe/SafetyLink
-
-https://img.shields.io/github/contributors/socialDe/SafetyLink
+[![gitter](https://img.shields.io/gitter/room/socialDe/SafetyLink)](https://github.com/socialDe/SafetyLink) [![github](https://img.shields.io/github/languages/count/socialDe/SafetyLink)](https://github.com/socialDe/SafetyLink) [![github](https://img.shields.io/github/languages/top/socialDe/SafetyLink)](https://github.com/socialDe/SafetyLink) [![github](https://img.shields.io/github/languages/code-size/socialDe/SafetyLink)](https://github.com/socialDe/SafetyLink) [![github](https://img.shields.io/github/repo-size/socialDe/SafetyLink)](https://github.com/socialDe/SafetyLink) [![github](https://img.shields.io/github/contributors/socialDe/SafetyLink)](https://github.com/socialDe/SafetyLink)
 
 [Youtube](https://youtu.be/ruTkEXwlFHY)
+
+
 
 
 
