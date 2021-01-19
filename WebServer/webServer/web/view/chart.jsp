@@ -792,7 +792,7 @@ function displayChart2(){
 			<ul class="nav" id="main-menu">
 				<li><a href="dashboard.mc" class="waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 				<li><a href="chart.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
-				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Tables</a></li>
+				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Users</a></li>
 			</ul>
 
 		</div>

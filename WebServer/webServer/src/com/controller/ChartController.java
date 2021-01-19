@@ -2345,7 +2345,7 @@ public class ChartController {
 				
 				data = new JSONObject();
 				data.put("fcmnum", "4");
-				data.put("fcmtype", "충돌 낙하 경보");
+				data.put("fcmtype", "충돌 경보");
 				data.put("carnum", "54다1234");
 				data.put("date", "2020-12-14");
 				data.put("time", "04:23:15");
@@ -2353,7 +2353,7 @@ public class ChartController {
 				
 				data = new JSONObject();
 				data.put("fcmnum", "5");
-				data.put("fcmtype", "영유아 낙하 경보");
+				data.put("fcmtype", "영유아 경보");
 				data.put("carnum", "89라1234");
 				data.put("date", "2020-12-15");
 				data.put("time", "20:23:15");

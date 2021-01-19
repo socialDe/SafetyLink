@@ -1,30 +1,24 @@
 package com.example.customermobile.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.customermobile.R;
-import com.example.customermobile.df.DataFrame;
 import com.example.customermobile.network.HttpConnect;
-import com.example.customermobile.vo.CarSensorVO;
 import com.example.customermobile.vo.CarVO;
 import com.example.customermobile.vo.UsersVO;
 
@@ -32,21 +26,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
-import java.util.Scanner;
 
 import static com.example.customermobile.activity.LoginActivity.ip;
 
-public class CarRegisterActivity extends AppCompatActivity {
+public class CarRegisterActivity1 extends AppCompatActivity {
 
     SharedPreferences sp;
     Button button_logout, button_carNumCheck, button_registerok, button_registercancel;
@@ -186,14 +173,14 @@ public class CarRegisterActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             if(s.equals("notExist")){
-                Toast.makeText(CarRegisterActivity.this,"등록된 차량번호가 아닙니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(CarRegisterActivity1.this,"등록된 차량번호가 아닙니다.",Toast.LENGTH_SHORT).show();
 
             }else if(s.equals("alreadyExist")){
-                Toast.makeText(CarRegisterActivity.this,"이미 등록된 차량번호 입니다.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(CarRegisterActivity1.this,"이미 등록된 차량번호 입니다.",Toast.LENGTH_SHORT).show();
 
             }else{
-                final EditText edittext = new EditText(CarRegisterActivity.this);
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CarRegisterActivity.this);
+                final EditText edittext = new EditText(CarRegisterActivity1.this);
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(CarRegisterActivity1.this);
                 alertDialog.setTitle("인증번호")
                         .setView(edittext)
                         .setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -205,14 +192,14 @@ public class CarRegisterActivity extends AppCompatActivity {
                                     carNumCheckAsync = new CarNumCheckAsync();
                                     carNumCheckAsync.execute(url);
                                 } else{
-                                    Toast.makeText(CarRegisterActivity.this,"번호가 틀렸습니다",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(CarRegisterActivity1.this,"번호가 틀렸습니다",Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })
                         .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(CarRegisterActivity.this,"취소되었습니다",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(CarRegisterActivity1.this,"취소되었습니다",Toast.LENGTH_SHORT).show();
                             }
                         });
                 alertDialog.create().show();
@@ -270,7 +257,7 @@ public class CarRegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(CarRegisterActivity.this);
+            progressDialog = new ProgressDialog(CarRegisterActivity1.this);
             progressDialog.setTitle("로그아웃");
             progressDialog.setCancelable(false);
 
@@ -306,7 +293,7 @@ public class CarRegisterActivity extends AppCompatActivity {
                 // destroy
             } else if (result.equals("logoutfail")) {
                 // 로그아웃 실패: Exception
-                android.app.AlertDialog.Builder builder = new AlertDialog.Builder(CarRegisterActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(CarRegisterActivity1.this);
                 builder.setTitle("로그아웃에 실패하였습니다.");
                 builder.setMessage("다시 시도해 주십시오.");
 
@@ -341,7 +328,7 @@ public class CarRegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(CarRegisterActivity.this);
+            progressDialog = new ProgressDialog(CarRegisterActivity1.this);
             progressDialog.setTitle("자동차 정보 조회 중 ...");
             progressDialog.setCancelable(false);
             progressDialog.show();

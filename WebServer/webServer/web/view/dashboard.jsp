@@ -138,7 +138,7 @@ function logTableCreate(){
 			<ul class="nav" id="main-menu">
 				<li><a href="dashboard.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 				<li><a href="chart.mc" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
-				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Tables</a></li>
+				<li><a href="table.mc" class="waves-effect waves-dark"><i class="fa fa-table"></i> Users</a></li>
 			</ul>
 
 		</div>
@@ -302,7 +302,7 @@ function logTableCreate(){
 							<th>시각</th>
 						</tr>
 						<tbody id="table" style="text-align: center;">
-							<!-- <tr><th>1</th><th>재물 낙하 경보</th><th>12가1234</th><th>2020-12-10</th><th>21:23:15</th></tr> -->
+							<!-- <tr><th>1</th><th>적재물 낙하 경보</th><th>12가1234</th><th>2020-12-10</th><th>21:23:15</th></tr> -->
 						</tbody>
 					</table>
 				</div>

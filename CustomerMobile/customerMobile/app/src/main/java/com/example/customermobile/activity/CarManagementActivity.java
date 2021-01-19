@@ -79,10 +79,9 @@ public class CarManagementActivity extends AppCompatActivity {
         imageButton_addCar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CarRegisterActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), CarRegisterActivity1.class);
                 intent.putExtra("user", user);
-                finish();
+                startActivity(intent);
             }
         });
 

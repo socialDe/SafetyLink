@@ -420,7 +420,7 @@ public class HomeActivity extends AppCompatActivity {
                 if (a == 0) {
                     value = value - (r.nextInt(5) + 1);
                 } else if (a == 1) {
-                    value = value - (r.nextInt(5) + 1);
+                    value = value + (r.nextInt(5) + 1);
                 }
                 Message message = vhandler.obtainMessage();
                 bundle.putInt("value", value);
@@ -1177,19 +1177,23 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     String moving = jo.getString("moving");
                     if (moving.equals("1")) {
-                        moveStop.whilestop = false;
-                        moveStop.join();
+                        hthread = new HeartbeatThread();
+                        hthread.start();
                         moveStart = new MoveStart();
                         moveStart.start();
+                        movingcar = new MovingCar();
+                        movingcar.start();
 
                     } else if (moving.equals("0")) { // 잘 작동되는지 확인할 것
+                        hthread.running = false;
+                        hthread.join();
+                        movingcar.moving = false;
+                        movingcar.join();
                         imageView_moving.setImageResource(R.drawable.stopcar);
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setColorFilter(filter);
-                        moveStart = new MoveStart();
-                        moveStart.join();
                         moveStop = new MoveStop();
                         moveStop.start();
                     }
@@ -1220,19 +1224,6 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            movingcar.moving = false;
-            hthread.running = false;
-            try {
-                movingcar.join();
-                hthread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            movingcar = new MovingCar();
-            movingcar.start();
-            hthread = new HeartbeatThread();
-            hthread.start();
-
             Random r = new Random();
             while (whilemove) {
                 v = v + r.nextInt(5);
@@ -1319,8 +1310,6 @@ public class HomeActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        moveStop = new MoveStop();
-                        moveStop.start();
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
@@ -1345,8 +1334,6 @@ public class HomeActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        moveStop = new MoveStop();
-                        moveStop.start();
                         // moving으로 바꿀 때, imageView도 바꿔주자
                         break;
                     }
@@ -1383,86 +1370,17 @@ public class HomeActivity extends AppCompatActivity {
 
     // 속도 멈출 때 천천히 내려가도록
     class MoveStop extends Thread {
-        int v = Integer.parseInt(textView_velocity.getText().toString());
         final Bundle bundle = new Bundle();
         boolean whilestop = true;
 
         @Override
         public void run() {
-            Random r = new Random();
-            while (whilestop) {
-                v = v - r.nextInt(8);
                 Message msg = downvelocityhandler.obtainMessage();
-                bundle.putInt("velocity", v);
+                bundle.putInt("velocity", 0);
                 msg.setData(bundle);
                 downvelocityhandler.sendMessage(msg);
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (v < 80) {
-                    break;
-                }
-
-            }
-            while (whilestop) {
-                v = v - r.nextInt(7);
-                Message msg = downvelocityhandler.obtainMessage();
-                bundle.putInt("velocity", v);
-                msg.setData(bundle);
-                downvelocityhandler.sendMessage(msg);
-                try {
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (v < 30) {
-                    break;
                 }
             }
-            while(whilestop) {
-                v = v - r.nextInt(4);
-                Message msg = downvelocityhandler.obtainMessage();
-                Log.d("[Server]", v+"");
-                bundle.putInt("velocity", v);
-                msg.setData(bundle);
-                downvelocityhandler.sendMessage(msg);
-                if (v <= 0) {
-                    v = 0;
-                    Message message = vhandler.obtainMessage();
-                    bundle.putInt("end",1);
-                    message.setData(bundle);
-                    vhandler.sendMessage(message); // 속도가 0이 되면 심박수 0으로 만들어줌
-
-                    movingcar.moving = false;
-                    hthread.running = false;
-                    try {
-                        movingcar.join();
-                        hthread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    Message msg1 = downvelocityhandler.obtainMessage();
-                    bundle.putInt("velocity", v);
-                    msg1.setData(bundle);
-                    downvelocityhandler.sendMessage(msg1);
-
-                    getSensor("CA00003200000000");
-                    tabletSendDataFrame("CA00003200000000");
-                    break;
-                }
-
-
-            }
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 
     class DownVelocityHandler extends Handler {
@@ -1474,13 +1392,11 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(v <= 0){
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setColorFilter(filter);
                         imageView_moving.setImageResource(R.drawable.stopcar);
-                    }
                     textView_velocity.setText(v+"");
                 }
             });
