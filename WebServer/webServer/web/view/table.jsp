@@ -67,6 +67,10 @@
     </style>
     <script>
 	function openmkpopup(){
+    	//console.log($(this).data('id'));
+    	//$("input[name='id']").val($(this).data('id'));
+    	//console.log($(this).data('token'));
+    	//$("input[name='token']").val($(this).data('token'));
 		//document.getElementById("mkpopup").style.display = "block";
 		// $("#token").text(document.getElementById('id').innerHTML);
 		// open할 때 DB정보 넣어주자
@@ -80,7 +84,7 @@
     
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
     <script type="text/javascript">
-   
+
     /* Image Preview Start // 이 버전의 jquery가 있어야 사진 미리보기 가능 */
     $(function() {
         $("#mf").on('change', function(){
@@ -110,14 +114,7 @@
 	/* popup button End */
 	
 	//Modal Popup으로 user 정보를 전달
-	
-	                        $('#sendFcm').click(function(){
-                        	console.log($(this).data('id'));
-                        	$("input[name='shop_name']").val($(this).data('id'));
-                        	console.log($(this).data('booking'));
-                        	$("input[name='booking_no']").val($(this).data('booking'));
-                        });
-	
+/* 	
 	 $('#sendFcm').click(function(){
           console.log($(this).data('id'));
           $("input[name='shop_name']").val($(this).data('id'));
@@ -145,7 +142,7 @@
              }
           });
        });
-	
+	 */
     </script> 
 </head>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
@@ -226,7 +223,7 @@
 			<ul class="nav" id="main-menu">
 				<li><a href="dashboard.mc" class="waves-effect waves-dark"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 				<li><a href="chart.mc" class="waves-effect waves-dark"><i class="fa fa-bar-chart-o"></i> Charts</a></li>
-				<li><a href="table.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-table"></i> Tables</a></li>
+				<li><a href="table.mc" class="active-menu waves-effect waves-dark"><i class="fa fa-table"></i> Users</a></li>
 			</ul>
 
 		</div>
@@ -269,15 +266,15 @@
                                     <tbody>
                                     <c:forEach var="user" items="${usersInfo}">
                                     	<tr>
-	                                    	<td>${user.userid}</td>
-	                                    	<td>${user.username}</td>
+	                                    	<td id="userid">${user.userid}</td>
+	                                    	<td id="username">${user.username}</td>
 	                                    	<td>${user.usersex}</td>
 	                                    	<td>${user.userphone}</td>
 	                                    	<td>${user.userbirth}</td>
-	                                    	<td><button type="button" id="sendFcm" onclick="openmkpopup();" href="#" data-target="#mkpopup" data-toggle="modal" data-id="${user.userid}"
-	                                    	 data-token="${user.mobiletoken}" id="sendfcmtouser">Push</button></td>
+	                                    	<td><a id="sendfcm" class="sendfcm" data-name="${user.username }" href="#" data-target="#mkpopup" data-toggle="modal" data-id="${user.userid}"
+	                                    	 data-token="${user.mobiletoken}">Push</a></td>
                                     	</tr>
-                                    </c:forEach>
+                                    </c:forEach>	
                                     </tbody>
                                 </table>
                             </div>
@@ -286,65 +283,7 @@
                     </div>
                     <!--End Advanced Tables -->
                 </div>
-                <!-- The Popup Modal -->
-<div id="mkpopup" class="mkpopup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-<!-- Modal content DB 연동 문제로 추후 작업 예정 -->
-	<div class="mkpopup-content">
-		<span class="mkpopupclose" onclick="closmkpopup();" aria-hidden="true" data-dismiss="modal">&times;</span>
-			<h3 name="id" value="${user.userid }">Send FCM </h3> <!-- **에 사용자의 이름 or 아이디 -->
-			<div class="input-field col s2"></div>
-				<form method="post" name="popupcontact" onsubmit="popupvalidation();" action="fcmpopupsend.mc" enctype="multipart/form-data">
-							<div class="row">
-        						<div class="input-field col s2"></div>
-        						<div class="input-field col s8">
-         							<textarea placeholder="" id="token" type="text" class="materialize-textarea" name="token" value="${user.mobiletoken }"></textarea>
-          								<label for="first_name"></label> <!-- db에서 토큰을 받아옴 -->
-          						</div>
-        						<div class="input-field col s2"></div>
-      						</div>
-							<div class="row">
-        						<div class="input-field col s2"></div>
-        						<div class="input-field col s8">
-         							<textarea placeholder="" id="title" type="text" class="materialize-textarea" name="title"></textarea>
-          								<label for="first_name">Title</label>
-          						</div>
-        						<div class="input-field col s2"></div>
-      						</div>
-      						<div class="row">
-								<div class="input-field col s2"></div>
-								<div class="input-field col s8">
-									<textarea id="contents" class="materialize-textarea" name="contents"></textarea>
-										<label for="textarea1">Contents</label>
-								</div>
-								<div class="input-field col s2"></div>
-	  						</div>
-	  						<div class="row">
-	  							<div class="input-field col s2"></div>
-	  							<div class="input-field col s8">
-	  								<input type="file" name="mf" id="mf"> <!-- 파일 첨부하는 버튼, 보안상의 이유로 value를 넣을 수 없다.. -->
-	  							</div>
-	  							<div class="input-field col s2"></div>
-	  						</div>
-	  						<div class="row">
-	  							<div class="input-field col s2"></div>
-	  							<div class="input-field col s8">
-	  								<img src="img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
-	  							</div>
-	  							<div class="input-field col s2"></div>
-	  						</div>
-	                  		<div class="row">
-	  						<div class="input-field col s7"></div>
-	                 		<div class="input-field col s1">
-                 					<input type="submit" value="Send Push" class="waves-effect waves-light btn-primary btn-large">
-	                 		</div>
-	                 		<div class="input-field col s3"></div>
-	                  		</div>
-				</form>
-		<div class="clearfix"></div>
-	</div>
-	<div class="clearfix"></div>
-</div>
-<!-- Modal Popup End -->
+<jsp:include page="mkpopup.jsp" flush="false"/>
 			<div class="col-lg-12">
 			 	<div class="card">
                     <div class="card-action text-center" style="font-size:40px;'">
@@ -378,7 +317,7 @@
 	  						<div class="row">
 	  							<div class="input-field col s2"></div>
 	  							<div class="input-field col s8">
-	  								<img src="img/logo.png" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
+	  								<img src="img/img1.jpg" width="210px" height="160px" id="fcmImage" alt="your image"> <!-- 기본 이미지 설정 -->
 	  							</div>
 	  							<div class="input-field col s2"></div>
 	  						</div>
@@ -400,7 +339,7 @@
  			</div>	
 
             </div>
-                
+                </div>
          
                <footer><p>Shared by <i class="fa fa-love"></i><a href="https://bootstrapthemes.co">BootstrapThemes</a>
 </p></footer>
@@ -410,7 +349,6 @@
          <!-- /. PAGE WRAPPER  -->
      <!-- /. WRAPPER  -->
     <!-- JS Scripts-->
- x`
 
     <!-- jQuery Js -->
     <script src="view/assets/js/jquery-1.10.2.js"></script>
@@ -434,15 +372,23 @@
 	 <!-- DATA TABLE SCRIPTS -->
     <script src="view/assets/js/dataTables/jquery.dataTables.js"></script>
     <script src="view/assets/js/dataTables/dataTables.bootstrap.js"></script>
-        <script>
+        <script type="text/javascript">
             $(document).ready(function () {
                 $('#dataTables-example').dataTable();
+                $('.sendfcm').click(function(){
+//                	console.log($(this).closest("tr").find("td:nth-child(0)").text());
+                	$("input[name='name']").val($(this).data('name'));
+//                	console.log($(this).data('id'));
+                	$("input[name='id']").val($(this).data('id'));
+//                	console.log($(this).data('token'));
+                	$("input[name='token']").val($(this).data('token'));
+                });
             });
     </script>
     <!-- Custom Js -->
     <script src="view/assets/js/custom-scripts.js"></script> 
  
-
+ 
 </body>
 
 </html>

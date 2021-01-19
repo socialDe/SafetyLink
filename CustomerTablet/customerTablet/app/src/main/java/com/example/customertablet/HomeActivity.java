@@ -1261,12 +1261,18 @@ public class HomeActivity extends AppCompatActivity {
                     }
                     String moving = jo.getString("moving");
                     if (moving.equals("1")) {
-                        moveStop.whilestop = false;
-                        moveStop.join();
+                        hthread = new HeartbeatThread();
+                        hthread.start();
                         moveStart = new MoveStart();
                         moveStart.start();
+                        movingcar = new MovingCar();
+                        movingcar.start();
 
                     } else if (moving.equals("0")) { // 잘 작동되는지 확인할 것
+                        hthread.running = false;
+                        hthread.join();
+                        movingcar.moving = false;
+                        movingcar.join();
                         imageView_moving.setImageResource(R.drawable.stopcar);
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
@@ -1302,19 +1308,6 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         public void run() {
-            movingcar.moving = false;
-            hthread.running = false;
-            try {
-                movingcar.join();
-                hthread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            movingcar = new MovingCar();
-            movingcar.start();
-            hthread = new HeartbeatThread();
-            hthread.start();
-
             Random r = new Random();
             while (whilemove) {
                 v = v + r.nextInt(5);
@@ -1477,7 +1470,6 @@ public class HomeActivity extends AppCompatActivity {
 
     // 속도 멈출 때 천천히 내려가도록
     class MoveStop extends Thread {
-        int v = Integer.parseInt(textView_velocity.getText().toString());
         final Bundle bundle = new Bundle();
         boolean whilestop = true;
 
@@ -1519,8 +1511,7 @@ public class HomeActivity extends AppCompatActivity {
             while(whilestop) {
                 v = v - r.nextInt(4);
                 Message msg = downvelocityhandler.obtainMessage();
-                Log.d("[Server]", v+"");
-                bundle.putInt("velocity", v);
+                bundle.putInt("velocity", 0);
                 msg.setData(bundle);
                 downvelocityhandler.sendMessage(msg);
                 if (v <= 0) {
@@ -1551,16 +1542,7 @@ public class HomeActivity extends AppCompatActivity {
                     getSensor("CA00003200000000");
                     break;
                 }
-
-
             }
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 
     class DownVelocityHandler extends Handler {
@@ -1572,13 +1554,11 @@ public class HomeActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(v <= 0){
                         ColorMatrix matrix = new ColorMatrix();
                         matrix.setSaturation(0);
                         ColorMatrixColorFilter filter = new ColorMatrixColorFilter(matrix);
                         imageView_moving.setColorFilter(filter);
                         imageView_moving.setImageResource(R.drawable.stopcar);
-                    }
                     textView_velocity.setText(v+"");
                 }
             });
