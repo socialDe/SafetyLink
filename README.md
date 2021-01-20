@@ -8,7 +8,7 @@
 
 
 
-#### Content
+#### Contents
 
 1. [What is Safety Link?](#what-is-safety-link?)
 
