@@ -8,7 +8,7 @@
 
 
 
-#### Contents
+#### Content
 
 1. [What is Safety Link?](#what-is-safety-link?)
 
@@ -33,13 +33,13 @@
 
 ## Diagram
 
-#### System
+### System
 
 ![image-20201223095418787](md-images/image-20201223095418787.png)
 
 
 
-#### ERD
+### ERD
 
 ![erd](md-images/erd.png)
 
@@ -49,7 +49,7 @@
 
 ## Feature
 
-#### Customer User
+### Customer User
 
 - Prevention of infant isolation accidents
 - Automates load drop detection and reporting
@@ -59,7 +59,7 @@
 
 
 
-#### Manager User
+### Manager User
 
 - Deliver visualized data
 - Provides vehicle related statistics and classification charts
@@ -88,13 +88,13 @@
 
 ## ETC
 
-#### CAN Protocol
+### CAN Protocol
 
 ![can](md-images/can.png)
 
 
 
-#### Ref
+### Ref
 
 - [RFP]()
 - [Proposal]()
